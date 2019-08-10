@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * 故障注入
  */
-public class FaultInjection implements DataStore {
+public interface FaultInjection implements DataStore {
     /**验证是否满足故障注入的条件，如果满足，更新触发条件的数据，
      * 提供给之后的迁移过程使用*/
     public void faultInjection(String taskKey, Fault fault, Map<String, Data> dataMap,
