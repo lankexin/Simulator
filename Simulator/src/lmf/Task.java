@@ -3,7 +3,6 @@ package lmf;
 import java.util.List;
 
 public class Task {
-
     private String componentId;//任务所属的组件的id
     private String id;//递增
 

@@ -14,9 +14,9 @@ public class Component {
     /**
      * 该组件下所有的transition
      * key: source state id
-     * value：该状态对应的所有transition
+     * value：对应的transition
      */
-    private Map<String, List<Transition>> transitionMap;
+    private Map<String, Transition> transitionMap;
 
     /**
      * 该组件下所有的state
@@ -29,11 +29,4 @@ public class Component {
      * key: task id
      */
     private Map<String, Task> taskMap;
-
-    /**
-     * 该组件下所有的data
-     * key: data name
-     */
-    private Map<String, String> dataMap;
-
 }
