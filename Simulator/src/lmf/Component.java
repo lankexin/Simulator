@@ -29,4 +29,10 @@ public class Component {
      * key: task id
      */
     private Map<String, Task> taskMap;
+
+    /**
+     * 该组件下的所有data
+     * key: data name
+     */
+    private Map<String, Data> dataMap;
 }
