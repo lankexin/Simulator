@@ -8,7 +8,7 @@ import util.XmlParse;
 
 import java.util.*;
 
-public class Simulate {
+public class Simulate implements FaultInjection{
 
     private static int currentSystemTime;
 
