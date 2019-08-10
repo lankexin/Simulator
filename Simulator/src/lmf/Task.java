@@ -9,6 +9,7 @@ public class Task {
     private float wcet;
     private float period;
     private float deadline;
+    private float leftExcuteTime;
 
     private int arriveTimestamp;
     private int executeTimestamp;
