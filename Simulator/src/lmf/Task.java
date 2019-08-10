@@ -11,6 +11,11 @@ public class Task {
     private float deadline;
     private float leftExcuteTime;
 
+    /**
+     * 任务当前的状态：就绪、等待、运行
+     */
+    private String taskState;
+
     private int arriveTimestamp;
     private int executeTimestamp;
 
