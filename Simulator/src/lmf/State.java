@@ -19,4 +19,34 @@ public class State {
     private boolean isCompositState;//是否是复合状态
 
     private List<State> subStateList;
+    private float leftExcuteTime;
+
+
+    public String getEntryEvent() {
+        return entryEvent;
+    }
+
+    public void setEntryEvent(String entryEvent) {
+        this.entryEvent = entryEvent;
+    }
+
+    public String getExitEvent() {
+        return exitEvent;
+    }
+
+    public void setExitEvent(String exitEvent) {
+        this.exitEvent = exitEvent;
+    }
+
+    public float getWcet() {
+        return wcet;
+    }
+
+    public float getLeftExcuteTime() {
+        return leftExcuteTime;
+    }
+
+    public void setLeftExcuteTime(float leftExcuteTime) {
+        this.leftExcuteTime = leftExcuteTime;
+    }
 }

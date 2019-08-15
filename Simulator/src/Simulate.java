@@ -8,6 +8,8 @@ import util.XmlParse;
 
 import java.util.*;
 
+import static realtime.Schedule.staticSchedule;
+
 public class Simulate implements FaultInjection{
 
     private static int currentSystemTime;
@@ -62,6 +64,7 @@ public class Simulate implements FaultInjection{
         // todo: 从配置
 
         taskQueue = new ArrayList<>();
+        List<Task> staticScheduleList=staticSchedule();
 
         Thread updateThread = new Thread(new Runnable() {
             @Override
@@ -70,11 +73,17 @@ public class Simulate implements FaultInjection{
                     for (String taskKey : taskMap.keySet()) {
                         // todo：检查task是否在运行中，如果在，检查他是否超过了deadline， 超过就记录
 
-                        String currentStateId = taskMap.get(taskKey).getCurrentStateId();
-                        List<Transition> transitions = componentMap.get(taskMap.get(taskKey).getComponentId())
-                                .getTrantionById(currentStateId);
+                        //得到当前时间片应该执行的任务ID
+                        String taskId=getCurrentTask();
 
+                        //获取当前任务的当前状态Id
+                        String currentStateId = taskMap.get(taskKey).getCurrentStateId();
+
+                        //获取当前状态的所有迁移列表
+                        List<Transition> transitions = componentMap.get(taskMap.get(taskKey).getComponentId()).getTrantionById(currentStateId);
+                        //故障注入
                         if (faultMap.get(currentStateId) != null) {
+                            //更改数据
                             FaultInjection.inject();
                         }
 
@@ -95,16 +104,13 @@ public class Simulate implements FaultInjection{
                 }
             }
         });
-
         updateThread.start();
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
-
             @Override
             public void run() {
                 currentSystemTime++;
-
             }
         }, 1000, 100);
 

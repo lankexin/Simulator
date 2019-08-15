@@ -30,6 +30,10 @@ public class Task {
         return currentStateId;
     }
 
+    public void setCurrentStateId(String currentStateId) {
+        this.currentStateId = currentStateId;
+    }
+
     public void setArriveTimestamp(int arriveTimestamp) {
         this.arriveTimestamp = arriveTimestamp;
     }
@@ -48,5 +52,19 @@ public class Task {
 
     public float getWcet() {
         return wcet;
+    }
+
+    public void setLeftExcuteTime(float leftExcuteTime) {
+        this.leftExcuteTime = leftExcuteTime;
+    }
+
+    public float getLeftExcuteTime(){return leftExcuteTime;}
+
+    public String getTaskState() {
+        return taskState;
+    }
+
+    public void setTaskState(String taskState) {
+        this.taskState = taskState;
     }
 }

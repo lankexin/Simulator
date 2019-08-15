@@ -8,9 +8,9 @@ import java.util.Map;
  * 对给定的表达式进行计算
  */
 
-public class Caculate<T extends Number> {
+public class Caculator<T extends Number> {
 
-    private static Caculate caculate = new Caculate();
+    private static Caculator caculate = new Caculator();
 
     public static String caculate(String expression, Map<String, Data> dataMap) {
         // todo : 解析表达式，根据data的值以及表达式进行计算
