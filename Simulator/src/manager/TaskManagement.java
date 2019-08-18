@@ -1,4 +1,4 @@
-package simulate;
+package manager;
 
 import lmf.Component;
 import lmf.Task;

@@ -1,4 +1,4 @@
-package simulate;
+package manager;
 
 import lmf.TaskInstance;
 import safety.FaultInjection;

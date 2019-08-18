@@ -1,6 +1,7 @@
 package simulate;
 
 import lmf.*;
+import manager.TaskManagement;
 import safety.FaultInjection;
 import util.PropertiyParse;
 import util.XmlParse;

@@ -1,9 +1,10 @@
-package simulate;
+package manager;
 
 import common.DataStore;
 import lmf.Component;
 import lmf.Data;
 import safety.FaultInjection;
+import simulate.Simulator;
 
 import java.util.List;
 import java.util.Map;
