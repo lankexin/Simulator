@@ -8,19 +8,19 @@ import util.EventProcess;
 import java.util.List;
 
 public class TaskExcute implements DataStore, Log {
-    public static void taskExcute(int currentTimePiece, List<Task> taskQueue) {
+    public static void taskExcute(int currentTimePiece, List<Task> taskQueue, int currentTaskId) {
         boolean hasExecutingTask = false;
         /**
          * 在队列里找到当前需要执行的task并使其开始执行
-         * 即 更改该任务的 execute time
+         * 即 更改该g任务的 execute time
          */
         while (!hasExecutingTask) {
             //当前执行的任务id
-            Task currentTask= taskMap.get(taskId);
+            Task currentTask= taskQueue.get(currentTaskId);
             //任务剩余几个时间片
             float leftTaskPiece=currentTask.getLeftExcuteTime();
 
-            String currentStateId = taskMap.get(taskKey).getCurrentStateId();
+            String currentStateId = taskMap.get(currentTaskId).getCurrentStateId();
             State currentState=componentMap.get(taskMap.get(taskKey).getComponentId()).getStateMap().get(currentStateId);
             //状态剩余几个时间片
             float leftStatePiece=currentState.getLeftExcuteTime();

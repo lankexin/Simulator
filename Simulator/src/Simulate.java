@@ -46,9 +46,9 @@ public class Simulate implements FaultInjection{
     private static Map<String, Task> taskMap;
 
     /**
-     * 任务队列，有新的任务加入时调用schedule，生成优先级队列。
+     * 任务队列，有新的任务将其id加入该队列，调用schedule，生成优先级队列。
      */
-    private static List<Task> taskQueue;
+    private static List<String> taskQueue;
 
     private static void updateByTime(State targetState, int currentTime) {
         // todo:
