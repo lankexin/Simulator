@@ -4,6 +4,7 @@ public class Data {
     private String name;
     private String valueType;
     private String value;
+    private boolean isShared;
 
     public Data(String name, String valueType, String value) {
         this.name = name;
@@ -21,5 +22,17 @@ public class Data {
 
     public String getValue() {
         return value;
+    }
+
+    public boolean isShared() {
+        return isShared;
+    }
+
+    public void setShared(boolean shared) {
+        isShared = shared;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

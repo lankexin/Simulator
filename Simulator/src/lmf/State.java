@@ -21,6 +21,29 @@ public class State {
     private List<State> subStateList;
     private float leftExcuteTime;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getComponent() {
+        return component;
+    }
+
+    public void setComponent(String component) {
+        this.component = component;
+    }
 
     public String getEntryEvent() {
         return entryEvent;
@@ -28,6 +51,14 @@ public class State {
 
     public void setEntryEvent(String entryEvent) {
         this.entryEvent = entryEvent;
+    }
+
+    public String getDoEvent() {
+        return doEvent;
+    }
+
+    public void setDoEvent(String doEvent) {
+        this.doEvent = doEvent;
     }
 
     public String getExitEvent() {

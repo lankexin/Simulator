@@ -1,7 +1,7 @@
 package common;
 
 public interface DataStore{
-    void update(String component, String dataName);
-    String get(String component, String dataName);
-    String isShared(String dataName);
+    void update(String dataName , String newValue);
+    String get(String dataName);
+    boolean isShared(String dataName);
 }

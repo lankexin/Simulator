@@ -5,7 +5,7 @@ public class TaskInstance {
     private String instanceId;
     private String taskId;
 
-    private String currentState;
+    private State currentState;
     private float leftExcuteTime;
 
     private int arriveTimestamp;
