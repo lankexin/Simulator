@@ -1,45 +1,60 @@
 package simulate;
 
 import lmf.Task;
+import lmf.TaskInstance;
 import lmf.Transition;
+import org.omg.CORBA.MARSHAL;
 import realtime.Schedule;
 import safety.FaultInjection;
 import util.EventProcess;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TaskManagement {
+public class TaskManagement implements FaultInjection{
 
-    public static void taskManagement(Map<String, Task> taskMap, ) {
+    public TaskManagement() {
+
+    }
+
+    public Map<Integer, TaskInstance> waitingQueueManagement(int currentSystemTime,
+                                       Map<String, Task> taskMap,
+                                       Map<String, TaskInstance> waitingTaskList) {
+        Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
+
         for (String taskKey : taskMap.keySet()) {
-            // todo：检查task是否在运行中，如果在，检查他是否超过了deadline， 超过就记录
+            // todo：遍历task map，看是否有task满足触发条件，满足则生成对应的task instance，并加入等待队列中。
 
-            //得到当前时间片应该执行的任务ID
-            String taskId=getCurrentTask();
-
-            //获取当前任务的当前状态Id
-            String currentStateId = taskMap.get(taskKey).getCurrentStateId();
+            Task currentTask = taskMap.get(taskKey);
 
             //获取当前状态的所有迁移列表
-            List<Transition> transitions = componentMap.get(taskMap.get(taskKey).getComponentId()).getTrantionById(currentStateId);
-            //故障注入
+            List<Transition> transitions = currentTask.getTransitionMap().get(currentTask.getFirstStateId());
+
+            /** 故障注入
             if (faultMap.get(currentStateId) != null) {
                 //更改数据
                 FaultInjection.inject();
-            }
+            } */
 
-            if (currentSystemTime % taskMap.get(taskKey).getPeriod() == 0) {
-                Schedule.schedule(scheduleAlgorithm, taskMap.get(task), taskQueue);
+            if (currentSystemTime % currentTask.getPeriod() == 0) {
+                Schedule.schedule(currentSystemTime, waitingTaskList, taskMap);
                 taskMap.get(taskKey).setCurrentStateId();
             }
 
             for (Transition transition : transitions) {
                 if (EventProcess.eventProcess(transition.getEvent, dataMap)) {
-                    Schedule.schedule(scheduleAlgorithm, taskMap.get(task), taskQueue);
+                    timePieceMap = Schedule.schedule(scheduleAlgorithm, taskMap.get(task), taskQueue);
                     break;
                 }
             }
         }
+
+        return timePieceMap;
+    }
+
+    public void blockQueueManageMent(List<TaskInstance> blockTaskList,
+                                     Map<String, Task> taskMap) {
+        // todo: 遍历阻塞队列，看是否满足触发条件
     }
 }

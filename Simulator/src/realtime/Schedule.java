@@ -2,8 +2,11 @@ package realtime;
 
 import com.oracle.tools.packager.mac.MacAppBundler;
 import lmf.Task;
+import lmf.TaskInstance;
+import util.PropertiyParse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,30 +17,41 @@ import java.util.Map;
 
 public class Schedule {
 
-    public static Map<Integer, String> schedule(String scheduleAlgorithm,
-                                                int currentTimePiece,
-                                                List<Task> waitingTaskList,
+    private String scheduleAlgorithm = null;
+
+    public Schedule() {
+        scheduleAlgorithm = PropertiyParse.read("schedule algorithm");
+    }
+
+    /**
+     *
+     * @param currentTimeStamp 当前的系统时间，用于记录task的到达时间等
+     * @param waitingTaskList 等待队列，即就绪的任务队列
+     * @param taskMap 用于提取任务的状态列表等不变的信息
+     * @return
+     */
+    public Map<Integer, TaskInstance> schedule(int currentTimeStamp,
+                                                List<TaskInstance> waitingTaskList,
                                                 Map<String, Task> taskMap) {
         switch (scheduleAlgorithm) {
             case "EDF":
-                return EDF.EDFSchedule(currentTimePiece, waitingTaskList, Map<String, Task> taskMap);
+                return EDF.EDFSchedule(currentTimeStamp, waitingTaskList, taskMap);
             case "RMS":
-                return RMS.RMSSchedule(currentTimePiece, waitingTaskList, Map<String, Task> taskMap);
+                return RMS.RMSSchedule(currentTimeStamp, waitingTaskList, taskMap);
             case "LLF":
-                return LLF.LLFSchedule(currentTimePiece, waitingTaskList, Map<String, Task> taskMap);
+                return LLF.LLFSchedule(currentTimeStamp, waitingTaskList, taskMap);
             default:
                 return null;
         }
     }
 
 
-
     /**
      * 根据组件的连接顺序给任务排序
-     * @return 返回一个排好序的任务列表
+     * @return 返回一个排好序的task map
      */
-    public static List<Task> staticSchedule() {
-        List<Task> taskList = new ArrayList<>();
+    public Map<String, Task> staticSchedule(Map<String, Task> taskMap) {
+        Map<String, Task> taskList = new HashMap<>();
 
         return taskList;
     }

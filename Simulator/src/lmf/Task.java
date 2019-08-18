@@ -10,6 +10,7 @@ public class Task {
     private float period;
     private float deadline;
 
+    private String firstStateId;
     /**
      * 该组件下所有的transition
      * key: source state id
@@ -34,6 +35,14 @@ public class Task {
 
     public String getComponentId() {
         return componentId;
+    }
+
+    public String getFirstStateId() {
+        return firstStateId;
+    }
+
+    public void setFirstStateId(String firstStateId) {
+        this.firstStateId = firstStateId;
     }
 
     public float getWcet() {

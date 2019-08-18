@@ -17,6 +17,8 @@ public class Simulator implements FaultInjection{
     private static int currentSystemTime;
     private static int currentTimePiece;
 
+    private static TaskManagement mTaskManageMent = new TaskManagement();
+
     /**
      * 运行中各组件运行的过程记录
      * key: task id；
@@ -46,28 +48,32 @@ public class Simulator implements FaultInjection{
      * 解析得到的dataMap
      * key：task id（要求名字不能重复）
      */
-    private static Map<String, TaskInstance> taskMap;
+    private static Map<String, Task> taskMap;
 
     /**
      * 任务队列，有新的任务将其id加入该队列，调用schedule，生成优先级队列。
      */
-    private static List<String> taskQueue;
+    private static Map<String, TaskInstance> waitingQueue;
+
+    /**
+     * 调度返回的时间片和任务的映射map
+     */
+    private static Map<Integer, TaskInstance> timePiece;
 
     private static void updateByTime(State targetState, int currentTime) {
         // todo:
     }
 
     public static void main(String[] args) {
-        XmlParse.parse("xml-name", componentMap, dataMap, taskMap);
+        XmlParse.parse("xml-name", componentMap, sharedDataMap, taskMap);
+
+        int targetTime = Integer.valueOf(PropertiyParse.read("target execute time"));
 
         //从配置文件里
         Map<String, Fault> faultMap = FaultInjection.getFaultInjectionMap();
-        String scheduleAlgorithm = PropertiyParse.read("schedule");
 
         // todo: 从配置
-
-        taskQueue = new ArrayList<>();
-        List<Task> staticScheduleList=staticSchedule();
+        waitingQueue = new HashMap<>();
 
         Timer taskQueueManagementTimer = new Timer();
         taskQueueManagementTimer.schedule(new TimerTask() {
@@ -77,7 +83,7 @@ public class Simulator implements FaultInjection{
 
 
                 while (currentSystemTime != targetTime) {
-
+                    mTaskManageMent.waitingQueueManagement(currentSystemTime, taskMap, waitingQueue);
                 }
             }
         }, 1000, 10);
