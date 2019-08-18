@@ -106,6 +106,7 @@ public class Simulate implements FaultInjection{
         });
         updateThread.start();
 
+        //定时器
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -113,6 +114,17 @@ public class Simulate implements FaultInjection{
                 currentSystemTime++;
             }
         }, 1000, 100);
+
+        //日志：从当前的缓存区拿信息到文件中
+        Timer logTimer = new Timer();
+        logTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+               //todo:把statepath的内容加入到文件
+                statePath=null;
+                statePath=new HashMap<>();
+            }
+        }, 1000, 500);
 
     }
 
