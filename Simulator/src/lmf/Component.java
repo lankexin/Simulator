@@ -1,9 +1,10 @@
 package lmf;
 
-import java.util.List;
+import common.DataStore;
+
 import java.util.Map;
 
-public class Component {
+public class Component implements DataStore {
 
     private String id;
     private String name;
@@ -30,13 +31,25 @@ public class Component {
         this.name = name;
     }
 
-
-
     public Map<String, Data> getDataMap() {
         return dataMap;
     }
 
     public void setDataMap(Map<String, Data> dataMap) {
         this.dataMap = dataMap;
+    }
+
+    public synchronized void update(String dataName,String newValue){
+        dataMap.get(dataName).setValue(newValue);
+
+    }
+    public String get(String dataName){
+        String value=dataMap.get(dataName).getValue();
+        return value;
+    }
+
+    public boolean isShared(String dataName){
+        boolean isShared=dataMap.get(dataName).isShared();
+        return isShared;
     }
 }
