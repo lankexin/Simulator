@@ -1,11 +1,13 @@
 package lmf;
 
 import common.DataStore;
+import safety.FaultInjection;
 import simulate.Simulator;
 
+import java.util.List;
 import java.util.Map;
 
-public class Component implements DataStore {
+public abstract class Component implements DataStore, FaultInjection {
 
     private String id;
     private String name;
@@ -45,22 +47,22 @@ public class Component implements DataStore {
         boolean isShared = data.isShared();
         if (!isShared)
             data.setValue(newValue);
-        else{
+        else {
             data.setValue(newValue);
-            Simulator.update(dataName,newValue);
+            Simulator.update(dataName, newValue);
         }
     }
 
     public String get(String dataName) {
         Data data = dataMap.get(dataName);
         boolean isShared = data.isShared();
-        String value=null;
+        String value = null;
         if (!isShared)
-            value=data.getValue();
-        else{
-            value=Simulator.get(dataName);
+            value = data.getValue();
+        else {
+            value = Simulator.get(dataName);
             data.setValue(value);
-            dataMap.put(dataName,data);
+            dataMap.put(dataName, data);
         }
         return value;
     }
@@ -68,5 +70,24 @@ public class Component implements DataStore {
     public boolean isShared(String dataName) {
         boolean isShared = dataMap.get(dataName).isShared();
         return isShared;
+    }
+
+    public void updateData(String operateorMethod, List<Data> dataList) {
+        if (("assignValue").equals(operateorMethod))
+            for (Data data : dataList) {
+                String dataName = data.getName();
+                update(dataName, data.getValue());
+            }
+        else if (("operateData").equals(operateorMethod))
+            for (Data data : dataList) {
+                String dataName = data.getName();
+                String oldValue = get(dataName);
+                String operate = data.getValue();
+                String operatorExcute = operate.substring(3);
+                String dataType = data.getValueType();
+                //对要更改的数据进行计算
+                String dataValue = calculate(oldValue, operatorExcute);
+                update(dataName,dataValue);
+            }
     }
 }

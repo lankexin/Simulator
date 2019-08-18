@@ -1,13 +1,12 @@
 package simulate;
 
-import common.DataStore;
-import common.Log;
 import lmf.*;
+import safety.FaultInjection;
 import util.EventProcess;
 import java.util.List;
 import java.util.Map;
 
-public class TaskExcute implements DataStore, Log {
+public abstract class TaskExcute implements FaultInjection {
 
     //timePieceMap  时间片--任务Id
     public static void taskExcute(int currentTimePiece,Map<String, Component> componentMap,Map<String, TaskInstance> taskInstanceMap,

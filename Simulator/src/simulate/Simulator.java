@@ -10,8 +10,6 @@ import util.XmlParse;
 
 import java.util.*;
 
-import static realtime.Schedule.staticSchedule;
-
 public abstract class Simulator implements FaultInjection{
 
     private static int currentSystemTime;
@@ -19,12 +17,7 @@ public abstract class Simulator implements FaultInjection{
 
     private static TaskManagement mTaskManageMent = new TaskManagement();
 
-    /**
-     * 运行中各组件运行的过程记录
-     * key: task id；
-     * value: 状态-event-data-timestamp
-     */
-    private static Map<String, List<String>> statePath;
+
 
 
     /**
