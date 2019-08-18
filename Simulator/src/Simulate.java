@@ -43,7 +43,7 @@ public class Simulate implements FaultInjection{
      * 解析得到的dataMap
      * key：task id（要求名字不能重复）
      */
-    private static Map<String, Task> taskMap;
+    private static Map<String, TaskInstance> taskMap;
 
     /**
      * 任务队列，有新的任务将其id加入该队列，调用schedule，生成优先级队列。
@@ -112,8 +112,11 @@ public class Simulate implements FaultInjection{
             @Override
             public void run() {
                 currentSystemTime++;
+                TaskExcute.taskExcute(currentSystemTime, taskQueue);
             }
         }, 1000, 100);
+
+
 
         //日志：从当前的缓存区拿信息到文件中
         Timer logTimer = new Timer();

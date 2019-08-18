@@ -2,6 +2,7 @@ import common.DataStore;
 import common.Log;
 import lmf.State;
 import lmf.Task;
+import lmf.TaskInstance;
 import lmf.Transition;
 import util.EventProcess;
 import java.util.List;
@@ -10,40 +11,38 @@ import java.util.Map;
 public class TaskExcute implements DataStore, Log {
 
     //timePieceMap  时间片--任务Id
-    public static void taskExcute(int currentTimePiece,Map<String, Task> taskMap, List<String> taskQueue,
-                                  Map<Integer,String> timePieceMap) {
+    public static void taskExcute(int currentTimePiece,Map<String, TaskInstance> taskInsaneMap, List<String> taskQueue,
+                                  Map<Integer,String> timePieceMap, Map<String,Task> taskMap) {
 
         /**
          * 在队列里找到当前需要执行的task并使其开始执行
          * 即 更改该g任务的 execute time
          */
         if (timePieceMap!=null && !timePieceMap.isEmpty()) {
+            //当前执行的任务实例id
+            String taskInsaneId=timePieceMap.get(currentTimePiece);
 
-            //当前执行的任务id
-            String taskId=timePieceMap.get(currentTimePiece);
-
-            Task currentTask = taskMap.get(taskId);
+            TaskInstance currentTaskInsane = taskInsaneMap.get(taskInsaneId);
 
             //任务剩余几个时间片
-            float leftTaskPiece = currentTask.getLeftExcuteTime();
-
-            String currentStateId = taskMap.get(taskId).getCurrentStateId();
-            State currentState = currentTask.getStateMap().get(currentStateId);
-
+            float leftTaskPiece = currentTaskInsane.getLeftExcuteTime();
+            //任务的当前状态
+            State currentState = currentTaskInsane.getCurrentState();
 
             //状态剩余几个时间片
             float leftStatePiece = currentState.getLeftExcuteTime();
-
-            if (leftTaskPiece == currentTask.getWcet()) {
-                currentTask.setTaskState("运行");
+            String taskId=currentTaskInsane.getTaskId();
+            if (leftTaskPiece == taskMap.get(taskId).getWcet()) {
+                currentTaskInsane.setTaskState("运行");
             }
+
             if (leftStatePiece == currentState.getWcet()) {
                 String entry = currentState.getEntryEvent();
                 if (entry != null) {
                     // TODO: 做状态内的数据更新--状态的记录
-
                 }
             }
+
             if (leftStatePiece == 1) {
                 String exit = currentState.getExitEvent();
                 if (exit != null) {
