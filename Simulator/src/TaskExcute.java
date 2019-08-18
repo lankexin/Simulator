@@ -8,12 +8,18 @@ import java.util.List;
 import java.util.Map;
 
 public class TaskExcute implements DataStore, Log {
+<<<<<<< HEAD
     //timePieceMap  时间片--任务Id
     public static void taskExcute(int currentTimePiece,Map<String, Task> taskMap, List<String> taskQueue,
                                   Map<Integer,String> timePieceMap) {
+=======
+
+    public static void taskExcute(int currentTimePiece, List<Task> taskQueue ,) {
+        boolean hasExecutingTask = false;
+>>>>>>> 8f83462d344c1435d3c76c735aeb5f407f8169fb
         /**
          * 在队列里找到当前需要执行的task并使其开始执行
-         * 即 更改该任务的 execute time
+         * 即 更改该g任务的 execute time
          */
         if (timePieceMap!=null && !timePieceMap.isEmpty()) {
 
@@ -25,8 +31,13 @@ public class TaskExcute implements DataStore, Log {
             //任务剩余几个时间片
             float leftTaskPiece = currentTask.getLeftExcuteTime();
 
+<<<<<<< HEAD
             String currentStateId = taskMap.get(taskId).getCurrentStateId();
             State currentState = currentTask.getStateMap().get(currentStateId);
+=======
+            String currentStateId = taskMap.get(taskKey).getCurrentStateId();
+            State currentState = componentMap.get(taskMap.get(taskKey).getComponentId()).getStateMap().get(currentStateId);
+>>>>>>> 8f83462d344c1435d3c76c735aeb5f407f8169fb
 
             //状态剩余几个时间片
             float leftStatePiece = currentState.getLeftExcuteTime();
