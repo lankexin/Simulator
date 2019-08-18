@@ -1,6 +1,7 @@
 package lmf;
 
 import common.DataStore;
+import simulate.Simulator;
 
 import java.util.Map;
 
@@ -39,17 +40,33 @@ public class Component implements DataStore {
         this.dataMap = dataMap;
     }
 
-    public synchronized void update(String dataName,String newValue){
-        dataMap.get(dataName).setValue(newValue);
-
+    public synchronized void update(String dataName, String newValue) {
+        Data data = dataMap.get(dataName);
+        boolean isShared = data.isShared();
+        if (!isShared)
+            data.setValue(newValue);
+        else{
+            data.setValue(newValue);
+            Simulator.update(dataName,newValue);
+        }
     }
-    public String get(String dataName){
-        String value=dataMap.get(dataName).getValue();
+
+    public String get(String dataName) {
+        Data data = dataMap.get(dataName);
+        boolean isShared = data.isShared();
+        String value=null;
+        if (!isShared)
+            value=data.getValue();
+        else{
+            value=Simulator.get(dataName);
+            data.setValue(value);
+            dataMap.put(dataName,data);
+        }
         return value;
     }
 
-    public boolean isShared(String dataName){
-        boolean isShared=dataMap.get(dataName).isShared();
+    public boolean isShared(String dataName) {
+        boolean isShared = dataMap.get(dataName).isShared();
         return isShared;
     }
 }
