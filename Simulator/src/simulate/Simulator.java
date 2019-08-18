@@ -15,14 +15,6 @@ public abstract class Simulator implements FaultInjection{
     private static TaskManagement mTaskManageMent = new TaskManagement();
 
     /**
-     * 运行中各组件运行的过程记录
-     * key: task id；
-     * value: 状态-event-data-timestamp
-     */
-    private static Map<String, List<String>> statePath;
-
-
-    /**
      *  记录失败任务的列表
      */
     private static List<String> failureTaskList;
@@ -32,6 +24,13 @@ public abstract class Simulator implements FaultInjection{
      * key：component id
      */
     private static Map<String, Component> componentMap;
+
+    /**
+     * 记录状态的迁移过程
+     * key：任务实例id
+     * value：状态-event-data-timestamp
+     */
+    private static Map<String, List<String>> statePathBuffer;
 
     /**
      * 共享部分的dataMap
@@ -63,7 +62,7 @@ public abstract class Simulator implements FaultInjection{
     public static void main(String[] args) {
         XmlParse.parse("xml-name", componentMap, sharedDataMap, taskMap);
 
-        int targetTime = Integer.valueOf(PropertiyParse.read("target execute time"));
+        int targetTime = Integer.valueOf(PropertiyParse.readProperty("target execute time"));
 
         waitingQueue = new HashMap<>();
 
@@ -98,9 +97,11 @@ public abstract class Simulator implements FaultInjection{
         logTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-               //todo:把statepath的内容加入到文件
-                statePath=null;
-                statePath=new HashMap<>();
+                Map<String, List<String>> statePathtemp = statePathBuffer;
+                statePathBuffer = null;
+                statePathBuffer = new HashMap<>();
+
+                //todo：将state path写到文件里去。
             }
         }, 1000, 500);
 
@@ -116,6 +117,5 @@ public abstract class Simulator implements FaultInjection{
         String value=sharedDataMap.get(dataName).getValue();
         return value;
     }
-
 
 }

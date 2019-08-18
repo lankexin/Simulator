@@ -11,12 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class TaskManagement{
 
     private Schedule mSchedule;
 
     public TaskManagement() {
-        mSchedule =  new Schedule();
+        mSchedule = new Schedule();
     }
 
     public Map<Integer, TaskInstance> timePieceMapManagement(int currentSystemTime,
@@ -41,9 +42,9 @@ public class TaskManagement{
 
 
     private Map<Integer, TaskInstance> waitingQueueManagement(int currentSystemTime,
-                                        Map<String, Task> taskMap,
-                                        Map<String, TaskInstance> waitingTaskList,
-                                        Map<String, Component> componentMap) {
+                                                              Map<String, Task> taskMap,
+                                                              Map<String, TaskInstance> waitingTaskList,
+                                                              Map<String, Component> componentMap) {
         Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
 
         for (String taskKey : taskMap.keySet()) {
@@ -55,10 +56,10 @@ public class TaskManagement{
             List<Transition> transitions = currentTask.getTransitionMap().get(currentTask.getFirstStateId());
 
             /** 故障注入
-            if (faultMap.get(currentStateId) != null) {
-                //更改数据
-                FaultInjection.inject();
-            } */
+             if (faultMap.get(currentStateId) != null) {
+             //更改数据
+             FaultInjection.inject();
+             } */
 
             if (currentSystemTime % currentTask.getPeriod() == 0) {
                 TaskInstance newTaskInstance = new TaskInstance(currentTask.getId()+"_"+currentSystemTime,
@@ -67,6 +68,7 @@ public class TaskManagement{
                 timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
             }
             else {
+
                 Component targetComponent = componentMap
                         .get(currentTask.getComponentId());
                 TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions, targetComponent, currentTask);
