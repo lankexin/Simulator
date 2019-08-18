@@ -11,7 +11,7 @@ import java.util.Map;
 public class TaskExcute implements DataStore, Log {
 
     //timePieceMap  时间片--任务Id
-    public static void taskExcute(int currentTimePiece,Map<String, TaskInstance> taskInsaneMap, List<String> taskQueue,
+    public static void taskExcute(int currentTimePiece,Map<String, TaskInstance> taskInstanceMap, List<String> taskQueue,
                                   Map<Integer,String> timePieceMap, Map<String,Task> taskMap) {
 
         /**
@@ -22,40 +22,51 @@ public class TaskExcute implements DataStore, Log {
             //当前执行的任务实例id
             String taskInsaneId=timePieceMap.get(currentTimePiece);
 
-            TaskInstance currentTaskInsane = taskInsaneMap.get(taskInsaneId);
+            TaskInstance currentTaskInstance = taskInstanceMap.get(taskInsaneId);
 
             //任务剩余几个时间片
-            float leftTaskPiece = currentTaskInsane.getLeftExcuteTime();
+            float leftTaskPiece = currentTaskInstance.getLeftExcuteTime();
             //任务的当前状态
-            State currentState = currentTaskInsane.getCurrentState();
+            State currentState = currentTaskInstance.getCurrentState();
 
             //状态剩余几个时间片
             float leftStatePiece = currentState.getLeftExcuteTime();
-            String taskId=currentTaskInsane.getTaskId();
-            if (leftTaskPiece == taskMap.get(taskId).getWcet()) {
-                currentTaskInsane.setTaskState("运行");
+            String taskId=currentTaskInstance.getTaskId();
+
+            if (!currentTaskInstance.getTaskState().equals("运行")) {
+                currentTaskInstance.setTaskState("运行");
             }
 
             if (leftStatePiece == currentState.getWcet()) {
-                String entry = currentState.getEntryEvent();
-                if (entry != null) {
+                String entryEvent = currentState.getEntryEvent();
+                if (entryEvent != null) {
+                    // TODO: 做状态内的数据更新--状态的记录
+                }
+            }
+
+            if (leftStatePiece == 2) {
+                String doEvent = currentState.getDoEvent();
+                if (doEvent != null) {
                     // TODO: 做状态内的数据更新--状态的记录
                 }
             }
 
             if (leftStatePiece == 1) {
-                String exit = currentState.getExitEvent();
-                if (exit != null) {
+                String exitEvent = currentState.getExitEvent();
+                if (exitEvent != null) {
                     // TODO: 做状态内的数据更新--状态的记录
                 }
                 //判断是否满足迁移条件，如果满足，把当前状态设置为下一个要迁移的状态
-                List<Transition> transitions = currentTask.getTransitionMap().get(currentStateId);
+                List<Transition> transitions = taskMap.get(taskId).getTransitionMap().get(currentState.getId());
 
                 boolean isTransition = false;
                 for (Transition transition : transitions) {
                     if (EventProcess.eventProcess(transition.getEvent, dataMap)) {
-                        currentTask.setCurrentStateId(newStateId);
+                        currentTaskInstance.setCurrentState(newState);
                         isTransition = true;
+                        if(newState.getName.trim().toLowerCase().equals("idle")){
+                            taskQueue.remove(currentTaskInstance);
+                        }
                     }
                 }
                 if (! isTransition)
@@ -63,17 +74,8 @@ public class TaskExcute implements DataStore, Log {
             }
 
             currentState.setLeftExcuteTime(leftStatePiece - 1);
-            currentTask.setLeftExcuteTime(leftTaskPiece - 1);
-
-            if (leftTaskPiece == 1) {
-                taskQueue.remove(taskId);
-            }
-//            if (currentTime - taskQueue.get(0).getExecuteTimestamp() >= taskQueue.get(0).getWcet()) {
-//                // todo: 检查是否会迁移，如果不迁移了，删除第一个任务，并执行第二个任务
-//            }
-//            // todo: 当找到一个满足迁移条件和wcet的任务，设置hasExcutingTask为true；并在statePath中记录当前的状态
+            currentTaskInstance.setLeftExcuteTime(leftTaskPiece - 1);
         }
 
     }
-}
 }
