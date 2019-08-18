@@ -1,16 +1,11 @@
 package simulate;
 
-import com.sun.xml.internal.ws.wsdl.writer.document.Fault;
 import lmf.*;
-import realtime.Schedule;
 import safety.FaultInjection;
-import util.EventProcess;
 import util.PropertiyParse;
 import util.XmlParse;
 
 import java.util.*;
-
-import static realtime.Schedule.staticSchedule;
 
 public abstract class Simulator implements FaultInjection{
 
@@ -65,19 +60,11 @@ public abstract class Simulator implements FaultInjection{
      */
     private static Map<Integer, TaskInstance> timePiece;
 
-    private static void updateByTime(State targetState, int currentTime) {
-        // todo:
-    }
-
     public static void main(String[] args) {
         XmlParse.parse("xml-name", componentMap, sharedDataMap, taskMap);
 
         int targetTime = Integer.valueOf(PropertiyParse.read("target execute time"));
 
-        //从配置文件里
-        Map<String, Fault> faultMap = FaultInjection.getFaultInjectionMap();
-
-        // todo: 从配置
         waitingQueue = new HashMap<>();
 
         Timer taskQueueManagementTimer = new Timer();
