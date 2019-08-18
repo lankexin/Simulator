@@ -17,9 +17,6 @@ public abstract class Simulator implements FaultInjection{
 
     private static TaskManagement mTaskManageMent = new TaskManagement();
 
-
-
-
     /**
      *  记录失败任务的列表
      */
@@ -58,19 +55,13 @@ public abstract class Simulator implements FaultInjection{
      */
     private static Map<Integer, TaskInstance> timePiece;
 
-    private static void updateByTime(State targetState, int currentTime) {
-        // todo:
-    }
-
     public static void main(String[] args) {
         XmlParse.parse("xml-name", componentMap, sharedDataMap, taskMap);
 
         int targetTime = Integer.valueOf(PropertiyParse.read("target execute time"));
 
-        //从配置文件里
-        Map<String, Fault> faultMap = FaultInjection.getFaultInjectionMap();
 
-        // todo: 从配置
+
         waitingQueue = new HashMap<>();
 
         Timer taskQueueManagementTimer = new Timer();
@@ -122,6 +113,5 @@ public abstract class Simulator implements FaultInjection{
         String value=sharedDataMap.get(dataName).getValue();
         return value;
     }
-
 
 }

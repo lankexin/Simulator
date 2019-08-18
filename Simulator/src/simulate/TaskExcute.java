@@ -81,4 +81,33 @@ public abstract class TaskExcute implements FaultInjection {
             currentTaskInstance.setLeftExcuteTime(leftTaskPiece - 1);
         }
     }
+
+    public void faultInjection(Fault fault, Map<String, Data> dataMap, Map<String, List<String>> statePath) {
+        if (fault != null) {
+            String conditionType = fault.getConditionType();
+            String operateorMethod = fault.getOperateorMethod();
+            //根据注入条件类型的不同来分别检查
+            if (conditionType.equals("relatedData")) {
+                String condition = fault.getCondition();
+                String relatedDataName = condition.split(";")[0];
+                //判定当前这个环境数据值是否满足注入条件的范围
+                boolean isInRange = dataMap.get(relatedDataName).isInRange(condition);
+                if (isInRange) {
+                    List<Data> dataList = fault.getDataName_type_value();
+                    updateData(operateorMethod,dataMap , dataList);
+                }
+            }
+
+            if (conditionType.equals("transitionPath")) {
+                String condition = fault.getCondition();
+                List<String> transitionPath = statePath.get(taskKey);
+                String path = getPath(transitionPath);
+                boolean istransition = isTransition(path, condition);
+                if (istransition) {
+                    List<Data> dataList = fault.getDataName_type_value();
+                    updateData(operateorMethod,dataMap , dataList);
+                }
+            }
+        }
+    }
 }
