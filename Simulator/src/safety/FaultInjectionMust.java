@@ -2,7 +2,6 @@ package safety;
 
 import lmf.Data;
 import lmf.Fault;
-
 import java.util.List;
 import java.util.Map;
 

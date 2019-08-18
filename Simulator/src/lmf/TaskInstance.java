@@ -5,7 +5,7 @@ import safety.FaultInjection;
 import java.util.List;
 import java.util.Map;
 
-public abstract class TaskInstance implements FaultInjection {
+public class TaskInstance {
 
     private String instanceId;
     private String taskId;
@@ -22,9 +22,9 @@ public abstract class TaskInstance implements FaultInjection {
     private String taskStateId;
 
     /**运行中各组件运行的过程记录
-     * value: 状态-event-data-timestamp
+     * value: stateId
      */
-    private static List<String> statePath;
+    private List<String> statePath;
 
     public TaskInstance(String instanceId, String taskId, String stateId) {
         this.instanceId = instanceId;
@@ -88,33 +88,13 @@ public abstract class TaskInstance implements FaultInjection {
         this.taskStateId = taskStateId;
     }
 
-    public static List<String> getStatePath() {
+    public List<String> getStatePath() {
         return statePath;
     }
 
-    public static void setStatePath(List<String> statePath) {
+    public void setStatePath(List<String> statePath) {
         TaskInstance.statePath = statePath;
     }
 
-    public String getTransitionPath(){
-        String path = null;
-        if(statePath!=null) {
-            StringBuilder sb = new StringBuilder();
-            for (String transition : statePath) {
-                String[] strs = transition.split("-");
-                String state = strs[0];
-                sb.append(state + "->");
-            }
-            path = sb.toString();
-        }
-        return path;
-    }
 
-    public boolean isTransition(String condition){
-        String path=getTransitionPath();
-        boolean isTransition=false;
-        if(path.contains(condition))
-            isTransition=true;
-        return isTransition;
-    }
 }

@@ -2,9 +2,12 @@ package simulate;
 
 import lmf.*;
 import safety.FaultInjection;
+import safety.FaultSet;
 import util.EventProcess;
 import java.util.List;
 import java.util.Map;
+
+import static safety.FaultSet.getFaultInjectMap;
 
 public abstract class TaskExcute implements FaultInjection {
 
@@ -82,7 +85,9 @@ public abstract class TaskExcute implements FaultInjection {
         }
     }
 
-    public void faultInjection(Fault fault, Map<String, Data> dataMap, Map<String, List<String>> statePath) {
+    public void faultInjection(Component component,State lastState) {
+        Map<String,Fault> faultSet= getFaultInjectMap();
+        Fault fault= faultSet.get(lastState.getId());
         if (fault != null) {
             String conditionType = fault.getConditionType();
             String operateorMethod = fault.getOperateorMethod();
@@ -91,7 +96,7 @@ public abstract class TaskExcute implements FaultInjection {
                 String condition = fault.getCondition();
                 String relatedDataName = condition.split(";")[0];
                 //判定当前这个环境数据值是否满足注入条件的范围
-                boolean isInRange = dataMap.get(relatedDataName).isInRange(condition);
+                boolean isInRange = component.getDataMap().get(relatedDataName).isInRange(condition);
                 if (isInRange) {
                     List<Data> dataList = fault.getDataName_type_value();
                     updateData(operateorMethod,dataMap , dataList);

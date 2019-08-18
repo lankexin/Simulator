@@ -5,9 +5,7 @@ import lmf.Fault;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 故障注入
- */
+/**故障注入*/
 public interface FaultInjection {
     /**验证是否满足故障注入的条件，如果满足，更新触发条件的数据，
      * 提供给之后的迁移过程使用*/

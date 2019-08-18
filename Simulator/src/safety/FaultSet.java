@@ -15,9 +15,11 @@ import static util.PropertiyParse.readProperty;
 
 public class FaultSet {
     /**
-     * 获取故障注入的列表
+     * 获取故障注入的列表--
+     * key-lastState的name
+     * value Fault实体
      */
-    public Map<String, Fault> getFaultInjectMap() {
+    public static Map<String, Fault> getFaultInjectMap() {
         Integer faultSize = parseInt(readProperty("faultInjection.size"));
 //        System.out.println(faultSize);
         Map<String, Fault> faultInjectMap = new LinkedHashMap<>();
