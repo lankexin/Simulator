@@ -1,5 +1,6 @@
 package simulate;
 
+import lmf.Component;
 import lmf.Task;
 import lmf.TaskInstance;
 import lmf.Transition;
@@ -14,13 +15,36 @@ import java.util.Map;
 
 public class TaskManagement implements FaultInjection{
 
-    public TaskManagement() {
+    private Schedule mSchedule;
 
+    public TaskManagement() {
+        mSchedule =  new Schedule();
     }
 
-    public Map<Integer, TaskInstance> waitingQueueManagement(int currentSystemTime,
-                                       Map<String, Task> taskMap,
-                                       Map<String, TaskInstance> waitingTaskList) {
+    public Map<Integer, TaskInstance> timePieceMapManagement(int currentSystemTime,
+                                                             Map<String, Task> taskMap,
+                                                             Map<String, TaskInstance> waitingTaskList,
+                                                             List<TaskInstance> blockTaskList,
+                                                             Map<String, Component> componentMap) {
+        Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
+
+        Map<Integer, TaskInstance> tempTimePieceMap = new HashMap<>();
+        tempTimePieceMap = waitingQueueManagement(currentSystemTime, taskMap, waitingTaskList, componentMap);
+        if (tempTimePieceMap.size() > 0) {
+            timePieceMap = tempTimePieceMap;
+        }
+        tempTimePieceMap = blockQueueManageMent(currentSystemTime, blockTaskList, taskMap, componentMap, waitingTaskList);
+        if (tempTimePieceMap.size() > 0) {
+            timePieceMap = tempTimePieceMap;
+        }
+
+        return timePieceMap;
+    }
+
+    private Map<Integer, TaskInstance> waitingQueueManagement(int currentSystemTime,
+                                        Map<String, Task> taskMap,
+                                        Map<String, TaskInstance> waitingTaskList,
+                                        Map<String, Component> componentMap) {
         Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
 
         for (String taskKey : taskMap.keySet()) {
@@ -38,23 +62,65 @@ public class TaskManagement implements FaultInjection{
             } */
 
             if (currentSystemTime % currentTask.getPeriod() == 0) {
-                Schedule.schedule(currentSystemTime, waitingTaskList, taskMap);
-                taskMap.get(taskKey).setCurrentStateId();
+                TaskInstance newTaskInstance = new TaskInstance(currentTask.getId()+"_"+String.valueOf(currentSystemTime),
+                        currentTask.getId(), currentTask.getFirstStateId());
+                timePieceMap = mSchedule.schedule(currentSystemTime, newTaskInstance, waitingTaskList, taskMap);
             }
+            else {
+                Component targetComponent = componentMap
+                        .get(currentTask
+                                .getComponentId());
+                TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions, targetComponent, currentTask);
 
-            for (Transition transition : transitions) {
-                if (EventProcess.eventProcess(transition.getEvent, dataMap)) {
-                    timePieceMap = Schedule.schedule(scheduleAlgorithm, taskMap.get(task), taskQueue);
-                    break;
+                if (newTaskInstance != null) {
+                    timePieceMap = mSchedule.schedule(currentSystemTime, newTaskInstance, waitingTaskList, taskMap);
                 }
             }
         }
 
         return timePieceMap;
+
     }
 
-    public void blockQueueManageMent(List<TaskInstance> blockTaskList,
-                                     Map<String, Task> taskMap) {
+    public Map<Integer, TaskInstance> blockQueueManageMent(int currentSystemTime,
+                                                           List<TaskInstance> blockTaskList,
+                                                           Map<String, Task> taskMap,
+                                                           Map<String, Component> componentMap,
+                                                           Map<String, TaskInstance> waitingTaskList) {
         // todo: 遍历阻塞队列，看是否满足触发条件
+
+        Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
+
+        for (TaskInstance taskInstance : blockTaskList) {
+            List<Transition> transitions = taskMap.get(taskInstance.getTaskId())
+                    .getTransitionMap().get(taskInstance.getCurrentState().getId());
+
+            Component targetComponent = componentMap.
+                    get(taskMap
+                            .get(taskInstance
+                                    .getTaskId())
+                            .getComponentId());
+            TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions,
+                    targetComponent, taskMap.get(taskInstance.getTaskId()));
+            timePieceMap = mSchedule.schedule(currentSystemTime, newTaskInstance, waitingTaskList, taskMap);
+        }
+
+        return timePieceMap;
+    }
+
+    private TaskInstance isTransitted(int currentSystemTime,
+                                      List<Transition> transitions,
+                                      Component targetComponent,
+                                      Task currentTask) {
+        TaskInstance newTaskInstance = null;
+        for (Transition transition : transitions) {
+            if (EventProcess.eventProcess(transition.getEvent(), targetComponent.getDataMap())) {
+                newTaskInstance = new TaskInstance(currentTask.getId() + "_" + String.valueOf(currentSystemTime),
+                        currentTask.getId(), currentTask.getFirstStateId());
+                break;
+            }
+        }
+
+        return newTaskInstance;
     }
 }

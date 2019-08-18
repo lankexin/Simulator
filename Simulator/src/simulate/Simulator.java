@@ -49,6 +49,11 @@ public abstract class Simulator implements FaultInjection{
     private static Map<String, TaskInstance> waitingQueue;
 
     /**
+     * 任务队列，有新的任务将其id加入该队列，调用schedule，生成优先级队列。
+     */
+    private static List<TaskInstance> blockQueue;
+
+    /**
      * 调度返回的时间片和任务的映射map
      */
     private static Map<Integer, TaskInstance> timePiece;
@@ -74,9 +79,9 @@ public abstract class Simulator implements FaultInjection{
             public void run() {
                 currentSystemTime++;
 
-
                 while (currentSystemTime != targetTime) {
-                    mTaskManageMent.waitingQueueManagement(currentSystemTime, taskMap, waitingQueue);
+                    mTaskManageMent.timePieceMapManagement(currentSystemTime, taskMap,
+                            waitingQueue, blockQueue, componentMap);
                 }
             }
         }, 1000, 10);
