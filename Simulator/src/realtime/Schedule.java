@@ -1,9 +1,11 @@
 package realtime;
 
+import com.oracle.tools.packager.mac.MacAppBundler;
 import lmf.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 根据输入的调度算法名，调用相应的调度算法
@@ -12,20 +14,23 @@ import java.util.List;
 
 public class Schedule {
 
-    public static String schedule(String scheduleAlgorithm,
-                                Task newTask,
-                                List<Task> waitingTaskList) {
+    public static Map<Integer, String> schedule(String scheduleAlgorithm,
+                                                int currentTimePiece,
+                                                List<Task> waitingTaskList,
+                                                Map<String, Task> taskMap) {
         switch (scheduleAlgorithm) {
             case "EDF":
-                return EDF.EDFSchedule(newTask, waitingTaskList);
+                return EDF.EDFSchedule(currentTimePiece, waitingTaskList, Map<String, Task> taskMap);
             case "RMS":
-                return RMS.RMSSchedule(newTask, waitingTaskList);
+                return RMS.RMSSchedule(currentTimePiece, waitingTaskList, Map<String, Task> taskMap);
             case "LLF":
-                return LLF.LLFSchedule(newTask, waitingTaskList);
+                return LLF.LLFSchedule(currentTimePiece, waitingTaskList, Map<String, Task> taskMap);
             default:
-                return "no target schedule algorithm";
+                return null;
         }
     }
+
+
 
     /**
      * 根据组件的连接顺序给任务排序

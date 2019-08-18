@@ -3,11 +3,14 @@ package realtime;
 import lmf.Task;
 
 import java.util.List;
+import java.util.Map;
 
 public class EDF {
 
-    public static String EDFSchedule(Task newTask, List<Task> waitingTaskList) {
+    public static Map<Integer, String> EDFSchedule(int currentTimePiece,
+                                                   List<Task> waitingTaskList,
+                                                   Map<String, Task> taskMap) {
 
-        return "task id";
+        return null;
     }
 }

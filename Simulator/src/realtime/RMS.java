@@ -3,11 +3,14 @@ package realtime;
 import lmf.Task;
 
 import java.util.List;
+import java.util.Map;
 
 public class RMS {
 
-    public static String RMSSchedule(Task newTask, List<Task> waitingTaskList) {
+    public static Map<String, Task> RMSSchedule(int currentTimePiece,
+                                                List<Task> waitingTaskList,
+                                                Map<String, Task> taskMap) {
 
-        return "task id";
+        return null;
     }
 }
