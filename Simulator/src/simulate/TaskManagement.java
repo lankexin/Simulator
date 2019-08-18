@@ -1,5 +1,6 @@
 package simulate;
 
+import lmf.Component;
 import lmf.Task;
 import lmf.TaskInstance;
 import lmf.Transition;
@@ -14,13 +15,16 @@ import java.util.Map;
 
 public class TaskManagement implements FaultInjection{
 
-    public TaskManagement() {
+    private Schedule mSchedule;
 
+    public TaskManagement() {
+        mSchedule =  new Schedule();
     }
 
     public Map<Integer, TaskInstance> waitingQueueManagement(int currentSystemTime,
-                                       Map<String, Task> taskMap,
-                                       Map<String, TaskInstance> waitingTaskList) {
+                                                             Map<String, Task> taskMap,
+                                                             Map<String, TaskInstance> waitingTaskList,
+                                                             Component targetComponent) {
         Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
 
         for (String taskKey : taskMap.keySet()) {
@@ -38,14 +42,18 @@ public class TaskManagement implements FaultInjection{
             } */
 
             if (currentSystemTime % currentTask.getPeriod() == 0) {
-                Schedule.schedule(currentSystemTime, waitingTaskList, taskMap);
-                taskMap.get(taskKey).setCurrentStateId();
+                TaskInstance newTaskInstance = new TaskInstance(currentTask.getId()+"_"+String.valueOf(currentSystemTime),
+                        currentTask.getId(), currentTask.getFirstStateId());
+                timePieceMap = mSchedule.schedule(currentSystemTime, newTaskInstance, waitingTaskList, taskMap);
             }
-
-            for (Transition transition : transitions) {
-                if (EventProcess.eventProcess(transition.getEvent, dataMap)) {
-                    timePieceMap = Schedule.schedule(scheduleAlgorithm, taskMap.get(task), taskQueue);
-                    break;
+            else {
+                for (Transition transition : transitions) {
+                    if (EventProcess.eventProcess(transition.getEvent(), dataMap)) {
+                        TaskInstance newTaskInstance = new TaskInstance(currentTask.getId() + "_" + String.valueOf(currentSystemTime),
+                                currentTask.getId(), currentTask.getFirstStateId());
+                        timePieceMap = mSchedule.schedule(currentSystemTime, taskMap.get(task), taskQueue);
+                        break;
+                    }
                 }
             }
         }

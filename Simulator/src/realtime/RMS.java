@@ -9,8 +9,9 @@ import java.util.Map;
 public class RMS {
 
     public static Map<Integer, TaskInstance> RMSSchedule(int currentSystemTime,
-                                                List<TaskInstance> waitingTaskList,
-                                                Map<String, Task> taskMap) {
+                                                         TaskInstance newTask,
+                                                         Map<String, TaskInstance> waitingTaskList,
+                                                         Map<String, Task> taskMap) {
 
         return null;
     }

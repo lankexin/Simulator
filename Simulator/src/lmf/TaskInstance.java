@@ -14,11 +14,12 @@ public class TaskInstance {
     /**
      * 任务当前的状态：就绪、等待、运行
      */
-    private String taskState;
+    private String taskStateId;
 
-    public TaskInstance(String instanceId, String taskId) {
+    public TaskInstance(String instanceId, String taskId, String stateId) {
         this.instanceId = instanceId;
         this.taskId = taskId;
+        taskStateId = stateId;
     }
 
     public String getInstanceId() {
@@ -70,10 +71,10 @@ public class TaskInstance {
     }
 
     public String getTaskState() {
-        return taskState;
+        return taskStateId;
     }
 
-    public void setTaskState(String taskState) {
-        this.taskState = taskState;
+    public void setTaskState(String taskStateId) {
+        this.taskStateId = taskStateId;
     }
 }

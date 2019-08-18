@@ -31,15 +31,16 @@ public class Schedule {
      * @return
      */
     public Map<Integer, TaskInstance> schedule(int currentTimeStamp,
-                                                List<TaskInstance> waitingTaskList,
+                                                TaskInstance newTask,
+                                                Map<String, TaskInstance> waitingTaskList,
                                                 Map<String, Task> taskMap) {
         switch (scheduleAlgorithm) {
             case "EDF":
-                return EDF.EDFSchedule(currentTimeStamp, waitingTaskList, taskMap);
+                return EDF.EDFSchedule(currentTimeStamp, newTask, waitingTaskList, taskMap);
             case "RMS":
-                return RMS.RMSSchedule(currentTimeStamp, waitingTaskList, taskMap);
+                return RMS.RMSSchedule(currentTimeStamp, newTask, waitingTaskList, taskMap);
             case "LLF":
-                return LLF.LLFSchedule(currentTimeStamp, waitingTaskList, taskMap);
+                return LLF.LLFSchedule(currentTimeStamp, newTask, waitingTaskList, taskMap);
             default:
                 return null;
         }
