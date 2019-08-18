@@ -1,3 +1,5 @@
+package simulate;
+
 import com.sun.xml.internal.ws.wsdl.writer.document.Fault;
 import lmf.*;
 import realtime.Schedule;
@@ -10,9 +12,10 @@ import java.util.*;
 
 import static realtime.Schedule.staticSchedule;
 
-public class Simulate implements FaultInjection{
+public class Simulator implements FaultInjection{
 
     private static int currentSystemTime;
+    private static int currentTimePiece;
 
     /**
      * 运行中各组件运行的过程记录
@@ -66,53 +69,27 @@ public class Simulate implements FaultInjection{
         taskQueue = new ArrayList<>();
         List<Task> staticScheduleList=staticSchedule();
 
-        Thread updateThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (currentSystemTime != targetTime) {
-                    for (String taskKey : taskMap.keySet()) {
-                        // todo：检查task是否在运行中，如果在，检查他是否超过了deadline， 超过就记录
-
-                        //得到当前时间片应该执行的任务ID
-                        String taskId=getCurrentTask();
-
-                        //获取当前任务的当前状态Id
-                        String currentStateId = taskMap.get(taskKey).getCurrentStateId();
-
-                        //获取当前状态的所有迁移列表
-                        List<Transition> transitions = componentMap.get(taskMap.get(taskKey).getComponentId()).getTrantionById(currentStateId);
-                        //故障注入
-                        if (faultMap.get(currentStateId) != null) {
-                            //更改数据
-                            FaultInjection.inject();
-                        }
-
-                        if (currentSystemTime % taskMap.get(taskKey).getPeriod() == 0) {
-                            Schedule.schedule(scheduleAlgorithm, taskMap.get(task), taskQueue);
-                            taskMap.get(taskKey).setCurrentStateId();
-                        }
-
-                        for (Transition transition : transitions) {
-                            if (EventProcess.eventProcess(transition.getEvent, dataMap)) {
-                                Schedule.schedule(scheduleAlgorithm, taskMap.get(task), taskQueue);
-                                break;
-                            }
-                        }
-                    }
-
-                    TaskExcute.taskExcute(currentSystemTime, taskQueue);
-                }
-            }
-        });
-        updateThread.start();
-
-        //定时器
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        Timer taskQueueManagementTimer = new Timer();
+        taskQueueManagementTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 currentSystemTime++;
-                TaskExcute.taskExcute(currentSystemTime, taskQueue);
+
+
+                while (currentSystemTime != targetTime) {
+
+                }
+            }
+        }, 1000, 10);
+
+
+        //定时器
+        Timer exucuteTimer = new Timer();
+        exucuteTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                currentTimePiece++;
+                TaskExcute.taskExcute(currentTimePiece, taskQueue);
             }
         }, 1000, 100);
 
