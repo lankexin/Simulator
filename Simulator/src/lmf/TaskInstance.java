@@ -3,7 +3,6 @@ package lmf;
 import safety.FaultInjection;
 
 import java.util.List;
-import java.util.Map;
 
 public class TaskInstance {
 

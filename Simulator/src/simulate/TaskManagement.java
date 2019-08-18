@@ -4,9 +4,7 @@ import lmf.Component;
 import lmf.Task;
 import lmf.TaskInstance;
 import lmf.Transition;
-import org.omg.CORBA.MARSHAL;
 import realtime.Schedule;
-import safety.FaultInjection;
 import util.EventProcess;
 
 import java.util.HashMap;
@@ -28,7 +26,7 @@ public class TaskManagement {
                                                              Map<String, Component> componentMap) {
         Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
 
-        Map<Integer, TaskInstance> tempTimePieceMap = new HashMap<>();
+        Map<Integer, TaskInstance> tempTimePieceMap;
         tempTimePieceMap = waitingQueueManagement(currentSystemTime, taskMap, waitingTaskList, componentMap);
         if (tempTimePieceMap.size() > 0) {
             timePieceMap = tempTimePieceMap;
@@ -40,6 +38,7 @@ public class TaskManagement {
 
         return timePieceMap;
     }
+
 
     private Map<Integer, TaskInstance> waitingQueueManagement(int currentSystemTime,
                                                               Map<String, Task> taskMap,
@@ -62,17 +61,20 @@ public class TaskManagement {
              } */
 
             if (currentSystemTime % currentTask.getPeriod() == 0) {
-                TaskInstance newTaskInstance = new TaskInstance(currentTask.getId() + "_" + String.valueOf(currentSystemTime),
+                TaskInstance newTaskInstance = new TaskInstance(currentTask.getId()+"_"+currentSystemTime,
                         currentTask.getId(), currentTask.getFirstStateId());
-                timePieceMap = mSchedule.schedule(currentSystemTime, newTaskInstance, waitingTaskList, taskMap);
-            } else {
+                waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
+                timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+            }
+            else {
+
                 Component targetComponent = componentMap
-                        .get(currentTask
-                                .getComponentId());
+                        .get(currentTask.getComponentId());
                 TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions, targetComponent, currentTask);
 
                 if (newTaskInstance != null) {
-                    timePieceMap = mSchedule.schedule(currentSystemTime, newTaskInstance, waitingTaskList, taskMap);
+                    waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
+                    timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
                 }
             }
         }
@@ -81,27 +83,34 @@ public class TaskManagement {
 
     }
 
-    public Map<Integer, TaskInstance> blockQueueManageMent(int currentSystemTime,
+
+    /**
+     * 遍历阻塞队列，看是否满足触发条件
+     */
+    private Map<Integer, TaskInstance> blockQueueManageMent(int currentSystemTime,
                                                            List<TaskInstance> blockTaskList,
                                                            Map<String, Task> taskMap,
                                                            Map<String, Component> componentMap,
                                                            Map<String, TaskInstance> waitingTaskList) {
-        // todo: 遍历阻塞队列，看是否满足触发条件
 
         Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
 
         for (TaskInstance taskInstance : blockTaskList) {
-            List<Transition> transitions = taskMap.get(taskInstance.getTaskId())
-                    .getTransitionMap().get(taskInstance.getCurrentState().getId());
+            List<Transition> transitions = taskMap.get(taskInstance
+                    .getTaskId())
+                    .getTransitionMap()
+                    .get(taskInstance
+                            .getCurrentState()
+                            .getId());
 
-            Component targetComponent = componentMap.
-                    get(taskMap
+            Component targetComponent = componentMap.get(taskMap
                             .get(taskInstance
                                     .getTaskId())
                             .getComponentId());
             TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions,
                     targetComponent, taskMap.get(taskInstance.getTaskId()));
-            timePieceMap = mSchedule.schedule(currentSystemTime, newTaskInstance, waitingTaskList, taskMap);
+            waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
+            timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
         }
 
         return timePieceMap;
@@ -114,7 +123,7 @@ public class TaskManagement {
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
             if (EventProcess.eventProcess(transition.getEvent(), targetComponent.getDataMap())) {
-                newTaskInstance = new TaskInstance(currentTask.getId() + "_" + String.valueOf(currentSystemTime),
+                newTaskInstance = new TaskInstance(currentTask.getId() + "_" + currentSystemTime,
                         currentTask.getId(), currentTask.getFirstStateId());
                 break;
             }

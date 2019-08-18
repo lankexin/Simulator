@@ -9,7 +9,6 @@ import java.util.Map;
 public class LLF {
 
     public static Map<Integer, TaskInstance> LLFSchedule(int currentSystemTime,
-                                                         TaskInstance newTask,
                                                          Map<String, TaskInstance> waitingTaskList,
                                                          Map<String, Task> taskMap) {
 
