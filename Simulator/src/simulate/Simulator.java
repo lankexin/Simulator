@@ -12,7 +12,7 @@ import java.util.*;
 
 import static realtime.Schedule.staticSchedule;
 
-public class Simulator implements FaultInjection{
+public abstract class Simulator implements FaultInjection{
 
     private static int currentSystemTime;
     private static int currentTimePiece;
@@ -113,5 +113,17 @@ public class Simulator implements FaultInjection{
         }, 1000, 500);
 
     }
+
+    public static synchronized void update(String dataName , String newValue){
+        Data data=sharedDataMap.get(dataName);
+        data.setValue(newValue);
+        sharedDataMap.put(dataName,data);
+    }
+
+    public static String get(String dataName){
+        String value=sharedDataMap.get(dataName).getValue();
+        return value;
+    }
+
 
 }

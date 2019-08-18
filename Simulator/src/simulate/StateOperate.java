@@ -12,22 +12,6 @@ import java.util.Map;
 
 public class StateOperate implements FaultInjection, DataStore {
 
-    public void update(Component component, String dataName,String newValue){
-        Map<String,Data> dataMap=component.getDataMap();
-        dataMap.get(dataName).setValue(newValue);
-
-    }
-    public String get(Component component, String dataName){
-        Map<String,Data> dataMap=component.getDataMap();
-        String value=dataMap.get(dataName).getValue();
-        return value;
-    }
-
-    public boolean isShared(Component component,String dataName){
-        Map<String,Data> dataMap=component.getDataMap();
-        return dataMap.get(dataName).isShared();
-    }
-
     public void faultInjection(String taskKey, Fault fault, Map<String, Data> dataMap,
                                Map<String, List<String>> statePath) {
         if (fault != null) {
