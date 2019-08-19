@@ -11,10 +11,8 @@ import java.util.Map;
 
 public class ComponentManage implements DataStore, FaultInjectUpdate {
 
-    Component component=new Component();
-
     @Override
-    public synchronized void update(String dataName, String newValue) {
+    public synchronized void update(Component component,String dataName, String newValue) {
         Map<String, Data> dataMap=component.getDataMap();
         Data data = dataMap.get(dataName);
         boolean isShared = data.isShared();
@@ -28,7 +26,7 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
     }
 
     @Override
-    public String get(String dataName) {
+    public String get(Component component,String dataName) {
         Map<String, Data> dataMap=component.getDataMap();
         Data data = dataMap.get(dataName);
         boolean isShared = data.isShared();
@@ -45,29 +43,29 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
     }
 
     @Override
-    public boolean isShared(String dataName) {
+    public boolean isShared(Component component,String dataName) {
         Map<String, Data> dataMap=component.getDataMap();
         boolean isShared = dataMap.get(dataName).isShared();
         return isShared;
     }
 
     @Override
-    public void updateData(String operateorMethod, List<Data> dataList) {
+    public void updateData(Component component, String operateorMethod, List<Data> dataList) {
         if (("assignValue").equals(operateorMethod))
             for (Data data : dataList) {
                 String dataName = data.getName();
-                update(dataName, data.getValue());
+                update(component,dataName, data.getValue());
             }
         else if (("operateData").equals(operateorMethod))
             for (Data data : dataList) {
                 String dataName = data.getName();
-                String oldValue = get(dataName);
+                String oldValue = get(component,dataName);
                 String operate = data.getValue();
                 String operatorExcute = operate.substring(3);
                 String dataType = data.getValueType();
                 //对要更改的数据进行计算
                 String dataValue = calculate(oldValue, operatorExcute);
-                update(dataName,dataValue);
+                update(component,dataName,dataValue);
             }
     }
 }

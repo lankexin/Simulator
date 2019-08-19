@@ -3,7 +3,7 @@ package simulate;
 import lmf.*;
 import manager.ComponentManage;
 import manager.TaskInstanceManage;
-import safety.FaultInjection;
+import safety.FaultInject;
 import safety.FaultSet;
 import util.EventProcess;
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.Map;
 
 import static safety.FaultSet.getFaultInjectMap;
 
-public abstract class TaskExcute implements FaultInjection {
+public class TaskExcute implements FaultInject {
 
     //timePieceMap  时间片--任务Id
-    public static void taskExcute(int currentTimePiece,Map<String, Component> componentMap,Map<String, TaskInstance> taskInstanceMap,
+    public void taskExcute(int currentTimePiece,Map<String, Component> componentMap,Map<String, TaskInstance> taskInstanceMap,
                                   List<TaskInstance> blockQueue,Map<Integer,String> timePieceMap, Map<String,Task> taskMap) {
 
         /**
@@ -34,11 +34,19 @@ public abstract class TaskExcute implements FaultInjection {
 
             //状态剩余几个时间片
             float leftStatePiece = currentState.getLeftExcuteTime();
+
             String taskId=currentTaskInstance.getTaskId();
             Task task=taskMap.get(taskId);
 
+            String componentId=task.getComponentId();
+            Component component=componentMap.get(componentId);
+
             if (!currentTaskInstance.getTaskState().equals("运行")) {
                 currentTaskInstance.setTaskState("运行");
+            }
+
+            if(leftStatePiece==0){
+                StateOperate.stateTransition(currentState,component,currentTaskInstance,task,blockQueue,taskInstanceMap);
             }
 
             if (leftStatePiece == currentState.getWcet()) {
@@ -60,36 +68,22 @@ public abstract class TaskExcute implements FaultInjection {
                 if (exitEvent != null) {
                     // TODO: 做状态内的数据更新--状态的记录
                 }
-                //判断是否满足迁移条件，如果满足，把当前状态设置为下一个要迁移的状态
-                List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
-                String componentId=currentState.getComponent();
+                faultInjection(currentTaskInstance,component,currentState);
 
-                Map<String, Data> dataMap=componentMap.get(componentId).getDataMap();
-
-                boolean isTransition = false;
-                for (Transition transition : transitions) {
-                    if (EventProcess.eventProcess(transition.getEvent, dataMap)) {
-                        String destId=transition.getDest();
-                        State newState=task.getStateMap().get(destId);
-                        currentTaskInstance.setCurrentState(newState);
-                        isTransition = true;
-                        if(newState.getName().trim().toLowerCase().equals("idle")){
-                            taskInstanceMap.remove(taskInsaneId);
-                        }
-                    }
-                }
-                if (! isTransition)
-                    blockQueue.add(currentTaskInstance);
+                StateOperate.stateTransition(currentState,component,currentTaskInstance,task,blockQueue,taskInstanceMap);
             }
-
             currentState.setLeftExcuteTime(leftStatePiece - 1);
             currentTaskInstance.setLeftExcuteTime(leftTaskPiece - 1);
         }
     }
 
-    public void faultInjection(Component component,State lastState) {
+    @Override
+    public void faultInjection(TaskInstance taskInstance,Component component,State lastState) {
         Map<String,Fault> faultSet= getFaultInjectMap();
         Fault fault= faultSet.get(lastState.getId());
+        ComponentManage componentManage=new ComponentManage();
+        TaskInstanceManage taskInstanceManage=new TaskInstanceManage();
+
         if (fault != null) {
             String conditionType = fault.getConditionType();
             String operateorMethod = fault.getOperateorMethod();
@@ -98,21 +92,20 @@ public abstract class TaskExcute implements FaultInjection {
                 String condition = fault.getCondition();
                 String relatedDataName = condition.split(";")[0];
                 //判定当前这个环境数据值是否满足注入条件的范围
-                boolean isInRange = component.getDataMap().get(relatedDataName).isInRange(condition);
+                boolean isInRange = componentManage.get(component,relatedDataName).isInRange(condition);
                 if (isInRange) {
                     List<Data> dataList = fault.getDataName_type_value();
-                    taskInstanceManage.updateData(operateorMethod,dataList);
+                    componentManage.updateData(component,operateorMethod,dataList);
                 }
             }
 
             if (conditionType.equals("transitionPath")) {
                 String condition = fault.getCondition();
-                List<String> transitionPath = statePath.get(taskKey);
-                String path = getPath(transitionPath);
-                boolean istransition = isTransition(path, condition);
+                String path = taskInstanceManage.getTransitionPath(taskInstance);
+                boolean istransition = taskInstanceManage.isTransition(taskInstance, condition);
                 if (istransition) {
                     List<Data> dataList = fault.getDataName_type_value();
-                    updateData(operateorMethod,dataMap , dataList);
+                    componentManage.updateData(component,operateorMethod,dataList);
                 }
             }
         }

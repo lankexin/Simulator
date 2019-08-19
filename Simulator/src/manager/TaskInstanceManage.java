@@ -5,7 +5,7 @@ import safety.FaultInjectTransition;
 
 import java.util.List;
 
-public abstract class TaskInstanceManage implements FaultInjectTransition {
+public class TaskInstanceManage implements FaultInjectTransition {
 
     @Override
     public String getTransitionPath(TaskInstance taskInstance){

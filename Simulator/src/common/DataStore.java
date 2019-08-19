@@ -2,8 +2,10 @@ package common;
 
 import lmf.Component;
 
-public interface DataStore{
-    void update( String dataName , String newValue);
-    String get(String dataName);
-    boolean isShared(String dataName);
+public interface DataStore {
+    void update(Component component, String dataName, String newValue);
+
+    String get(Component component, String dataName);
+
+    boolean isShared(Component component, String dataName);
 }
