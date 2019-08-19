@@ -117,5 +117,8 @@ public class StateOperate {
             blockQueue.add(currentTaskInstance);
     }
 
+    public static void updateDataInState(String event){
+
+    }
 
 }

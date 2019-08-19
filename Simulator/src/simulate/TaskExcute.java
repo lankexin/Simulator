@@ -53,6 +53,7 @@ public class TaskExcute implements FaultInject {
                 String entryEvent = currentState.getEntryEvent();
                 if (entryEvent != null) {
                     // TODO: 做状态内的数据更新--状态的记录
+                    StateOperate.updateDataInState(entryEvent);
                 }
             }
 
@@ -60,6 +61,7 @@ public class TaskExcute implements FaultInject {
                 String doEvent = currentState.getDoEvent();
                 if (doEvent != null) {
                     // TODO: 做状态内的数据更新--状态的记录
+                    StateOperate.updateDataInState(doEvent);
                 }
             }
 
@@ -67,6 +69,7 @@ public class TaskExcute implements FaultInject {
                 String exitEvent = currentState.getExitEvent();
                 if (exitEvent != null) {
                     // TODO: 做状态内的数据更新--状态的记录
+                    StateOperate.updateDataInState(exitEvent);
                 }
                 faultInjection(currentTaskInstance,component,currentState);
 
