@@ -74,7 +74,7 @@ public class FaultSet {
     /**
      * 根据概率产生随机事件，是否注入故障
      */
-    public boolean getRandom(String randomProbability) {
+    public static boolean getRandom(String randomProbability) {
         Double random = parseDouble(randomProbability);
         return Math.random() < random;
     }

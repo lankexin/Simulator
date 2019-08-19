@@ -3,14 +3,18 @@ package manager;
 import common.DataStore;
 import lmf.Component;
 import lmf.Data;
-import safety.FaultInjection;
+import safety.FaultInjectUpdate;
 import simulate.Simulator;
 
 import java.util.List;
 import java.util.Map;
 
-public abstract class ComponentManage implements DataStore, FaultInjection {
-    public synchronized void update(Component component, String dataName, String newValue) {
+public class ComponentManage implements DataStore, FaultInjectUpdate {
+
+    Component component=new Component();
+
+    @Override
+    public synchronized void update(String dataName, String newValue) {
         Map<String, Data> dataMap=component.getDataMap();
         Data data = dataMap.get(dataName);
         boolean isShared = data.isShared();
@@ -18,11 +22,13 @@ public abstract class ComponentManage implements DataStore, FaultInjection {
             data.setValue(newValue);
         else {
             data.setValue(newValue);
-            Simulator.update(dataName, newValue);
+            Simulator simulator=new Simulator();
+            simulator.update(dataName, newValue);
         }
     }
 
-    public String get(Component component, String dataName) {
+    @Override
+    public String get(String dataName) {
         Map<String, Data> dataMap=component.getDataMap();
         Data data = dataMap.get(dataName);
         boolean isShared = data.isShared();
@@ -30,19 +36,22 @@ public abstract class ComponentManage implements DataStore, FaultInjection {
         if (!isShared)
             value = data.getValue();
         else {
-            value = Simulator.get(dataName);
+            Simulator simulator=new Simulator();
+            value = simulator.get(dataName);
             data.setValue(value);
             dataMap.put(dataName, data);
         }
         return value;
     }
 
-    public boolean isShared(Component component, String dataName) {
+    @Override
+    public boolean isShared(String dataName) {
         Map<String, Data> dataMap=component.getDataMap();
         boolean isShared = dataMap.get(dataName).isShared();
         return isShared;
     }
 
+    @Override
     public void updateData(String operateorMethod, List<Data> dataList) {
         if (("assignValue").equals(operateorMethod))
             for (Data data : dataList) {

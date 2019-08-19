@@ -1,14 +1,14 @@
 package simulate;
 
+import common.DataStore;
 import lmf.*;
 import manager.TaskManagement;
-import safety.FaultInjection;
 import util.PropertiyParse;
 import util.XmlParse;
 
 import java.util.*;
 
-public abstract class Simulator implements FaultInjection{
+public class Simulator {
 
     private static int currentSystemTime;
     private static int currentTimePiece;
@@ -108,13 +108,15 @@ public abstract class Simulator implements FaultInjection{
 
     }
 
-    public static synchronized void update(String dataName , String newValue){
+    @Override
+    public synchronized void update(String dataName , String newValue){
         Data data=sharedDataMap.get(dataName);
         data.setValue(newValue);
         sharedDataMap.put(dataName,data);
     }
 
-    public static String get(String dataName){
+    @Override
+    public String get(String dataName){
         String value=sharedDataMap.get(dataName).getValue();
         return value;
     }

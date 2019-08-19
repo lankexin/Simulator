@@ -1,6 +1,8 @@
 package simulate;
 
 import lmf.*;
+import manager.ComponentManage;
+import manager.TaskInstanceManage;
 import safety.FaultInjection;
 import safety.FaultSet;
 import util.EventProcess;
@@ -99,7 +101,7 @@ public abstract class TaskExcute implements FaultInjection {
                 boolean isInRange = component.getDataMap().get(relatedDataName).isInRange(condition);
                 if (isInRange) {
                     List<Data> dataList = fault.getDataName_type_value();
-                    updateData(operateorMethod,dataMap , dataList);
+                    taskInstanceManage.updateData(operateorMethod,dataList);
                 }
             }
 
