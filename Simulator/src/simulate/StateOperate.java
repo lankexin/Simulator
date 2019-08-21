@@ -96,8 +96,10 @@ public class StateOperate {
 //        return faultInjectLog;
 //    }
 
-    public static void stateTransition(State currentState, Component component, TaskInstance currentTaskInstance,
+    public static boolean stateTransition(State currentState, Component component, TaskInstance currentTaskInstance,
                                 Task task, List<TaskInstance> blockQueue, Map<String, TaskInstance> taskInstanceMap){
+        boolean trueTransition=false;
+
         List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
         Map<String, Data> dataMap=component.getDataMap();
         String taskInsaneId=currentTaskInstance.getTaskId();
@@ -110,11 +112,17 @@ public class StateOperate {
                 isTransition = true;
                 if(newState.getName().trim().toLowerCase().equals("idle")){
                     taskInstanceMap.remove(taskInsaneId);
+                    trueTransition=false;
                 }
+                else
+                    trueTransition=true;
             }
         }
-        if (! isTransition)
+        if (! isTransition){
             blockQueue.add(currentTaskInstance);
+            trueTransition=false;
+        }
+        return trueTransition;
     }
 
     public static void updateDataInState(String event){

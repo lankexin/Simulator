@@ -37,5 +37,4 @@ public class Component  {
         this.dataMap = dataMap;
     }
 
-
 }

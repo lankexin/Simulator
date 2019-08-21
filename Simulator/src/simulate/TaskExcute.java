@@ -3,6 +3,7 @@ package simulate;
 import lmf.*;
 import manager.ComponentManage;
 import manager.TaskInstanceManage;
+import realtime.Schedule;
 import safety.FaultInject;
 import safety.FaultSet;
 import util.EventProcess;
@@ -14,16 +15,16 @@ import static safety.FaultSet.getFaultInjectMap;
 public class TaskExcute implements FaultInject {
 
     //timePieceMap  时间片--任务Id
-    public void taskExcute(int currentTimePiece,Map<String, Component> componentMap,Map<String, TaskInstance> taskInstanceMap,
-                                  List<TaskInstance> blockQueue,Map<Integer,String> timePieceMap, Map<String,Task> taskMap) {
+    public void taskExcute(int currentTimePiece, Map<String, Component> componentMap, Map<String, TaskInstance> taskInstanceMap,
+                           List<TaskInstance> blockQueue, Map<Integer, String> timePieceMap, Map<String, Task> taskMap) {
 
         /**
          * 在队列里找到当前需要执行的task并使其开始执行
          * 即 更改该g任务的 execute time
          */
-        if (timePieceMap!=null && !timePieceMap.isEmpty()) {
+        if (timePieceMap != null && !timePieceMap.isEmpty()) {
             //当前执行的任务实例id
-            String taskInsaneId=timePieceMap.get(currentTimePiece);
+            String taskInsaneId = timePieceMap.get(currentTimePiece);
 
             TaskInstance currentTaskInstance = taskInstanceMap.get(taskInsaneId);
 
@@ -35,18 +36,46 @@ public class TaskExcute implements FaultInject {
             //状态剩余几个时间片
             float leftStatePiece = currentState.getLeftExcuteTime();
 
-            String taskId=currentTaskInstance.getTaskId();
-            Task task=taskMap.get(taskId);
+            String taskId = currentTaskInstance.getTaskId();
+            Task task = taskMap.get(taskId);
 
-            String componentId=task.getComponentId();
-            Component component=componentMap.get(componentId);
+            String componentId = task.getComponentId();
+            Component component = componentMap.get(componentId);
 
             if (!currentTaskInstance.getTaskState().equals("运行")) {
                 currentTaskInstance.setTaskState("运行");
             }
 
-            if(leftStatePiece==0){
-                StateOperate.stateTransition(currentState,component,currentTaskInstance,task,blockQueue,taskInstanceMap);
+            if (leftStatePiece == 0) {
+                boolean trueTransition=StateOperate.stateTransition(currentState, component, currentTaskInstance,
+                        task, blockQueue, taskInstanceMap);
+                if(!trueTransition) {
+                    Schedule schedule = new Schedule();
+                    Map<Integer, TaskInstance> newTimePieceMap = schedule.schedule(currentTimePiece, taskInstanceMap, taskMap);
+
+                    taskInsaneId = timePieceMap.get(currentTimePiece);
+
+                    currentTaskInstance = taskInstanceMap.get(taskInsaneId);
+
+                    //任务剩余几个时间片
+                    leftTaskPiece = currentTaskInstance.getLeftExcuteTime();
+                    //任务的当前状态
+                    currentState = currentTaskInstance.getCurrentState();
+
+                    //状态剩余几个时间片
+                    leftStatePiece = currentState.getLeftExcuteTime();
+
+                    taskId = currentTaskInstance.getTaskId();
+                    task = taskMap.get(taskId);
+
+                    componentId = task.getComponentId();
+                    component = componentMap.get(componentId);
+
+                    if (!currentTaskInstance.getTaskState().equals("运行")) {
+                        currentTaskInstance.setTaskState("运行");
+                    }
+                }
+
             }
 
             if (leftStatePiece == currentState.getWcet()) {
@@ -71,9 +100,9 @@ public class TaskExcute implements FaultInject {
                     // TODO: 做状态内的数据更新--状态的记录
                     StateOperate.updateDataInState(exitEvent);
                 }
-                faultInjection(currentTaskInstance,component,currentState);
+                faultInjection(currentTaskInstance, component, currentState);
 
-                StateOperate.stateTransition(currentState,component,currentTaskInstance,task,blockQueue,taskInstanceMap);
+                StateOperate.stateTransition(currentState, component, currentTaskInstance, task, blockQueue, taskInstanceMap);
             }
             currentState.setLeftExcuteTime(leftStatePiece - 1);
             currentTaskInstance.setLeftExcuteTime(leftTaskPiece - 1);
@@ -81,11 +110,11 @@ public class TaskExcute implements FaultInject {
     }
 
     @Override
-    public void faultInjection(TaskInstance taskInstance,Component component,State lastState) {
-        Map<String,Fault> faultSet= getFaultInjectMap();
-        Fault fault= faultSet.get(lastState.getId());
-        ComponentManage componentManage=new ComponentManage();
-        TaskInstanceManage taskInstanceManage=new TaskInstanceManage();
+    public void faultInjection(TaskInstance taskInstance, Component component, State lastState) {
+        Map<String, Fault> faultSet = getFaultInjectMap();
+        Fault fault = faultSet.get(lastState.getId());
+        ComponentManage componentManage = new ComponentManage();
+        TaskInstanceManage taskInstanceManage = new TaskInstanceManage();
 
         if (fault != null) {
             String conditionType = fault.getConditionType();
@@ -95,10 +124,10 @@ public class TaskExcute implements FaultInject {
                 String condition = fault.getCondition();
                 String relatedDataName = condition.split(";")[0];
                 //判定当前这个环境数据值是否满足注入条件的范围
-                boolean isInRange = componentManage.get(component,relatedDataName).isInRange(condition);
+                boolean isInRange = componentManage.get(component, relatedDataName).isInRange(condition);
                 if (isInRange) {
                     List<Data> dataList = fault.getDataName_type_value();
-                    componentManage.updateData(component,operateorMethod,dataList);
+                    componentManage.updateData(component, operateorMethod, dataList);
                 }
             }
 
@@ -108,7 +137,7 @@ public class TaskExcute implements FaultInject {
                 boolean istransition = taskInstanceManage.isTransition(taskInstance, condition);
                 if (istransition) {
                     List<Data> dataList = fault.getDataName_type_value();
-                    componentManage.updateData(component,operateorMethod,dataList);
+                    componentManage.updateData(component, operateorMethod, dataList);
                 }
             }
         }
