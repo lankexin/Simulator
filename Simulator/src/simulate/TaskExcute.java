@@ -199,9 +199,10 @@ public class TaskExcute implements FaultInject {
 //                boolean isInRange = componentManage.get(component, relatedDataName).isInRange(condition);
                 String parsedStr=ParseStr.parseStr(condition,component);
                 boolean isInRange=LogicCaculator.eventProcess(parsedStr);
+                //满足条件
                 if (isInRange) {
-                    List<Data> dataList = fault.getDataName_type_value();
-                    componentManage.updateData(component, operateorMethod, dataList);
+                    List<String> dataList = fault.getDataList();
+                    componentManage.updateData(component, dataList);
                 }
             }
             if (conditionType.equals("transitionPath")) {
@@ -209,8 +210,8 @@ public class TaskExcute implements FaultInject {
                 String path = taskInstanceManage.getTransitionPath(taskInstance);
                 boolean istransition = taskInstanceManage.isTransition(taskInstance, condition);
                 if (istransition) {
-                    List<Data> dataList = fault.getDataName_type_value();
-                    componentManage.updateData(component, operateorMethod, dataList);
+                    List<String> dataList = fault.getDataList();
+                    componentManage.updateData(component, dataList);
                 }
             }
         }

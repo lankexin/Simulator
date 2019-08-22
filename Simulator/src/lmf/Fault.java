@@ -8,16 +8,16 @@ public class Fault {
     private String condition;
     private String operateorMethod;
     private String dataSize;
-    private List<Data> dataName_type_value;
+    private List<String> dataList;
 
     public Fault(String lastState, String conditionType, String condition,
-                 String operateorMethod, String dataSize, List<Data> dataName_type_value) {
+                 String operateorMethod, String dataSize, List<String> dataList) {
         this.lastState = lastState;
         this.conditionType = conditionType;
         this.condition = condition;
         this.operateorMethod = operateorMethod;
         this.dataSize = dataSize;
-        this.dataName_type_value = dataName_type_value;
+        this.dataList = dataList;
     }
 
     public void setLastState(String lastState) {
@@ -40,8 +40,8 @@ public class Fault {
         this.dataSize = dataSize;
     }
 
-    public void setDataName_type_value(List<Data> dataName_type_value) {
-        this.dataName_type_value = dataName_type_value;
+    public void setDataName_type_value(List<String> dataList) {
+        this.dataList = dataList;
     }
 
     public String getLastState() {
@@ -64,7 +64,7 @@ public class Fault {
         return dataSize;
     }
 
-    public List<Data> getDataName_type_value() {
-        return dataName_type_value;
+    public List<String> getDataList() {
+        return dataList;
     }
 }

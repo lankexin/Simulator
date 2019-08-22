@@ -44,16 +44,11 @@ public class FaultSet {
                 String operatorMethod = readProperty("faultInjection.operateorMethod-" + i);
                 String dataSize = readProperty("faultInjection.dataSize-" + i);
                 Integer size = parseInt(dataSize);
-                List<Data> dataList = new ArrayList<>();
+                List<String> dataList = new ArrayList<>();
 
                 for (int j = 1; j <= size; j++) {
-                    String dataName_type_value = readProperty("faultInjection.dataName_type_value-" + i + "-" + j);
-                    System.out.println(dataName_type_value);
-                    String[] datastr = dataName_type_value.split(":");
-                    String dataName=datastr[0];
-                    String datatype=datastr[1];
-                    String dataValue=datastr[2];
-                    Data data=new Data(dataName,datatype,dataValue);
+                    String data = readProperty("faultInjection.data-" + i + "-" + j);
+                    System.out.println(data);
                     dataList.add(data);
                     System.out.println(dataList);
                 }
