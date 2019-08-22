@@ -105,7 +105,7 @@ public class XmlParse {
                 componentId = root.getParent().getParent().attribute("id").getValue();
                 String stateId = root.getParent().attribute("id").getValue();
                 State parentState = componentList.get(componentId).getStateMap().get(stateId);
-                parentState.getSubStateList().add(newState);
+                parentState.getSubStateList().put(newState.getAttr("id"), newState);
             }
         } else if (component.getName().equals("data")) {
             String componentId;

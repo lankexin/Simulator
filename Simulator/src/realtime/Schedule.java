@@ -1,11 +1,9 @@
 package realtime;
 
-import lmf.Component;
 import lmf.Task;
 import lmf.TaskInstance;
 import util.PropertiyParse;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
