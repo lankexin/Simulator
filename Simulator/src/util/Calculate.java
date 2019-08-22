@@ -229,5 +229,5 @@ public class Calculate {
         value = "4*(5+3)-(5-1)";
         System.out.println(ca.getEventuate(value));
     }
-    }
+}
 
