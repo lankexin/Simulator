@@ -1,8 +1,6 @@
 package lmf;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class State {
@@ -19,12 +17,10 @@ public class State {
 
     private String faultType;
     private boolean isFaultState;
-    private boolean isCompositState;//是否是复合状态
 
     private Map<String, String> attrs;
 
     private Map<String, State> subStateMap;
-    private float leftExcuteTime;
 
     public State() {
         attrs = new HashMap<>();
@@ -80,15 +76,11 @@ public class State {
     }
 
     public float getWcet() {
-        return wcet;
-    }
-
-    public float getLeftExcuteTime() {
-        return leftExcuteTime;
-    }
-
-    public void setLeftExcuteTime(float leftExcuteTime) {
-        this.leftExcuteTime = leftExcuteTime;
+        if (attrs.get("wcet") != null) {
+            wcet = Float.valueOf(attrs.get("wcet").substring(0, attrs.get("wcet").length()-2));
+            return wcet;
+        }
+        return -1;
     }
 
     public void setAttr(String key, String value) {

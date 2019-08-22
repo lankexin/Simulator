@@ -6,7 +6,7 @@ public class TaskInstance {
     private String taskId;
 
     private State currentState;
-    private float leftExcuteTime;
+    private float stateLeftExcuteTime;
 
     private int arriveTimestamp;
     private int executeTimestamp;
@@ -21,13 +21,15 @@ public class TaskInstance {
      */
     private String statePath;
 
-    public TaskInstance(String instanceId, String taskId,
-                        State state, String stateName) {
+    public TaskInstance(int arriveTimestamp, String instanceId, String taskId,
+                        State state, String stateName, float leftExcuteTime) {
         this.instanceId = instanceId;
         this.taskId = taskId;
         this.currentState = state;
         taskStateId = "就绪";
         statePath = stateName;
+        this.stateLeftExcuteTime = leftExcuteTime;
+        this.arriveTimestamp = arriveTimestamp;
     }
 
     public String getInstanceId() {
@@ -54,14 +56,6 @@ public class TaskInstance {
         this.currentState = currentState;
     }
 
-    public float getLeftExcuteTime() {
-        return leftExcuteTime;
-    }
-
-    public void setLeftExcuteTime(float leftExcuteTime) {
-        this.leftExcuteTime = leftExcuteTime;
-    }
-
     public int getArriveTimestamp() {
         return arriveTimestamp;
     }
@@ -76,6 +70,10 @@ public class TaskInstance {
 
     public void setExecuteTimestamp(int executeTimestamp) {
         this.executeTimestamp = executeTimestamp;
+    }
+
+    public float getStateLeftExcuteTime() {
+        return stateLeftExcuteTime;
     }
 
     public String getTaskState() {

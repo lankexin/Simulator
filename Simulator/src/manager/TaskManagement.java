@@ -59,7 +59,8 @@ public class TaskManagement {
 
             if (currentTask.getPeriod() != -1 && currentSystemTime % currentTask.getPeriod() == 0) {
                 TaskInstance newTaskInstance = new TaskInstance(currentTask.getId()+"_"+currentSystemTime,
-                        currentTask.getId(), currentTask.getFirstState(), "Idle");
+                        currentTask.getId(), currentTask.getFirstState(), "Idle",
+                        currentTask.getFirstState().getWcet());
                 waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
                 timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
             }
@@ -127,7 +128,7 @@ public class TaskManagement {
             if (ExpressCalculate.getLogicResult(transition.getEvent(), targetComponent).equals("1")) {
                 newTaskInstance = new TaskInstance(currentTask.getId() + "_" + currentSystemTime,
                         currentTask.getId(), currentState,
-                        currentState.getAttr("name"));
+                        currentState.getAttr("name"), currentState.getWcet());
                 break;
             }
         }

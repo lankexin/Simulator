@@ -31,16 +31,23 @@ public class Task {
 
     public Task(Component component, String taskId) {
         this.componentId = component.getAttr("id");
-        this.wcet = Float.valueOf(component.getAttr("wcet"));
+        if (component.getAttr("wcet") != null) {
+            this.wcet = Float.valueOf(component.getAttr("wcet").substring(0,
+                    component.getAttr("wcet").length()-2));
+        } else {
+            this.wcet = -1;
+        }
 
         if (component.getAttr("period") != null) {
-            this.period = Float.valueOf(component.getAttr("period"));
+            this.period = Float.valueOf(component.getAttr("period").substring(0,
+                    component.getAttr("period").length()-2));
         } else {
             this.period = -1;
         }
 
         if (component.getAttr("deadline") != null) {
-            this.deadline = Float.valueOf(component.getAttr("deadline"));
+            this.deadline = Float.valueOf(component.getAttr("deadline").substring(0,
+                    component.getAttr("deadline").length()-2));
         } else {
             this.deadline = -1;
         }
@@ -61,16 +68,18 @@ public class Task {
 
     public Task(Component component, State state, String taskId) {
         this.componentId = component.getAttr("id");
-        this.wcet = Float.valueOf(state.getAttr("wcet"));
+        this.wcet = state.getWcet();
 
         if (state.getAttr("period") != null) {
-            this.period = Float.valueOf(state.getAttr("period"));
+            this.period = Float.valueOf(state.getAttr("period").substring(0,
+                    state.getAttr("period").length()-2));
         } else {
             this.period = -1;
         }
 
         if (state.getAttr("deadline") != null) {
-            this.deadline = Float.valueOf(state.getAttr("deadline"));
+            this.deadline = Float.valueOf(state.getAttr("deadline").substring(0,
+                    state.getAttr("deadline").length()-2));
         } else {
             this.deadline = -1;
         }
