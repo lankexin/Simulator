@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class EDF {
 
-    public static Map<Integer, TaskInstance> EDFSchedule(int currentSystemTime,
+    public static Map<Integer, String> EDFSchedule(int currentSystemTime,
                                                          Map<String, TaskInstance> waitingTaskList,
                                                          Map<String, Task> taskMap) {
 
