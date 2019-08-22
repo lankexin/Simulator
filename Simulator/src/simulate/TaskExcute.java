@@ -17,7 +17,7 @@ import static safety.FaultSet.getFaultInjectMap;
 public class TaskExcute implements FaultInject {
 
     //timePieceMap  时间片--任务Id
-    public void taskExcute(int currentTimePiece, Map<String, Component> componentMap, Map<String, TaskInstance> taskInstanceMap,
+    public static void taskExcute(int currentTimePiece, Map<String, Component> componentMap, Map<String, TaskInstance> taskInstanceMap,
                            List<TaskInstance> blockQueue, Map<Integer, String> timePieceMap, Map<String, Task> taskMap,
                            Map<String,List<String>> statePathBuffer) {
 
@@ -84,7 +84,7 @@ public class TaskExcute implements FaultInject {
                         statePathBuffer.put(taskInsaneId,pathBuffer);
                     }
                     Schedule schedule = new Schedule();
-                    Map<Integer, TaskInstance> newTimePieceMap = schedule.schedule(currentTimePiece, taskInstanceMap,
+                    Map<Integer, String> newTimePieceMap = schedule.schedule(currentTimePiece, taskInstanceMap,
                             taskMap);
 
                     taskInsaneId = timePieceMap.get(currentTimePiece);

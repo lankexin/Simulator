@@ -28,7 +28,7 @@ public class Schedule {
      * @param taskMap 用于提取任务的状态列表等不变的信息
      * @return
      */
-    public Map<Integer, TaskInstance> schedule(int currentTimeStamp,
+    public Map<Integer, String> schedule(int currentTimeStamp,
                                                 Map<String, TaskInstance> waitingTaskList,
                                                 Map<String, Task> taskMap) {
         switch (scheduleAlgorithm) {
@@ -41,18 +41,5 @@ public class Schedule {
             default:
                 return null;
         }
-    }
-
-
-    /**
-     * 根据组件的连接顺序给任务排序
-     * @return 返回一个排好序的task map
-     */
-    public Map<String, Task> staticSchedule(Map<String, Task> taskMap, Map<String, Component> compponentMap) {
-        Map<String, Task> taskList = new HashMap<>();
-
-
-
-        return taskList;
     }
 }

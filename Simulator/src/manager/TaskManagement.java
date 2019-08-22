@@ -5,6 +5,7 @@ import lmf.Task;
 import lmf.TaskInstance;
 import lmf.Transition;
 import realtime.Schedule;
+import simulate.ExpressCalculate;
 import util.ParseStr;
 
 import java.util.HashMap;
@@ -19,14 +20,14 @@ public class TaskManagement {
         mSchedule = new Schedule();
     }
 
-    public Map<Integer, TaskInstance> timePieceMapManagement(int currentSystemTime,
+    public Map<Integer, String> timePieceMapManagement(int currentSystemTime,
                                                              Map<String, Task> taskMap,
                                                              Map<String, TaskInstance> waitingTaskList,
                                                              List<TaskInstance> blockTaskList,
                                                              Map<String, Component> componentMap) {
-        Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
+        Map<Integer, String> timePieceMap = new HashMap<>();
 
-        Map<Integer, TaskInstance> tempTimePieceMap;
+        Map<Integer, String> tempTimePieceMap;
         tempTimePieceMap = waitingQueueManagement(currentSystemTime, taskMap, waitingTaskList, componentMap);
         if (tempTimePieceMap.size() > 0) {
             timePieceMap = tempTimePieceMap;
@@ -40,11 +41,11 @@ public class TaskManagement {
     }
 
 
-    private Map<Integer, TaskInstance> waitingQueueManagement(int currentSystemTime,
+    private Map<Integer, String> waitingQueueManagement(int currentSystemTime,
                                                               Map<String, Task> taskMap,
                                                               Map<String, TaskInstance> waitingTaskList,
                                                               Map<String, Component> componentMap) {
-        Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
+        Map<Integer, String> timePieceMap = new HashMap<>();
 
         for (String taskKey : taskMap.keySet()) {
             // todo：遍历task map，看是否有task满足触发条件，满足则生成对应的task instance，并加入等待队列中。
@@ -87,13 +88,13 @@ public class TaskManagement {
     /**
      * 遍历阻塞队列，看是否满足触发条件
      */
-    private Map<Integer, TaskInstance> blockQueueManageMent(int currentSystemTime,
+    private Map<Integer, String> blockQueueManageMent(int currentSystemTime,
                                                            List<TaskInstance> blockTaskList,
                                                            Map<String, Task> taskMap,
                                                            Map<String, Component> componentMap,
                                                            Map<String, TaskInstance> waitingTaskList) {
 
-        Map<Integer, TaskInstance> timePieceMap = new HashMap<>();
+        Map<Integer, String> timePieceMap = new HashMap<>();
 
         for (TaskInstance taskInstance : blockTaskList) {
             List<Transition> transitions = taskMap.get(taskInstance
@@ -122,8 +123,7 @@ public class TaskManagement {
                                       Task currentTask) {
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
-            // todo：调用parseStr方法的流程
-            if (ParseStr.parseStr(transition.getEvent(), targetComponent)) {
+            if (ExpressCalculate.getLogicResult(transition.getEvent(), targetComponent).equals("1")) {
                 newTaskInstance = new TaskInstance(currentTask.getId() + "_" + currentSystemTime,
                         currentTask.getId(), currentTask.getFirstStateId());
                 break;

@@ -13,6 +13,7 @@ public class Simulator {
     private static int currentTimePiece;
 
     private static TaskManagement mTaskManageMent = new TaskManagement();
+    private static TaskExcute mTaskExecute = new TaskExcute();
 
     /**记录失败任务的列表*/
     private static List<String> failureTaskList;
@@ -41,7 +42,7 @@ public class Simulator {
     /**
      * 任务队列，有新的任务将其id加入该队列，调用schedule，生成优先级队列。
      */
-    private static Map<String, TaskInstance> waitingQueue;
+    private static Map<String, TaskInstance> waitingTaskInstanceList;
 
     /**
      * 任务队列，有新的任务将其id加入该队列，调用schedule，生成优先级队列。
@@ -51,7 +52,7 @@ public class Simulator {
     /**
      * 调度返回的时间片和任务的映射map
      */
-    private static Map<Integer, TaskInstance> timePiece;
+    private static Map<Integer, String> timePieceMap;
 
     public static void main(String[] args) {
         componentMap = new HashMap<>();
@@ -61,7 +62,8 @@ public class Simulator {
 
         int targetTime = Integer.valueOf(PropertiyParse.readProperty("target execute time"));
 
-        waitingQueue = new HashMap<>();
+        waitingTaskInstanceList = new HashMap<>();
+        timePieceMap = new HashMap<>();
 
         Timer taskQueueManagementTimer = new Timer();
         taskQueueManagementTimer.schedule(new TimerTask() {
@@ -70,8 +72,8 @@ public class Simulator {
                 currentSystemTime++;
 
                 while (currentSystemTime != targetTime) {
-                    mTaskManageMent.timePieceMapManagement(currentSystemTime, taskMap,
-                            waitingQueue, blockQueue, componentMap);
+                    timePieceMap = mTaskManageMent.timePieceMapManagement(currentSystemTime, taskMap,
+                            waitingTaskInstanceList, blockQueue, componentMap);
                 }
             }
         }, 1000, 10);
@@ -82,7 +84,9 @@ public class Simulator {
             @Override
             public void run() {
                 currentTimePiece++;
-                TaskExcute.taskExcute(currentTimePiece, taskQueue);
+                mTaskExecute.taskExcute(currentTimePiece, componentMap, waitingTaskInstanceList,
+                        blockQueue, timePieceMap, taskMap,
+                        statePathBuffer);
             }
         }, 1000, 100);
 
