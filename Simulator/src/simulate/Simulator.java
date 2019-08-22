@@ -36,6 +36,8 @@ public class Simulator {
      * key：task id（要求名字不能重复）*/
     private static Map<String, Task> taskMap;
 
+    private static List<Channel> channelList;
+
     /**
      * 任务队列，有新的任务将其id加入该队列，调用schedule，生成优先级队列。
      */
@@ -52,7 +54,10 @@ public class Simulator {
     private static Map<Integer, TaskInstance> timePiece;
 
     public static void main(String[] args) {
-        XmlParse.parse("xml-name", componentMap, sharedDataMap, taskMap);
+        componentMap = new HashMap<>();
+        sharedDataMap = new HashMap<>();
+        channelList = new ArrayList<>();
+        XmlParse.parseXML("xml-name", componentMap, sharedDataMap, channelList);
 
         int targetTime = Integer.valueOf(PropertiyParse.readProperty("target execute time"));
 
