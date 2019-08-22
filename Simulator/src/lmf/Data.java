@@ -1,10 +1,19 @@
 package lmf;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Data {
     private String name;
     private String valueType;
     private String value;
     private boolean isShared;
+
+    private Map<String, String> attrs;
+
+    public Data() {
+        attrs = new HashMap<>();
+    }
 
     public Data(String name, String valueType, String value) {
         this.name = name;
@@ -34,5 +43,13 @@ public class Data {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public void setAttr(String key, String value) {
+        attrs.put(key, value);
+    }
+
+    public String getAttr(String key) {
+        return attrs.get(key);
     }
 }

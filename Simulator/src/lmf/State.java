@@ -1,6 +1,9 @@
 package lmf;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class State {
     private String id;
@@ -18,8 +21,15 @@ public class State {
     private boolean isFaultState;
     private boolean isCompositState;//是否是复合状态
 
+    private Map<String, String> attrs;
+
     private List<State> subStateList;
     private float leftExcuteTime;
+
+    public State() {
+        attrs = new HashMap<>();
+        subStateList = new ArrayList<>();
+    }
 
     public String getId() {
         return id;
@@ -79,5 +89,17 @@ public class State {
 
     public void setLeftExcuteTime(float leftExcuteTime) {
         this.leftExcuteTime = leftExcuteTime;
+    }
+
+    public void setAttr(String key, String value) {
+        attrs.put(key, value);
+    }
+
+    public String getAttr(String key) {
+        return attrs.get(key);
+    }
+
+    public List<State> getSubStateList() {
+        return subStateList;
     }
 }
