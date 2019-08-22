@@ -247,7 +247,7 @@ public class Calculate {
         String value = null;
 //      value = "4.99+5.99+6.99*1.06";
 //      value = "4^5";
-        value = "4*(5+3)-(5>1)";
+        value = "0";
         System.out.println(ca.getEventuate(value));
     }
 }
