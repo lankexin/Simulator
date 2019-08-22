@@ -7,52 +7,59 @@ import util.XmlParse;
 
 import java.util.*;
 
+import static util.PropertiyParse.readProperty;
+
 public class Simulator {
 
-    private static int currentSystemTime;
-    private static int currentTimePiece;
+    static int currentSystemTime;
+    static int currentTimePiece;
 
-    private static TaskManagement mTaskManageMent = new TaskManagement();
-    private static TaskExcute mTaskExecute = new TaskExcute();
+    static TaskManagement mTaskManageMent = new TaskManagement();
+    static TaskExcute mTaskExecute = new TaskExcute();
+
+    static float timePiece=Float.valueOf(readProperty("realtime.schedule.timepiece"));
 
     /**记录失败任务的列表*/
-    private static List<String> failureTaskList;
+    static List<String> failureTaskList;
 
     /**解析出来的transitionMap
      * key：component id*/
-    private static Map<String, Component> componentMap;
+    static Map<String, Component> componentMap;
 
     /**记录状态的迁移过程
      * key：任务实例id
      * value：状态-event-data-timestamp*/
-    private static Map<String, List<String>> statePathBuffer;
+    static Map<String, List<String>> statePathBuffer;
+
+    static Map<String, List<String>> faultBuffer;
+
 
     /**
      * 共享部分的dataMap
      * key：data name（要求名字不能重复）
      */
-    private static Map<String, Data> sharedDataMap;
+    static Map<String, Data> sharedDataMap;
 
     /**解析得到的dataMap
      * key：task id（要求名字不能重复）*/
-    private static Map<String, Task> taskMap;
+    static Map<String, Task> taskMap;
 
-    private static List<Channel> channelList;
-
-    /**
-     * 任务队列，有新的任务将其id加入该队列，调用schedule，生成优先级队列。
-     */
-    private static Map<String, TaskInstance> waitingTaskInstanceList;
+    static List<Channel> channelList;
 
     /**
      * 任务队列，有新的任务将其id加入该队列，调用schedule，生成优先级队列。
      */
-    private static List<TaskInstance> blockQueue;
+    static Map<String, TaskInstance> waitingTaskInstanceList;
+
+    /**
+     * 任务队列，有新的任务将其id加入该队列，调用schedule，生成优先级队列。
+     */
+    static List<TaskInstance> blockQueue;
 
     /**
      * 调度返回的时间片和任务的映射map
      */
-    private static Map<Integer, String> timePieceMap;
+    static Map<Integer, String> timePieceMap;
 
     public static void main(String[] args) {
         componentMap = new HashMap<>();
@@ -60,7 +67,7 @@ public class Simulator {
         channelList = new ArrayList<>();
         XmlParse.parseXML("xml-name", componentMap, sharedDataMap, channelList);
 
-        int targetTime = Integer.valueOf(PropertiyParse.readProperty("target execute time"));
+        int targetTime = Integer.valueOf(readProperty("target execute time"));
 
         waitingTaskInstanceList = new HashMap<>();
         timePieceMap = new HashMap<>();
@@ -84,9 +91,7 @@ public class Simulator {
             @Override
             public void run() {
                 currentTimePiece++;
-                mTaskExecute.taskExcute(currentTimePiece, componentMap, waitingTaskInstanceList,
-                        blockQueue, timePieceMap, taskMap,
-                        statePathBuffer);
+                mTaskExecute.taskExcute();
             }
         }, 1000, 100);
 
@@ -115,5 +120,6 @@ public class Simulator {
         String value=sharedDataMap.get(dataName).getValue();
         return value;
     }
+
 
 }

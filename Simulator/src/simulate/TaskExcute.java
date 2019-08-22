@@ -13,30 +13,30 @@ import java.util.List;
 import java.util.Map;
 
 import static safety.FaultSet.getFaultInjectMap;
+import static simulate.Simulator.*;
+import static simulate.Simulator.currentTimePiece;
 
 public class TaskExcute implements FaultInject {
 
     //timePieceMap  时间片--任务Id
-    public void taskExcute(int currentTimePiece, Map<String, Component> componentMap, Map<String, TaskInstance> taskInstanceMap,
-                           List<TaskInstance> blockQueue, Map<Integer, String> timePieceMap, Map<String, Task> taskMap,
-                           Map<String,List<String>> statePathBuffer) {
+    public void taskExcute() {
 
         /**
          * 在队列里找到当前需要执行的task并使其开始执行
          * 即 更改该g任务的 execute time
          */
-        if (timePieceMap != null && !timePieceMap.isEmpty()) {
+        if (Simulator.timePieceMap != null && !Simulator.timePieceMap.isEmpty()) {
             //当前执行的任务实例id
             String taskInsaneId = timePieceMap.get(currentTimePiece);
 
-            TaskInstance currentTaskInstance = taskInstanceMap.get(taskInsaneId);
+            TaskInstance currentTaskInstance = waitingTaskInstanceList.get(taskInsaneId);
 
             //任务剩余几个时间片
-            float leftTaskPiece = currentTaskInstance.getLeftExcuteTime();
+//            float leftTaskPiece = currentTaskInstance.getLeftExcuteTime()/timePiece;
             //任务的当前状态
             State currentState = currentTaskInstance.getCurrentState();
             //状态剩余几个时间片
-            float leftStatePiece = currentState.getLeftExcuteTime();
+            float leftStatePiece = currentTaskInstance.getStateLeftExcuteTime()/timePiece;
 
             String taskId = currentTaskInstance.getTaskId();
             Task task = taskMap.get(taskId);
@@ -48,7 +48,7 @@ public class TaskExcute implements FaultInject {
                 currentTaskInstance.setTaskState("运行");
             }
 
-            if (leftStatePiece == 0) {
+            if (leftStatePiece <= 0) {
                 String statePath=currentTaskInstance.getStatePath();
                 List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
 //        Map<String, Data> dataMap = component.getDataMap();
@@ -77,7 +77,7 @@ public class TaskExcute implements FaultInject {
                         statePathBuffer.put(taskInsaneId,pathBuffer);
                     }
                     else{
-                        taskInstanceMap.remove(taskInsaneId);
+                        waitingTaskInstanceList.remove(taskInsaneId);
                         String appendMessage="当前任务实例状态迁移到idle,运行结束,时间"+currentTimePiece+
                                 ",迁移事件"+transitionEvent+",解析事件"+parsedEvent;
                         StringBuilder temproStatePath=new StringBuilder(statePath);
@@ -87,7 +87,7 @@ public class TaskExcute implements FaultInject {
                         statePathBuffer.put(taskInsaneId,pathBuffer);
                     }
                     Schedule schedule = new Schedule();
-                    Map<Integer, String> newTimePieceMap = schedule.schedule(currentTimePiece, taskInstanceMap,
+                    timePieceMap = schedule.schedule(currentTimePiece, waitingTaskInstanceList,
                             taskMap);
 //
 //                    taskInsaneId = newTimePieceMap.get(currentTimePiece);
@@ -111,8 +111,7 @@ public class TaskExcute implements FaultInject {
 //                    if (!currentTaskInstance.getTaskState().equals("运行")) {
 //                        currentTaskInstance.setTaskState("运行");
 //                    }
-                    taskExcute(currentTimePiece, componentMap, taskInstanceMap,blockQueue, newTimePieceMap,
-                            taskMap, statePathBuffer);
+                    taskExcute();
                     return;
                 }
                 else{
@@ -120,7 +119,17 @@ public class TaskExcute implements FaultInject {
                     currentTaskInstance.setCurrentState(newState);
                     String appendMessage=lastStateName+"状态迁移到"+currentState.getName()+",时间"+currentTimePiece+",迁移事件"
                             +transitionEvent+",解析事件"+parsedEvent;
-                    if(newState.isFaultState()){}
+                    currentTaskInstance.setStateLeftExcuteTime(currentState.getWcet());
+
+                    //记录迁移到故障状态的信息
+                    if(newState.isFaultState()){
+                        //todo:
+                        String appendFault=lastStateName+"状态迁移到故障状态"+currentState.getName()+",时间"
+                                +currentTimePiece+",迁移事件"+transitionEvent+",解析事件"+parsedEvent;
+                        List<String> faults=faultBuffer.get(taskInsaneId);
+                        faults.add(appendFault);
+                        faultBuffer.put(taskInsaneId,faults);
+                    }
                     List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
                     pathBuffer.add(appendMessage);
                     statePathBuffer.put(taskInsaneId,pathBuffer);
@@ -172,7 +181,7 @@ public class TaskExcute implements FaultInject {
                     statePathBuffer.put(taskInsaneId,pathBuffer);
                 }
                 else if(possibleNewState.getName().trim().toLowerCase().equals("idle")){
-                    taskInstanceMap.remove(taskInsaneId);
+                    waitingTaskInstanceList.remove(taskInsaneId);
                     String appendMessage="当前任务实例状态迁移到idle，运行结束,时间"+currentTimePiece+
                     ",迁移事件"+transitionEvent+",解析事件"+parsedEvent;
                     List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
@@ -180,8 +189,9 @@ public class TaskExcute implements FaultInject {
                     statePathBuffer.put(taskInsaneId,pathBuffer);
                 }
             }
-            currentState.setLeftExcuteTime(leftStatePiece - 1);
-            currentTaskInstance.setLeftExcuteTime(leftTaskPiece - 1);
+            currentTaskInstance.setStateLeftExcuteTime((leftStatePiece-1)*timePiece);
+//            currentState.setLeftExcuteTime(leftStatePiece - 1);
+//            currentTaskInstance.setLeftExcuteTime(leftTaskPiece - 1);
         }
     }
 
