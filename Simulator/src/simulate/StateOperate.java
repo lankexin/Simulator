@@ -138,7 +138,7 @@ public class StateOperate {
         ComponentManage componentManage=new ComponentManage();
         if(express.contains("!") || express.contains("&") || express.contains("|") ||express.contains(">")
                 || express.contains("<") || express.contains("=")){
-            String value=
+            String value=eventProcess(event);
         }
         else{
             Calculate calculate=new Calculate();
