@@ -5,7 +5,7 @@ import lmf.Task;
 import lmf.TaskInstance;
 import lmf.Transition;
 import realtime.Schedule;
-import util.EventProcess;
+import util.ParseStr;
 
 import java.util.HashMap;
 import java.util.List;
@@ -122,7 +122,8 @@ public class TaskManagement {
                                       Task currentTask) {
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
-            if (EventProcess.eventProcess(transition.getEvent(), targetComponent.getDataMap())) {
+            // todo：调用parseStr方法的流程
+            if (ParseStr.parseStr(transition.getEvent(), targetComponent)) {
                 newTaskInstance = new TaskInstance(currentTask.getId() + "_" + currentSystemTime,
                         currentTask.getId(), currentTask.getFirstStateId());
                 break;

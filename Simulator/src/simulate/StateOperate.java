@@ -1,11 +1,9 @@
 package simulate;
 
-import common.DataStore;
 import lmf.*;
-import util.EventProcess;
+import util.LogicCaculator;
 import util.ParseStr;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -106,7 +104,7 @@ public class StateOperate {
         String taskInsaneId=currentTaskInstance.getTaskId();
         boolean isTransition = false;
         for (Transition transition : transitions) {
-            if (EventProcess.eventProcess(transition.getEvent(),component)) {
+            if (LogicCaculator.eventProcess(transition.getEvent(),component)) {
                 String destId=transition.getDest();
                 State newState=task.getStateMap().get(destId);
                 currentTaskInstance.setCurrentState(newState);

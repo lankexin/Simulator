@@ -2,7 +2,7 @@ package util;
 
 import java.util.Stack;
 
-public class Calculate {
+public class NumericCaculator {
     private Stack<Character> charStack = new Stack<>();
     private Stack<Double> doubStack = new Stack<>();
 
@@ -243,7 +243,7 @@ public class Calculate {
     }
 
     public static void main(String[] args) {
-        Calculate ca = new Calculate();
+        NumericCaculator ca = new NumericCaculator();
         String value = null;
 //      value = "4.99+5.99+6.99*1.06";
 //      value = "4^5";
