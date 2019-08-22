@@ -1,11 +1,15 @@
 package simulate;
 
 import lmf.*;
+
 import util.LogicCaculator;
+import manager.ComponentManage;
 import util.ParseStr;
 
 import java.util.List;
 import java.util.Map;
+
+import static util.ParseStr.getAssignedData;
 
 public class StateOperate {
 
@@ -126,7 +130,19 @@ public class StateOperate {
 
     public static void updateDataInState(String event,Component component){
         String parsedStr= ParseStr.parseStr(event,component);
-
+        Map<String,String> dataStr=getAssignedData(parsedStr);
+        String dataName=dataStr.entrySet().iterator().next().getKey();
+        String express=dataStr.entrySet().iterator().next().getValue();
+        ComponentManage componentManage=new ComponentManage();
+        if(express.contains("!") || express.contains("&") || express.contains("|") ||express.contains(">")
+                || express.contains("<") || express.contains("=")){
+            String value=eventProcess(event);
+        }
+        else{
+            Calculate calculate=new Calculate();
+            String value=calculate.getEventuate(express).split("=")[1];
+            componentManage.update(component,dataName,value);
+        }
     }
 
 }
