@@ -5,6 +5,7 @@ import lmf.Component;
 import lmf.Data;
 import safety.FaultInjectUpdate;
 import simulate.Simulator;
+import util.NumericCaculator;
 
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
     }
 
     @Override
-    public void updateData(Component component, String operateorMethod, List<Data> dataList) {
+    public void updateData(Component component, String operateorMethod, List<String> dataList ) {
         if (("assignValue").equals(operateorMethod))
             for (Data data : dataList) {
                 String dataName = data.getName();
@@ -63,8 +64,9 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
                 String operate = data.getValue();
                 String operatorExcute = operate.substring(3);
                 String dataType = data.getValueType();
+                NumericCaculator numericCaculator=new NumericCaculator();
                 //对要更改的数据进行计算
-                String dataValue = calculate(oldValue, operatorExcute);
+                String dataValue = numericCaculator.getEventuate(operatorExcute);
                 update(component,dataName,dataValue);
             }
     }
