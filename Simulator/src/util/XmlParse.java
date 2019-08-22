@@ -128,30 +128,30 @@ public class XmlParse {
         }
     }
 
-//    public static void main(String[] args) {
-//        Map<String, Component> componentList = new HashMap<>();
-//        Map<String, Data> sharedDataMap = new HashMap<>();
-//        List<Channel> channelList = new ArrayList<>();
-//        XmlParse.parseXML("simulink0822.xml", componentList, sharedDataMap, channelList);
-//
-//        for (Channel channel : channelList) {
-//            System.out.println(channel.getAttr("id") + " " + channel.getAttr("source"));
-//        }
-//
-//        for (String key : sharedDataMap.keySet()) {
-//            System.out.println(sharedDataMap.get(key).getAttr("name") + " " +
-//                    sharedDataMap.get(key).getAttr("datatype"));
-//        }
-//
-//        for (String key : componentList.keySet()) {
-//            for (String trasitionKey : componentList.get(key).getTransitionMap().keySet()) {
-//                if (componentList.get(key).getTransitionMap().get(trasitionKey) != null) {
-//                    System.out.println(trasitionKey);
-//                    for (Transition transition : componentList.get(key).getTransitionMap().get(trasitionKey)) {
-//                        System.out.println(transition.getAttr("source") + " " + transition.getAttr("dest"));
-//                    }
-//                }
-//            }
-//        }
-//    }
+    public static void main(String[] args) {
+        Map<String, Component> componentList = new HashMap<>();
+        Map<String, Data> sharedDataMap = new HashMap<>();
+        List<Channel> channelList = new ArrayList<>();
+        XmlParse.parseXML("simulink0822.xml", componentList, sharedDataMap, channelList);
+
+        for (Channel channel : channelList) {
+            System.out.println(channel.getAttr("id") + " " + channel.getAttr("source"));
+        }
+
+        for (String key : sharedDataMap.keySet()) {
+            System.out.println(sharedDataMap.get(key).getAttr("name") + " " +
+                    sharedDataMap.get(key).getAttr("datatype"));
+        }
+
+        for (String key : componentList.keySet()) {
+            for (String trasitionKey : componentList.get(key).getTransitionMap().keySet()) {
+                if (componentList.get(key).getTransitionMap().get(trasitionKey) != null) {
+                    System.out.println(trasitionKey);
+                    for (Transition transition : componentList.get(key).getTransitionMap().get(trasitionKey)) {
+                        System.out.println(transition.getAttr("source") + " " + transition.getAttr("dest"));
+                    }
+                }
+            }
+        }
+    }
 }
