@@ -1,8 +1,7 @@
 package simulate;
 
-import util.Calculate;
-
-import static util.EventProcess.eventProcess;
+import util.NumericCaculator;
+import static util.LogicCaculator.eventProcess;
 
 public class ExpressCalculate {
     public static String getResultData(String express) {
@@ -15,7 +14,7 @@ public class ExpressCalculate {
                 value="0";
             }
         } else {
-            Calculate calculate = new Calculate();
+            NumericCaculator calculate = new NumericCaculator();
             value = calculate.getEventuate(express).split("=")[1];
         }
         return value;

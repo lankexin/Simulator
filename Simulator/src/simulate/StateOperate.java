@@ -1,13 +1,11 @@
 package simulate;
 
-import common.DataStore;
 import lmf.*;
+
+import util.LogicCaculator;
 import manager.ComponentManage;
-import util.Calculate;
-import util.EventProcess;
 import util.ParseStr;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -102,32 +100,37 @@ public class StateOperate {
 //        return faultInjectLog;
 //    }
 
-    public static boolean stateTransition(State currentState, Component component, TaskInstance currentTaskInstance,
-                                          Task task, List<TaskInstance> blockQueue, Map<String, TaskInstance> taskInstanceMap) {
-        boolean trueTransition = false;
+//    public static String stateTransition(State currentState, Component component, TaskInstance currentTaskInstance,
+//                                          Task task, List<TaskInstance> blockQueue, Map<String, TaskInstance> taskInstanceMap) {
+        public static State stateTransition(State currentState, Component component, Task task) {
+//        boolean trueTransition = false;
 
         List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
-        Map<String, Data> dataMap = component.getDataMap();
-        String taskInsaneId = currentTaskInstance.getTaskId();
-        boolean isTransition = false;
+//        Map<String, Data> dataMap = component.getDataMap();
+//        String taskInsaneId = currentTaskInstance.getTaskId();
+//        boolean isTransition = false;
         for (Transition transition : transitions) {
-            if (EventProcess.eventProcess(transition.getEvent(), component)) {
-                String destId = transition.getDest();
-                State newState = task.getStateMap().get(destId);
-                currentTaskInstance.setCurrentState(newState);
-                isTransition = true;
-                if (newState.getName().trim().toLowerCase().equals("idle")) {
-                    taskInstanceMap.remove(taskInsaneId);
-                    trueTransition = false;
-                } else
-                    trueTransition = true;
+            String express=ParseStr.parseStr(transition.getEvent(),component);
+            if (LogicCaculator.eventProcess(express)) {
+                String destId=transition.getDest();
+                State newState=task.getStateMap().get(destId);
+//                String stateName=newState.getName();
+                return newState;
+//                currentTaskInstance.setCurrentState(newState);
+//                isTransition = true;
+//                if (newState.getName().trim().toLowerCase().equals("idle")) {
+//                    taskInstanceMap.remove(taskInsaneId);
+//                    trueTransition = false;
+//                } else
+//                    trueTransition = true;
             }
         }
-        if (!isTransition) {
-            blockQueue.add(currentTaskInstance);
-            trueTransition = false;
-        }
-        return trueTransition;
+        return null;
+//        if (!isTransition) {
+//            blockQueue.add(currentTaskInstance);
+//            trueTransition = false;
+//        }
+//        return trueTransition;
     }
 
     public static void updateDataInState(String event, Component component) {

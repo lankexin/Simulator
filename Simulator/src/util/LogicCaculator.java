@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-public class EventProcess {
+public class LogicCaculator {
 
     public static boolean eventProcess(String event){
         event = event.replaceAll(" ", "");
@@ -160,7 +160,7 @@ public class EventProcess {
             double r = numbers.pop();
             boolean rBool;
             rBool = (r == 1);
-            System.out.println(sign + " " + rBool);
+            //System.out.println(sign + " " + rBool);
             rBool = notOperator(rBool);
             numbers.push(rBool ? 1.0 : 0.0);
         } else if (sign.equals("+") || sign.equals("-") ||
@@ -168,7 +168,7 @@ public class EventProcess {
             double r = numbers.pop();
             double l = numbers.pop();
             double ans = calculate(l, r, sign);
-            System.out.println(sign + " " + r + " " + l + " " + ans);
+            //System.out.println(sign + " " + r + " " + l + " " + ans);
             numbers.push(ans);
         } else if (sign.equals(">=") || sign.equals("<=") ||
                 sign.equals(">") || sign.equals("<") ||
@@ -176,7 +176,7 @@ public class EventProcess {
             double r = numbers.pop();
             double l = numbers.pop();
             boolean rBool;
-            System.out.println(sign + " " + l + " " + r);
+            //System.out.println(sign + " " + l + " " + r);
             rBool = logicOperateI(l, r, sign);
             numbers.push(rBool ? 1.0 : 0.0);
         } else if (sign.equals("&") || sign.equals("|")) {
@@ -185,7 +185,7 @@ public class EventProcess {
             boolean rBool, lBool;
             rBool = (r == 1);
             lBool = (l == 1);
-            System.out.println(sign + " " + rBool + " " + lBool);
+            //System.out.println(sign + " " + rBool + " " + lBool);
             rBool = logicOperatorII(rBool, lBool, sign);
             numbers.push(rBool ? 1.0 : 0.0);
         }
@@ -232,8 +232,6 @@ public class EventProcess {
                 return l && r;
             case "|":
                 return l || r;
-//            case "!":
-//                return !r;
             default:
                 return false;
         }
@@ -242,12 +240,5 @@ public class EventProcess {
     private static boolean notOperator(boolean r) {
         return !r;
     }
-
-//    public static void main(String[] args) {
-//        String input = "(3.8+4.0908>5)&(7>8)";
-//
-//        boolean ans = eventProcess(input);
-//        System.out.println(ans);
-//    }
 
 }
