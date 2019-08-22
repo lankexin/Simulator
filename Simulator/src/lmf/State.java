@@ -102,4 +102,20 @@ public class State {
     public Map<String, State> getSubStateList() {
         return subStateMap;
     }
+
+    public String getFaultType() {
+        return faultType;
+    }
+
+    public void setFaultType(String faultType) {
+        this.faultType = faultType;
+    }
+
+    public boolean isFaultState() {
+        return isFaultState;
+    }
+
+    public void setFaultState(boolean faultState) {
+        isFaultState = faultState;
+    }
 }
