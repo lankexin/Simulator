@@ -11,6 +11,7 @@ public class Task {
     private float deadline;
 
     private String firstStateId;
+    private State firstState;
     /**
      * 该组件下所有的transition
      * key: source state id
@@ -26,12 +27,66 @@ public class Task {
      */
     private Map<String, State> stateMap;
 
-    /**
-     * 任务当前的状态：就绪、等待、运行
-     */
-    private String taskState;
-
     private List<State> stateList;
+
+    public Task(Component component, String taskId) {
+        this.componentId = component.getAttr("id");
+        this.wcet = Float.valueOf(component.getAttr("wcet"));
+
+        if (component.getAttr("period") != null) {
+            this.period = Float.valueOf(component.getAttr("period"));
+        } else {
+            this.period = -1;
+        }
+
+        if (component.getAttr("deadline") != null) {
+            this.deadline = Float.valueOf(component.getAttr("deadline"));
+        } else {
+            this.deadline = -1;
+        }
+
+        this.id = taskId;
+        this.transitionMap = component.getTransitionMap();
+        this.stateMap = component.getStateMap();
+
+        for (String stateKey : component.getStateMap().keySet()) {
+            if (component.getStateMap().get(stateKey).getAttr("name").equalsIgnoreCase("idle")) {
+                this.firstStateId = stateKey;
+                this.firstState = component.getStateMap().get(stateKey);
+                break;
+            }
+        }
+    }
+
+
+    public Task(Component component, State state, String taskId) {
+        this.componentId = component.getAttr("id");
+        this.wcet = Float.valueOf(state.getAttr("wcet"));
+
+        if (state.getAttr("period") != null) {
+            this.period = Float.valueOf(state.getAttr("period"));
+        } else {
+            this.period = -1;
+        }
+
+        if (state.getAttr("deadline") != null) {
+            this.deadline = Float.valueOf(state.getAttr("deadline"));
+        } else {
+            this.deadline = -1;
+        }
+
+        this.id = taskId;
+        this.transitionMap = component.getTransitionMap();
+        this.stateMap = state.getSubStateList();
+
+        for (String stateKey : state.getSubStateList().keySet()) {
+            if (state.getSubStateList().get(stateKey).getAttr("name").equalsIgnoreCase("idle")) {
+                this.firstStateId = stateKey;
+                this.firstState = state.getSubStateList().get(stateKey);
+                break;
+            }
+        }
+    }
 
     public String getComponentId() {
         return componentId;
@@ -47,14 +102,6 @@ public class Task {
 
     public float getWcet() {
         return wcet;
-    }
-
-    public String getTaskState() {
-        return taskState;
-    }
-
-    public void setTaskState(String taskState) {
-        this.taskState = taskState;
     }
 
     public void setComponentId(String componentId) {
@@ -111,5 +158,9 @@ public class Task {
 
     public void setStateList(List<State> stateList) {
         this.stateList = stateList;
+    }
+
+    public State getFirstState() {
+        return firstState;
     }
 }

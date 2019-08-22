@@ -1,7 +1,5 @@
 package lmf;
 
-import java.util.List;
-
 public class TaskInstance {
 
     private String instanceId;
@@ -24,10 +22,13 @@ public class TaskInstance {
      */
     private String statePath;
 
-    public TaskInstance(String instanceId, String taskId, String stateId) {
+    public TaskInstance(String instanceId, String taskId,
+                        State state, String stateName) {
         this.instanceId = instanceId;
         this.taskId = taskId;
-        taskStateId = stateId;
+        this.currentState = state;
+        taskStateId = "就绪";
+        statePath = stateName;
     }
 
     public String getInstanceId() {

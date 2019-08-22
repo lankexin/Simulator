@@ -2,6 +2,7 @@ package simulate;
 
 import lmf.*;
 import manager.TaskManagement;
+import realtime.TaskExtraction;
 import util.PropertiyParse;
 import util.XmlParse;
 
@@ -14,10 +15,11 @@ public class Simulator {
     static int currentSystemTime;
     static int currentTimePiece;
 
-    static TaskManagement mTaskManageMent = new TaskManagement();
-    static TaskExcute mTaskExecute = new TaskExcute();
 
     static float timePiece=Float.valueOf(readProperty("realtime.schedule.timepiece"));
+    private static TaskManagement mTaskManageMent = new TaskManagement();
+    private static TaskExcute mTaskExecute = new TaskExcute();
+    private static TaskExtraction mTaskExtraction = new TaskExtraction();
 
     /**记录失败任务的列表*/
     static List<String> failureTaskList;
@@ -67,10 +69,13 @@ public class Simulator {
         channelList = new ArrayList<>();
         XmlParse.parseXML("xml-name", componentMap, sharedDataMap, channelList);
 
-        int targetTime = Integer.valueOf(readProperty("target execute time"));
+        taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
+
+        int targetTime = Integer.valueOf(PropertiyParse.readProperty("target execute time"));
 
         waitingTaskInstanceList = new HashMap<>();
         timePieceMap = new HashMap<>();
+        blockQueue = new ArrayList<>();
 
         Timer taskQueueManagementTimer = new Timer();
         taskQueueManagementTimer.schedule(new TimerTask() {

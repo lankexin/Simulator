@@ -1,6 +1,7 @@
 package realtime;
 
 import lmf.*;
+import util.XmlParse;
 
 import java.util.*;
 
@@ -8,10 +9,26 @@ public class TaskExtraction {
 
     public Map<String, Task> taskExtraction(Map<String, Component> componentMap, List<Channel> channelList) {
         Map<String, Task> taskMap = new LinkedHashMap<>();
+        int newTaskId = 0;
 
-        //Map<String, PathNode> pathNodeMap = new HashMap<>();
-        //getSystemPathNode(channelList, componentMap, pathNodeMap);
-
+        for (String key : componentMap.keySet()) {
+            Component currentComponent = componentMap.get(key);
+            if (currentComponent.getStateMap().isEmpty()) continue;
+            for (String stateKey : currentComponent.getStateMap().keySet()) {
+                if (currentComponent.getStateMap().get(stateKey).getAttr("andstate").equals("true")) {
+                    Task newTask = new Task(currentComponent,
+                            currentComponent.getStateMap().get(stateKey),
+                            String.valueOf(newTaskId));
+                    taskMap.put(newTask.getId(), newTask);
+                    newTaskId++;
+                } else {
+                    Task newTask = new Task(currentComponent, String.valueOf(newTaskId));
+                    taskMap.put(newTask.getId(), newTask);
+                    newTaskId++;
+                    break;
+                }
+            }
+        }
 
         return taskMap;
     }
@@ -58,11 +75,26 @@ public class TaskExtraction {
      * 根据组件的连接顺序给任务排序
      * @return 返回一个排好序的task map
      */
-    public Map<String, Task> staticSchedule(Map<String, Task> taskMap, Map<String, Component> compponentMap) {
-        Map<String, Task> taskList = new HashMap<>();
+//    public Map<String, Task> staticSchedule(Map<String, Task> taskMap, Map<String, Component> compponentMap) {
+//        Map<String, Task> taskList = new HashMap<>();
+//
+//
+//
+//        return taskList;
+//    }
+    public static void main(String[] args) {
+        TaskExtraction mTaskExtraction = new TaskExtraction();
 
+        Map<String, Component> componentMap = new HashMap<>();
+        List<Channel> channelList = new ArrayList<>();
+        Map<String, Data> sharedDataMap = new HashMap<>();
+        XmlParse.parseXML("simulink0822.xml", componentMap, sharedDataMap, channelList);
 
+        Map<String, Task> taskMap;
+        taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
 
-        return taskList;
+        for (String key : taskMap.keySet()) {
+            System.out.println(key + " " + taskMap.get(key).getPeriod());
+        }
     }
 }

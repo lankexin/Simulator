@@ -1,12 +1,8 @@
 package manager;
 
-import lmf.Component;
-import lmf.Task;
-import lmf.TaskInstance;
-import lmf.Transition;
+import lmf.*;
 import realtime.Schedule;
 import simulate.ExpressCalculate;
-import util.ParseStr;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,9 +57,9 @@ public class TaskManagement {
              FaultInjection.inject();
              } */
 
-            if (currentSystemTime % currentTask.getPeriod() == 0) {
+            if (currentTask.getPeriod() != -1 && currentSystemTime % currentTask.getPeriod() == 0) {
                 TaskInstance newTaskInstance = new TaskInstance(currentTask.getId()+"_"+currentSystemTime,
-                        currentTask.getId(), currentTask.getFirstStateId());
+                        currentTask.getId(), currentTask.getFirstState(), "Idle");
                 waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
                 timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
             }
@@ -71,7 +67,8 @@ public class TaskManagement {
 
                 Component targetComponent = componentMap
                         .get(currentTask.getComponentId());
-                TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions, targetComponent, currentTask);
+                TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions,
+                        targetComponent, currentTask, currentTask.getFirstState());
 
                 if (newTaskInstance != null) {
                     waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
@@ -109,9 +106,12 @@ public class TaskManagement {
                                     .getTaskId())
                             .getComponentId());
             TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions,
-                    targetComponent, taskMap.get(taskInstance.getTaskId()));
-            waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
-            timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+                    targetComponent, taskMap.get(taskInstance.getTaskId()),
+                    taskInstance.getCurrentState());
+            if (newTaskInstance != null) {
+                waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
+                timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+            }
         }
 
         return timePieceMap;
@@ -120,12 +120,14 @@ public class TaskManagement {
     private TaskInstance isTransitted(int currentSystemTime,
                                       List<Transition> transitions,
                                       Component targetComponent,
-                                      Task currentTask) {
+                                      Task currentTask,
+                                      State currentState) {
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
             if (ExpressCalculate.getLogicResult(transition.getEvent(), targetComponent).equals("1")) {
                 newTaskInstance = new TaskInstance(currentTask.getId() + "_" + currentSystemTime,
-                        currentTask.getId(), currentTask.getFirstStateId());
+                        currentTask.getId(), currentState,
+                        currentState.getAttr("name"));
                 break;
             }
         }

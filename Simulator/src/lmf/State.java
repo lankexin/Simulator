@@ -23,12 +23,12 @@ public class State {
 
     private Map<String, String> attrs;
 
-    private List<State> subStateList;
+    private Map<String, State> subStateMap;
     private float leftExcuteTime;
 
     public State() {
         attrs = new HashMap<>();
-        subStateList = new ArrayList<>();
+        subStateMap = new HashMap<>();
     }
 
     public String getId() {
@@ -99,8 +99,8 @@ public class State {
         return attrs.get(key);
     }
 
-    public List<State> getSubStateList() {
-        return subStateList;
+    public Map<String, State> getSubStateList() {
+        return subStateMap;
     }
 
     public String getFaultType() {
