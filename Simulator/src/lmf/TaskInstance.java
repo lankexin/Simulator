@@ -1,7 +1,5 @@
 package lmf;
 
-import safety.FaultInjection;
-
 import java.util.List;
 
 public class TaskInstance {
@@ -90,10 +88,5 @@ public class TaskInstance {
     public List<String> getStatePath() {
         return statePath;
     }
-
-    public void setStatePath(List<String> statePath) {
-        TaskInstance.statePath = statePath;
-    }
-
 
 }

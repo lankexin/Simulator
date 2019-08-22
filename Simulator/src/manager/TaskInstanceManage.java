@@ -1,19 +1,19 @@
 package manager;
 
 import lmf.TaskInstance;
-import safety.FaultInjection;
+import safety.FaultInjectTransition;
 
 import java.util.List;
 
-public abstract class TaskInstanceManage implements FaultInjection {
+public class TaskInstanceManage implements FaultInjectTransition {
+
+    @Override
     public String getTransitionPath(TaskInstance taskInstance){
         String path = null;
         List<String> statePath=taskInstance.getStatePath();
         if(statePath!=null) {
             StringBuilder sb = new StringBuilder();
-            for (String transition : statePath) {
-                String[] strs = transition.split("-");
-                String state = strs[0];
+            for (String state : statePath) {
                 sb.append(state + "->");
             }
             path = sb.toString();
@@ -21,6 +21,7 @@ public abstract class TaskInstanceManage implements FaultInjection {
         return path;
     }
 
+    @Override
     public boolean isTransition(TaskInstance taskInstance,String condition){
         String path=getTransitionPath(taskInstance);
         boolean isTransition=false;

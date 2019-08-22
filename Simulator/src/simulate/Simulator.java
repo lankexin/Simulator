@@ -2,35 +2,28 @@ package simulate;
 
 import lmf.*;
 import manager.TaskManagement;
-import safety.FaultInjection;
 import util.PropertiyParse;
 import util.XmlParse;
 
 import java.util.*;
 
-public abstract class Simulator implements FaultInjection{
+public class Simulator {
 
     private static int currentSystemTime;
     private static int currentTimePiece;
 
     private static TaskManagement mTaskManageMent = new TaskManagement();
 
-    /**
-     *  记录失败任务的列表
-     */
+    /**记录失败任务的列表*/
     private static List<String> failureTaskList;
 
-    /**
-     * 解析出来的transitionMap
-     * key：component id
-     */
+    /**解析出来的transitionMap
+     * key：component id*/
     private static Map<String, Component> componentMap;
 
-    /**
-     * 记录状态的迁移过程
+    /**记录状态的迁移过程
      * key：任务实例id
-     * value：状态-event-data-timestamp
-     */
+     * value：状态-event-data-timestamp*/
     private static Map<String, List<String>> statePathBuffer;
 
     /**
@@ -39,10 +32,8 @@ public abstract class Simulator implements FaultInjection{
      */
     private static Map<String, Data> sharedDataMap;
 
-    /**
-     * 解析得到的dataMap
-     * key：task id（要求名字不能重复）
-     */
+    /**解析得到的dataMap
+     * key：task id（要求名字不能重复）*/
     private static Map<String, Task> taskMap;
 
     /**
@@ -80,7 +71,6 @@ public abstract class Simulator implements FaultInjection{
             }
         }, 1000, 10);
 
-
         //定时器
         Timer exucuteTimer = new Timer();
         exucuteTimer.schedule(new TimerTask() {
@@ -90,8 +80,6 @@ public abstract class Simulator implements FaultInjection{
                 TaskExcute.taskExcute(currentTimePiece, taskQueue);
             }
         }, 1000, 100);
-
-
 
         //日志：从当前的缓存区拿信息到文件中
         Timer logTimer = new Timer();
@@ -108,13 +96,13 @@ public abstract class Simulator implements FaultInjection{
 
     }
 
-    public static synchronized void update(String dataName , String newValue){
+    public synchronized void update(String dataName , String newValue){
         Data data=sharedDataMap.get(dataName);
         data.setValue(newValue);
         sharedDataMap.put(dataName,data);
     }
 
-    public static String get(String dataName){
+    public String get(String dataName){
         String value=sharedDataMap.get(dataName).getValue();
         return value;
     }
