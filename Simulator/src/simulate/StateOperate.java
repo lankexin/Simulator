@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static simulate.ExpressCalculate.getResultData;
 import static util.ParseStr.getAssignedData;
 
 public class StateOperate {
@@ -102,49 +103,41 @@ public class StateOperate {
 //    }
 
     public static boolean stateTransition(State currentState, Component component, TaskInstance currentTaskInstance,
-                                Task task, List<TaskInstance> blockQueue, Map<String, TaskInstance> taskInstanceMap){
-        boolean trueTransition=false;
+                                          Task task, List<TaskInstance> blockQueue, Map<String, TaskInstance> taskInstanceMap) {
+        boolean trueTransition = false;
 
         List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
-        Map<String, Data> dataMap=component.getDataMap();
-        String taskInsaneId=currentTaskInstance.getTaskId();
+        Map<String, Data> dataMap = component.getDataMap();
+        String taskInsaneId = currentTaskInstance.getTaskId();
         boolean isTransition = false;
         for (Transition transition : transitions) {
-            if (EventProcess.eventProcess(transition.getEvent(),component)) {
-                String destId=transition.getDest();
-                State newState=task.getStateMap().get(destId);
+            if (EventProcess.eventProcess(transition.getEvent(), component)) {
+                String destId = transition.getDest();
+                State newState = task.getStateMap().get(destId);
                 currentTaskInstance.setCurrentState(newState);
                 isTransition = true;
-                if(newState.getName().trim().toLowerCase().equals("idle")){
+                if (newState.getName().trim().toLowerCase().equals("idle")) {
                     taskInstanceMap.remove(taskInsaneId);
-                    trueTransition=false;
-                }
-                else
-                    trueTransition=true;
+                    trueTransition = false;
+                } else
+                    trueTransition = true;
             }
         }
-        if (! isTransition){
+        if (!isTransition) {
             blockQueue.add(currentTaskInstance);
-            trueTransition=false;
+            trueTransition = false;
         }
         return trueTransition;
     }
 
-    public static void updateDataInState(String event,Component component){
-        String parsedStr= ParseStr.parseStr(event,component);
-        Map<String,String> dataStr=getAssignedData(parsedStr);
-        String dataName=dataStr.entrySet().iterator().next().getKey();
-        String express=dataStr.entrySet().iterator().next().getValue();
-        ComponentManage componentManage=new ComponentManage();
-        if(express.contains("!") || express.contains("&") || express.contains("|") ||express.contains(">")
-                || express.contains("<") || express.contains("=")){
-            String value=eventProcess(event);
-        }
-        else{
-            Calculate calculate=new Calculate();
-            String value=calculate.getEventuate(express).split("=")[1];
-            componentManage.update(component,dataName,value);
-        }
+    public static void updateDataInState(String event, Component component) {
+        String parsedStr = ParseStr.parseStr(event, component);
+        Map<String, String> dataStr = getAssignedData(parsedStr);
+        String dataName = dataStr.entrySet().iterator().next().getKey();
+        String express = dataStr.entrySet().iterator().next().getValue();
+        ComponentManage componentManage = new ComponentManage();
+        String value=getResultData(express);
+        componentManage.update(component, dataName, value);
     }
 
 }
