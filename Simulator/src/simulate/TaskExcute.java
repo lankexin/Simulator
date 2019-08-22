@@ -120,6 +120,7 @@ public class TaskExcute implements FaultInject {
                     currentTaskInstance.setCurrentState(newState);
                     String appendMessage=lastStateName+"状态迁移到"+currentState.getName()+",时间"+currentTimePiece+",迁移事件"
                             +transitionEvent+",解析事件"+parsedEvent;
+                    if(newState.isFaultState()){}
                     List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
                     pathBuffer.add(appendMessage);
                     statePathBuffer.put(taskInsaneId,pathBuffer);
@@ -173,7 +174,7 @@ public class TaskExcute implements FaultInject {
                 else if(possibleNewState.getName().trim().toLowerCase().equals("idle")){
                     taskInstanceMap.remove(taskInsaneId);
                     String appendMessage="当前任务实例状态迁移到idle，运行结束,时间"+currentTimePiece+
-                    ",迁移事件"+transitionEvent+",解析事件"+parsedEvent;;
+                    ",迁移事件"+transitionEvent+",解析事件"+parsedEvent;
                     List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
                     pathBuffer.add(appendMessage);
                     statePathBuffer.put(taskInsaneId,pathBuffer);
@@ -210,7 +211,6 @@ public class TaskExcute implements FaultInject {
             }
             if (conditionType.equals("transitionPath")) {
                 String condition = fault.getCondition();
-                String path = taskInstanceManage.getTransitionPath(taskInstance);
                 boolean istransition = taskInstanceManage.isTransition(taskInstance, condition);
                 if (istransition) {
                     List<String> dataList = fault.getDataList();
@@ -219,4 +219,6 @@ public class TaskExcute implements FaultInject {
             }
         }
     }
+
+
 }
