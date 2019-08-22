@@ -3,6 +3,7 @@ package simulate;
 import common.DataStore;
 import lmf.*;
 import util.EventProcess;
+import util.ParseStr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,7 @@ public class StateOperate {
         String taskInsaneId=currentTaskInstance.getTaskId();
         boolean isTransition = false;
         for (Transition transition : transitions) {
-            if (EventProcess.eventProcess(transition.getEvent, dataMap)) {
+            if (EventProcess.eventProcess(transition.getEvent(),component)) {
                 String destId=transition.getDest();
                 State newState=task.getStateMap().get(destId);
                 currentTaskInstance.setCurrentState(newState);
@@ -125,7 +126,8 @@ public class StateOperate {
         return trueTransition;
     }
 
-    public static void updateDataInState(String event){
+    public static void updateDataInState(String event,Component component){
+        String parsedStr= ParseStr.parseStr(event,component);
 
     }
 

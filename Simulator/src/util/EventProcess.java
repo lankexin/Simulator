@@ -1,13 +1,14 @@
 package util;
 
+import lmf.Component;
 import lmf.Data;
 
 import java.util.Map;
 
 public class EventProcess {
 
-    public static boolean eventProcess(String event, Map<String, Data> dataMap ){
-
+    public static boolean eventProcess(String event, Component component ){
+        String parsedStr=ParseStr.parseStr(event,component);
         return false;
     }
 
