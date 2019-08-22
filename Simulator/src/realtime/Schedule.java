@@ -20,7 +20,7 @@ public class Schedule {
     private String scheduleAlgorithm = null;
 
     public Schedule() {
-        scheduleAlgorithm = PropertiyParse.read("schedule algorithm");
+        scheduleAlgorithm = PropertiyParse.readProperty("schedule algorithm");
     }
 
     /**
@@ -52,6 +52,7 @@ public class Schedule {
      */
     public Map<String, Task> staticSchedule(Map<String, Task> taskMap) {
         Map<String, Task> taskList = new HashMap<>();
+
 
         return taskList;
     }
