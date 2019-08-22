@@ -21,7 +21,7 @@ public class TaskInstance {
     /**运行中各组件运行的过程记录
      * value: stateId
      */
-    private List<String> statePath;
+    private String statePath;
 
     public TaskInstance(String instanceId, String taskId, String stateId) {
         this.instanceId = instanceId;
@@ -85,7 +85,7 @@ public class TaskInstance {
         this.taskStateId = taskStateId;
     }
 
-    public List<String> getStatePath() {
+    public String getStatePath() {
         return statePath;
     }
 
