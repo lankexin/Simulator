@@ -56,10 +56,12 @@ public class TaskExcute implements FaultInject {
 //        boolean isTransition = false;
                 State newState=null;
                 String transitionEvent=null;
+                String parsedEvent=null;
                 for (Transition transition : transitions) {
                     String express= ParseStr.parseStr(transition.getEvent(),component);
                     if (LogicCaculator.eventProcess(express)) {
                         transitionEvent=transition.getEvent();
+                        parsedEvent=express;
                         String destId=transition.getDest();
                         newState=task.getStateMap().get(destId);
                     }
@@ -78,7 +80,8 @@ public class TaskExcute implements FaultInject {
                     }
                     else{
                         taskInstanceMap.remove(taskInsaneId);
-                        String appendMessage="当前任务实例状态迁移到idle,运行结束,时间"+currentTimePiece+"迁移事件"++"";
+                        String appendMessage="当前任务实例状态迁移到idle,运行结束,时间"+currentTimePiece+
+                                ",迁移事件"+transitionEvent+",解析事件"+parsedEvent;
                         List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
                         pathBuffer.add(appendMessage);
                         statePathBuffer.put(taskInsaneId,pathBuffer);
@@ -112,7 +115,8 @@ public class TaskExcute implements FaultInject {
                 else{
                     String lastStateName=currentState.getName();
                     currentTaskInstance.setCurrentState(newState);
-                    String appendMessage=lastStateName+"状态迁移到"+currentState.getName();
+                    String appendMessage=lastStateName+"状态迁移到"+currentState.getName()+",时间"+currentTimePiece+",迁移事件"
+                            +transitionEvent+",解析事件"+parsedEvent;
                     List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
                     pathBuffer.add(appendMessage);
                     statePathBuffer.put(taskInsaneId,pathBuffer);
@@ -177,9 +181,11 @@ public class TaskExcute implements FaultInject {
             //根据注入条件类型的不同来分别检查
             if (conditionType.equals("relatedData")) {
                 String condition = fault.getCondition();
-                String relatedDataName = condition.split(";")[0];
+//                String relatedDataName = condition.split(";")[0];
                 //判定当前这个环境数据值是否满足注入条件的范围
-                boolean isInRange = componentManage.get(component, relatedDataName).isInRange(condition);
+//                boolean isInRange = componentManage.get(component, relatedDataName).isInRange(condition);
+                String parsedStr=ParseStr.parseStr(condition,component);
+                boolean isInRange=LogicCaculator.eventProcess(parsedStr);
                 if (isInRange) {
                     List<Data> dataList = fault.getDataName_type_value();
                     componentManage.updateData(component, operateorMethod, dataList);
