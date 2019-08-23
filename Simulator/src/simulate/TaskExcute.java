@@ -25,6 +25,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
         if (Simulator.timePieceMap != null && !Simulator.timePieceMap.isEmpty()) {
             //当前执行的任务实例id
             String taskInsaneId = timePieceMap.get(currentTimePiece);
+            System.out.println("taskInstanceId"+taskInsaneId);
 
             TaskInstance currentTaskInstance = waitingTaskInstanceList.get(taskInsaneId);
 
@@ -123,7 +124,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                         statePathBuffer.put(taskInsaneId, pathBuffer);
                     }
                     Schedule schedule = new Schedule();
-                    timePieceMap = schedule.schedule(currentTimePiece - 1, waitingTaskInstanceList,
+                    timePieceMap = schedule.schedule(currentTimePiece, waitingTaskInstanceList,
                             taskMap);
 //
 //                    taskInsaneId = newTimePieceMap.get(currentTimePiece);
