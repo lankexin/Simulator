@@ -52,7 +52,7 @@ public class Simulator implements DataStore {
 
     /**记录故障相关的信息，迁移到故障状态的时间，事件
      * 以及故障注入的时间，注入点，故障类型，是否注入成功*/
-    static Map<String, List<String>> faultBuffer;
+    static Map<String, List<String>> faultBuffer=new LinkedHashMap<>();
 
 
     /**

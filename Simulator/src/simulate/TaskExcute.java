@@ -119,8 +119,12 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 if (newState == null || newState.getName().trim().toLowerCase().equals("idle")) {
                     if (newState == null) {
                         blockQueue.add(currentTaskInstance);
+                        waitingTaskInstanceList.remove(taskInsaneId);
                         String appendMessage = "当前阻塞在状态" + currentState.getName();
+                        System.out.println("statePathBuffer"+statePathBuffer);
                         List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
+                        if(pathBuffer==null)
+                            pathBuffer=new ArrayList<>();
                         pathBuffer.add(appendMessage);
                         statePathBuffer.put(taskInsaneId, pathBuffer);
                     } else {
@@ -130,6 +134,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                         StringBuilder temproStatePath = new StringBuilder(statePath);
                         temproStatePath.append("->" + newState.getName());
                         List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
+                        if(pathBuffer==null)
+                            pathBuffer=new ArrayList<>();
                         pathBuffer.add(appendMessage);
                         statePathBuffer.put(taskInsaneId, pathBuffer);
                     }
@@ -253,6 +259,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
 
                 if (possibleNewState == null) {
                     blockQueue.add(currentTaskInstance);
+                    waitingTaskInstanceList.remove(taskInsaneId);
                     /** key：任务实例id
                      * value：状态-event-data-timestamp*/
                     String appendMessage = "当前阻塞在状态" + currentState.getName();
