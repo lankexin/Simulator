@@ -11,6 +11,9 @@ public class TaskInstance {
 
     private int arriveTimestamp;
     private int executeTimestamp;
+    private float deadline;
+    private float wcet;
+    private float period;
 
     /**
      * 任务当前的状态：就绪、等待、运行
@@ -22,13 +25,20 @@ public class TaskInstance {
      */
     private String statePath;
 
-    public TaskInstance(String instanceId, String taskId,
-                        State state, String stateName) {
+    public TaskInstance(int arriveTimestamp, String instanceId,
+                        State state, String stateName,
+                        float leftExcuteTime,
+                        Task task) {
         this.instanceId = instanceId;
-        this.taskId = taskId;
+        this.taskId = task.getId();
         this.currentState = state;
         taskStateId = "就绪";
         statePath = stateName;
+        this.stateLeftExcuteTime = leftExcuteTime;
+        this.arriveTimestamp = arriveTimestamp;
+        this.deadline = (float)arriveTimestamp + task.getDeadline();
+        this.wcet = task.getWcet();
+        this.period = task.getPeriod();
     }
 
     public String getInstanceId() {
@@ -79,6 +89,10 @@ public class TaskInstance {
         this.executeTimestamp = executeTimestamp;
     }
 
+    public float getStateLeftExcuteTime() {
+        return stateLeftExcuteTime;
+    }
+
     public String getTaskState() {
         return taskStateId;
     }
@@ -91,8 +105,16 @@ public class TaskInstance {
         return statePath;
     }
 
-    public float getStateLeftExcuteTime() {
-        return stateLeftExcuteTime;
+    public float getDeadline() {
+        return deadline;
+    }
+
+    public float getWcet() {
+        return wcet;
+    }
+
+    public float getPeriod() {
+        return period;
     }
 
     public void setStateLeftExcuteTime(float stateLeftExcuteTime) {

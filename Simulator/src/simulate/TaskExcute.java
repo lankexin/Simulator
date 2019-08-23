@@ -8,13 +8,11 @@ import safety.FaultInject;
 import util.LogicCaculator;
 import util.ParseStr;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static safety.FaultSet.getFaultInjectMap;
 import static simulate.Simulator.*;
-import static simulate.Simulator.currentTimePiece;
 
 public class TaskExcute implements FaultInject {
 

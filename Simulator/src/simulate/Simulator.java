@@ -15,8 +15,8 @@ public class Simulator {
     static int currentSystemTime;
     static int currentTimePiece;
 
+    public static float timePiece=Float.valueOf(readProperty("realtime.schedule.timepiece"));
 
-    static float timePiece=Float.valueOf(readProperty("realtime.schedule.timepiece"));
     private static TaskManagement mTaskManageMent = new TaskManagement();
     private static TaskExcute mTaskExecute = new TaskExcute();
     private static TaskExtraction mTaskExtraction = new TaskExtraction();

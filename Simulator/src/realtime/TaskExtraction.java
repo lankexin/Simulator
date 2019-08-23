@@ -15,7 +15,7 @@ public class TaskExtraction {
             Component currentComponent = componentMap.get(key);
             if (currentComponent.getStateMap().isEmpty()) continue;
             for (String stateKey : currentComponent.getStateMap().keySet()) {
-                if (currentComponent.getStateMap().get(stateKey).getAttr("andstate").equals("true")) {
+                if (currentComponent.getStateMap().get(stateKey).getAttr("andstate") != null) {
                     Task newTask = new Task(currentComponent,
                             currentComponent.getStateMap().get(stateKey),
                             String.valueOf(newTaskId));
@@ -82,19 +82,21 @@ public class TaskExtraction {
 //
 //        return taskList;
 //    }
-    public static void main(String[] args) {
-        TaskExtraction mTaskExtraction = new TaskExtraction();
 
-        Map<String, Component> componentMap = new HashMap<>();
-        List<Channel> channelList = new ArrayList<>();
-        Map<String, Data> sharedDataMap = new HashMap<>();
-        XmlParse.parseXML("simulink0822.xml", componentMap, sharedDataMap, channelList);
-
-        Map<String, Task> taskMap;
-        taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
-
-        for (String key : taskMap.keySet()) {
-            System.out.println(key + " " + taskMap.get(key).getPeriod());
-        }
-    }
+//    public static void main(String[] args) {
+//        TaskExtraction mTaskExtraction = new TaskExtraction();
+//
+//        Map<String, Component> componentMap = new HashMap<>();
+//        List<Channel> channelList = new ArrayList<>();
+//        Map<String, Data> sharedDataMap = new HashMap<>();
+//        XmlParse.parseXML("simulink0822.xml", componentMap, sharedDataMap, channelList);
+//
+//        Map<String, Task> taskMap;
+//        taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
+//
+//        for (String key : taskMap.keySet()) {
+//            System.out.println(key + " " + taskMap.get(key).getPeriod() + " "
+//                    + taskMap.get(key).getComponentId());
+//        }
+//    }
 }
