@@ -3,6 +3,7 @@ package manager;
 import lmf.*;
 import realtime.Schedule;
 import simulate.ExpressCalculate;
+import util.ParseStr;
 
 import java.util.*;
 
@@ -19,14 +20,18 @@ public class TaskManagement {
                                                              Map<String, TaskInstance> waitingTaskList,
                                                              List<TaskInstance> blockTaskList,
                                                              Map<String, Component> componentMap) {
+        System.out.println("start management");
         Map<Integer, String> timePieceMap = new HashMap<>();
 
         Map<Integer, String> tempTimePieceMap;
         tempTimePieceMap = waitingQueueManagement(currentSystemTime, taskMap, waitingTaskList, componentMap);
+        System.out.println("finish waiting queue management");
+
         if (tempTimePieceMap.size() > 0) {
             timePieceMap = tempTimePieceMap;
         }
         tempTimePieceMap = blockQueueManageMent(currentSystemTime, blockTaskList, taskMap, componentMap, waitingTaskList);
+        System.out.println("finish block queue management");
         if (tempTimePieceMap.size() > 0) {
             timePieceMap = tempTimePieceMap;
         }
@@ -39,8 +44,10 @@ public class TaskManagement {
                                                               Map<String, Task> taskMap,
                                                               Map<String, TaskInstance> waitingTaskList,
                                                               Map<String, Component> componentMap) {
+        System.out.println("start waiting queue management");
         Map<Integer, String> timePieceMap = new HashMap<>();
 
+        System.out.println(taskMap.size());
         for (String taskKey : taskMap.keySet()) {
             // todo：遍历task map，看是否有task满足触发条件，满足则生成对应的task instance，并加入等待队列中。
 
@@ -62,22 +69,30 @@ public class TaskManagement {
                             currentTask.getFirstState(), "Idle",
                             currentTask.getFirstState().getWcet(), currentTask);
                     waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
+                    System.out.println("start schedule");
                     timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+                    System.out.println("finish schedule");
                 }
             }
             else {
 
                 Component targetComponent = componentMap
                         .get(currentTask.getComponentId());
+                System.out.println("start is transitted");
                 TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions,
                         targetComponent, currentTask, currentTask.getFirstState());
+                System.out.println("finish is transitted");
 
                 if (newTaskInstance != null) {
                     waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
+                    System.out.println("start schedule");
                     timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+                    System.out.println("finish schedule");
                 }
             }
         }
+
+        System.out.println("finish waiting queue management");
 
         return timePieceMap;
 
@@ -127,9 +142,18 @@ public class TaskManagement {
                                       Component targetComponent,
                                       Task currentTask,
                                       State currentState) {
+        System.out.println("transition size is " + transitions.size());
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
-            if (ExpressCalculate.getResultData(transition.getEvent()).equals("1")) {
+            System.out.println(transition.getSource() + " " + transition.getDest());
+            System.out.println("start getResult data " + transition.getEvent());
+
+            String express = ParseStr.parseStr(transition.getEvent(), targetComponent);
+            System.out.println(express);
+            String result = ExpressCalculate.getResultData(express);
+
+            System.out.println("finish getResult data " + result);
+            if (result.equals("1")) {
                 newTaskInstance = new TaskInstance(currentSystemTime,
                         currentTask.getId() + "_" + currentSystemTime,
                         currentState, currentState.getAttr("name"),
@@ -138,6 +162,8 @@ public class TaskManagement {
                 break;
             }
         }
+
+        System.out.println();
 
         return newTaskInstance;
     }

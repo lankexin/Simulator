@@ -49,7 +49,6 @@ public class ParseStr {
         int i = 0;
 
         for (; i < length; i++) {
-            String i_1Str = String.valueOf(expression.charAt(i - 1));
             String iStr = String.valueOf(expression.charAt(i));
             boolean isDigit=expression.charAt(i) >= '0' && expression.charAt(i) <= '9';
             if (i == 0) {
@@ -59,6 +58,7 @@ public class ParseStr {
                     newStr.append(expression.charAt(i));
                 }
             } else {
+                String i_1Str = String.valueOf(expression.charAt(i - 1));
                 if (operators.contains(i_1Str) && !operators.contains(iStr) && !isDigit) {
                     name.append(expression.charAt(i));
                 }
@@ -82,6 +82,7 @@ public class ParseStr {
                         } else {
                             ComponentManage componentManage = new ComponentManage();
                             String nameString = name.toString();
+                            System.out.println("name String " + nameString);
                             String value = componentManage.get(component, nameString);
                             if(value==null){
                                 System.out.println("解析式变量名不存在");
