@@ -21,6 +21,7 @@ public class Transition {
     }
 
     public String getSource() {
+        source = attrs.get("source");
         return source;
     }
 
@@ -29,6 +30,7 @@ public class Transition {
     }
 
     public String getDest() {
+        dest = attrs.get("dest");
         return dest;
     }
 
@@ -37,6 +39,11 @@ public class Transition {
     }
 
     public String getEvent() {
+        if (attrs.get("event") != null) {
+            event = attrs.get("event");
+        } else {
+            event = "";
+        }
         return event;
     }
 
