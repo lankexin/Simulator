@@ -10,6 +10,8 @@ import static util.LogicCaculator.eventProcess;
 
 public class ExpressCalculate {
     public static String getResultData(String express) {
+        if(express==null)
+            return "";
         String value = null;
         if (express.contains("!") || express.contains("&") || express.contains("|") || express.contains(">")
                 || express.contains("<") || express.contains("=")) {
@@ -25,15 +27,4 @@ public class ExpressCalculate {
         return value;
     }
 
-
-    public static String getLogicResult(String event, Component component) {
-        String express = ParseStr.parseStr(event, component);
-        Map<String, String> expressMap = ParseStr.getAssignedData(express);
-        String caculateExpress="";
-        for (String key : expressMap.keySet()) {
-            caculateExpress = expressMap.get(key);
-        }
-
-        return getResultData(caculateExpress);
-    }
 }

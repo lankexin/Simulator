@@ -94,14 +94,14 @@ public class Simulator implements DataStore {
         componentMap = new HashMap<>();
         sharedDataMap = new HashMap<>();
         channelList = new ArrayList<>();
-        XmlParse.parseXML("xml-name", componentMap, sharedDataMap, channelDataMap, channelList);
+        XmlParse.parseXML("simulink.xml", componentMap, sharedDataMap, channelDataMap, channelList);
 
         //将数据初始值放在dataMap
         setInput();
 
         taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
 
-        int targetTime = Integer.valueOf(PropertiyParse.readProperty("target execute time"));
+        int targetTime = Integer.valueOf(PropertiyParse.readProperty("simulator.targetTimePiece"));
 
         waitingTaskInstanceList = new HashMap<>();
         timePieceMap = new HashMap<>();

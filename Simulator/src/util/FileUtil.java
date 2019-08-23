@@ -16,14 +16,16 @@ public class FileUtil {
             }
             file.createNewFile();
             writer = new FileWriter(file);
-            for(String key:stateBuffer.keySet()){
-                writer.write(key+"\n");
-                List<String> list=stateBuffer.get(key);
-                for(String str:list){
-                    writer.write(str+"\n");
+            if(stateBuffer!=null) {
+                for (String key : stateBuffer.keySet()) {
+                    writer.write(key + "\n");
+                    List<String> list = stateBuffer.get(key);
+                    for (String str : list) {
+                        writer.write(str + "\n");
+                    }
                 }
+                writer.flush();
             }
-            writer.flush();
         } catch (IOException e) {
             System.out.println("文件写入异常"+e);
             throw e;
