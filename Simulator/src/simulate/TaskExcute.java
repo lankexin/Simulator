@@ -130,6 +130,7 @@ public class TaskExcute implements FaultInject {
                         faults.add(appendFault);
                         faultBuffer.put(taskInsaneId,faults);
                     }
+
                     List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
                     pathBuffer.add(appendMessage);
                     statePathBuffer.put(taskInsaneId,pathBuffer);
