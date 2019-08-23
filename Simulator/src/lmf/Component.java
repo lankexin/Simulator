@@ -43,6 +43,11 @@ public class Component  {
     }
 
     public String getId() {
+        if (attrs.get("id") != null) {
+            id = attrs.get("id");
+        } else {
+            id = "";
+        }
         return id;
     }
 
@@ -51,6 +56,11 @@ public class Component  {
     }
 
     public String getName() {
+        if (attrs.get("name") != null) {
+            name = attrs.get("name");
+        } else {
+            name = "";
+        }
         return name;
     }
 

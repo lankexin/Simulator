@@ -6,7 +6,7 @@ import java.util.Map;
 public class State {
     private String id;
     private String name;
-    private String component;//state所属的组件
+    //private String component;//state所属的组件
 
     private String entryEvent;
     private String doEvent;
@@ -28,56 +28,54 @@ public class State {
     }
 
     public String getId() {
+        if (attrs.get("id") != null) {
+            id = attrs.get("id");
+        } else {
+            id = "";
+        }
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getName() {
+        if (attrs.get("name") != null) {
+            name = attrs.get("name");
+        } else {
+            name = "";
+        }
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getComponent() {
-        return component;
-    }
-
-    public void setComponent(String component) {
-        this.component = component;
-    }
+//    public String getComponent() {
+//        return component;
+//    }
+//
+//    public void setComponent(String component) {
+//        this.component = component;
+//    }
 
     public String getEntryEvent() {
         return entryEvent;
-    }
-
-    public void setEntryEvent(String entryEvent) {
-        this.entryEvent = entryEvent;
     }
 
     public String getDoEvent() {
         return doEvent;
     }
 
-    public void setDoEvent(String doEvent) {
-        this.doEvent = doEvent;
-    }
-
     public String getExitEvent() {
         return exitEvent;
-    }
-
-    public void setExitEvent(String exitEvent) {
-        this.exitEvent = exitEvent;
     }
 
     public float getWcet() {
         if (attrs.get("wcet") != null) {
             wcet = Float.valueOf(attrs.get("wcet").substring(0, attrs.get("wcet").length()-2));
+            return wcet;
+        }
+        return -1;
+    }
+
+    public float getPeriod() {
+        if (attrs.get("period") != null) {
+            wcet = Float.valueOf(attrs.get("period").substring(0, attrs.get("period").length()-2));
             return wcet;
         }
         return -1;
@@ -99,15 +97,14 @@ public class State {
         return faultType;
     }
 
-    public void setFaultType(String faultType) {
-        this.faultType = faultType;
-    }
-
     public boolean isFaultState() {
-        return isFaultState;
-    }
+        if (attrs.get("faultState") != null) {
+            isFaultState = true;
+        } else {
+            isFaultState = false;
+        }
 
-    public void setFaultState(boolean faultState) {
-        isFaultState = faultState;
+        isFaultState = (attrs.get("faultState") != null);
+        return isFaultState;
     }
 }
