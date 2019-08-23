@@ -85,14 +85,20 @@ public class ParseStr {
                             ComponentManage componentManage = new ComponentManage();
                             String nameString = name.toString();
                             System.out.println("name String " + nameString);
-                            String value = componentManage.get(component, nameString);
-                            if (value == null) {
-                                System.out.println("component name is " + component.getName());
-                                System.out.println("解析式变量名不存在");
-                                return null;
+                            if (nameString.equals("null")) {
+                                name = new StringBuilder();
+                                newStr.append(nameString);
+                            } else {
+                                String value = componentManage.get(component, nameString);
+                                if (value == null) {
+                                    System.out.println("component name is " + component.getName());
+                                    System.out.println("解析式变量名不存在");
+                                    return null;
+                                }
+                                name = new StringBuilder();
+                                newStr.append(value);
                             }
-                            name = new StringBuilder();
-                            newStr.append(value);
+
                         }
                     }
                     newStr.append(expression.charAt(i));
@@ -104,13 +110,19 @@ public class ParseStr {
         if (name.length() != 0) {
             ComponentManage componentManage = new ComponentManage();
             String nameString = name.toString();
-            String value = componentManage.get(component, nameString);
-            if (value == null) {
-                System.out.println("解析式变量名不存在");
-                return null;
+            if (nameString.equals("null")) {
+                name = new StringBuilder();
+                newStr.append(nameString);
             }
-            name = new StringBuilder();
-            newStr.append(value);
+            else {
+                String value = componentManage.get(component, nameString);
+                if (value == null) {
+                    System.out.println("解析式变量名不存在");
+                    return null;
+                }
+                name = new StringBuilder();
+                newStr.append(value);
+            }
         }
 
         return newStr.toString();

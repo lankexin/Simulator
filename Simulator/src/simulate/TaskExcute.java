@@ -55,7 +55,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 String statePath = currentTaskInstance.getStatePath();
                 waitingTaskInstanceList.remove(taskInsaneId);
                 System.out.println("任务实例"+taskInsaneId+"超出deadline,时间"+currentTimePiece);
-                String appendMessage = "当前任务实例超出deadline,时间" + currentTimePiece;
+                String appendMessage = "当前任务实例超出deadline,时间" + currentTimePiece+",deadline"+
+                        currentTaskInstance.getDeadline();
                 StringBuilder temproStatePath = new StringBuilder(statePath);
                 List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
                 if(pathBuffer==null)
