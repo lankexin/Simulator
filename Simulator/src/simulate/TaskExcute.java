@@ -5,6 +5,7 @@ import manager.ComponentManage;
 import manager.TaskInstanceManage;
 import realtime.Schedule;
 import safety.FaultInject;
+import safety.FaultInjectMust;
 import util.LogicCaculator;
 import util.ParseStr;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 import static safety.FaultSet.getFaultInjectMap;
 import static simulate.Simulator.*;
 
-public class TaskExcute implements FaultInject {
+public class TaskExcute implements FaultInject, FaultInjectMust {
 
     //timePieceMap  时间片--任务Id
     public void taskExcute() {
@@ -30,11 +31,11 @@ public class TaskExcute implements FaultInject {
             TaskInstance currentTaskInstance = waitingTaskInstanceList.get(taskInsaneId);
 
             //任务剩余几个时间片
-//            float leftTaskPiece = currentTaskInstance.getLeftExcuteTime()/timePiece;
+            float leftExcuteTime = currentTaskInstance.getLeftExcuteTime();
             //任务的当前状态
             State currentState = currentTaskInstance.getCurrentState();
             //状态剩余几个时间片
-            float leftStatePiece = currentTaskInstance.getStateLeftExcuteTime()/timePiece;
+            float leftStatePiece = currentTaskInstance.getStateLeftExcuteTime() / timePiece;
 
             String taskId = currentTaskInstance.getTaskId();
             Task task = taskMap.get(taskId);
@@ -47,42 +48,41 @@ public class TaskExcute implements FaultInject {
             }
 
             if (leftStatePiece <= 0) {
-                String statePath=currentTaskInstance.getStatePath();
+                String statePath = currentTaskInstance.getStatePath();
                 List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
 //        Map<String, Data> dataMap = component.getDataMap();
 //        String taskInsaneId = currentTaskInstance.getTaskId();
 //        boolean isTransition = false;
-                State newState=null;
-                String transitionEvent=null;
-                String parsedEvent=null;
+                State newState = null;
+                String transitionEvent = null;
+                String parsedEvent = null;
                 for (Transition transition : transitions) {
-                    String express= ParseStr.parseStr(transition.getEvent(),component);
+                    String express = ParseStr.parseStr(transition.getEvent(), component);
                     if (LogicCaculator.eventProcess(express)) {
-                        transitionEvent=transition.getEvent();
-                        parsedEvent=express;
-                        String destId=transition.getDest();
-                        newState=task.getStateMap().get(destId);
+                        transitionEvent = transition.getEvent();
+                        parsedEvent = express;
+                        String destId = transition.getDest();
+                        newState = task.getStateMap().get(destId);
                     }
                 }
 //                boolean trueTransition=StateOperate.stateTransition(currentState, component, currentTaskInstance,
 //                        task, blockQueue, taskInstanceMap);
-                if(newState==null || newState.getName().trim().toLowerCase().equals("idle")){
-                    if(newState==null){
+                if (newState == null || newState.getName().trim().toLowerCase().equals("idle")) {
+                    if (newState == null) {
                         blockQueue.add(currentTaskInstance);
-                        String appendMessage="当前阻塞在状态"+currentState.getName();
-                        List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
+                        String appendMessage = "当前阻塞在状态" + currentState.getName();
+                        List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
                         pathBuffer.add(appendMessage);
-                        statePathBuffer.put(taskInsaneId,pathBuffer);
-                    }
-                    else{
+                        statePathBuffer.put(taskInsaneId, pathBuffer);
+                    } else {
                         waitingTaskInstanceList.remove(taskInsaneId);
-                        String appendMessage="当前任务实例状态迁移到idle,运行结束,时间"+currentTimePiece+
-                                ",迁移事件"+transitionEvent+",解析事件"+parsedEvent;
-                        StringBuilder temproStatePath=new StringBuilder(statePath);
-                        temproStatePath.append("->"+newState.getName());
-                        List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
+                        String appendMessage = "当前任务实例状态迁移到idle,运行结束,时间" + currentTimePiece +
+                                ",迁移事件" + transitionEvent + ",解析事件" + parsedEvent;
+                        StringBuilder temproStatePath = new StringBuilder(statePath);
+                        temproStatePath.append("->" + newState.getName());
+                        List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
                         pathBuffer.add(appendMessage);
-                        statePathBuffer.put(taskInsaneId,pathBuffer);
+                        statePathBuffer.put(taskInsaneId, pathBuffer);
                     }
                     Schedule schedule = new Schedule();
                     timePieceMap = schedule.schedule(currentTimePiece, waitingTaskInstanceList,
@@ -111,92 +111,96 @@ public class TaskExcute implements FaultInject {
 //                    }
                     taskExcute();
                     return;
-                }
-                else{
-                    String lastStateName=currentState.getName();
+                } else {
+                    String lastStateName = currentState.getName();
                     currentTaskInstance.setCurrentState(newState);
-                    String appendMessage=lastStateName+"状态迁移到"+currentState.getName()+",时间"+currentTimePiece+",迁移事件"
-                            +transitionEvent+",解析事件"+parsedEvent;
+                    String appendMessage = lastStateName + "状态迁移到" + currentState.getName() + ",时间" + currentTimePiece + ",迁移事件"
+                            + transitionEvent + ",解析事件" + parsedEvent;
                     currentTaskInstance.setStateLeftExcuteTime(currentState.getWcet());
 
                     //记录迁移到故障状态的信息
-                    if(newState.isFaultState()){
+                    if (newState.isFaultState()) {
                         //todo:
-                        String appendFault=lastStateName+"状态迁移到故障状态"+currentState.getName()+",时间"
-                                +currentTimePiece+",迁移事件"+transitionEvent+",解析事件"+parsedEvent;
-                        List<String> faults=faultBuffer.get(taskInsaneId);
+                        String appendFault = lastStateName + "状态迁移到故障状态" + currentState.getName() + ",时间"
+                                + currentTimePiece + ",迁移事件" + transitionEvent + ",解析事件" + parsedEvent;
+                        List<String> faults = faultBuffer.get(taskInsaneId);
                         faults.add(appendFault);
-                        faultBuffer.put(taskInsaneId,faults);
+                        faultBuffer.put(taskInsaneId, faults);
                     }
-                    List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
-                    pathBuffer.add(appendMessage);
-                    statePathBuffer.put(taskInsaneId,pathBuffer);
-                }
-            }
 
-            else if (leftStatePiece == currentState.getWcet()) {
+                    List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
+                    pathBuffer.add(appendMessage);
+                    statePathBuffer.put(taskInsaneId, pathBuffer);
+                }
+            } else if (leftStatePiece == currentState.getWcet()) {
                 String entryEvent = currentState.getEntryEvent();
                 if (entryEvent != null) {
-                    StateOperate.updateDataInState(entryEvent,component);
+                    StateOperate.updateDataInState(entryEvent, component);
                 }
-            }
-
-            else if (leftStatePiece == 2) {
+            } else if (leftStatePiece == 2) {
                 String doEvent = currentState.getDoEvent();
                 if (doEvent != null) {
-                    StateOperate.updateDataInState(doEvent,component);
+                    StateOperate.updateDataInState(doEvent, component);
                 }
-            }
-
-            else if (leftStatePiece == 1) {
+            } else if (leftStatePiece == 1) {
                 String exitEvent = currentState.getExitEvent();
                 if (exitEvent != null) {
-                    StateOperate.updateDataInState(exitEvent,component);
+                    StateOperate.updateDataInState(exitEvent, component);
                 }
-                faultInjection(currentTaskInstance, component, currentState);
+                /**故障注入，通过改变当前触发事件相关的数据值来注入故障*/
+                Map<String, Fault> faultSet = getFaultInjectMap();
+                Fault fault = faultSet.get(currentState.getId());
+
+                /**不管什么条件下都强行注入故障*/
+                if (fault != null && fault.getInjectionMode().equals("must")) {
+                    faultInjectMust(currentTaskInstance,component,fault);
+                }
+
+                /**判断满足配置文件中指定的条件才注入故障*/
+                else if(fault != null && fault.getInjectionMode().equals("not_must")){
+                    faultInject(currentTaskInstance,component,fault);
+                }
+
                 List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
 
-                State possibleNewState=null;
-                String transitionEvent=null;
-                String parsedEvent=null;
+                State possibleNewState = null;
+                String transitionEvent = null;
+                String parsedEvent = null;
                 for (Transition transition : transitions) {
-                    String express= ParseStr.parseStr(transition.getEvent(),component);
+                    String express = ParseStr.parseStr(transition.getEvent(), component);
                     if (LogicCaculator.eventProcess(express)) {
-                        transitionEvent=transition.getEvent();
-                        parsedEvent=express;
-                        String destId=transition.getDest();
-                        possibleNewState=task.getStateMap().get(destId);
+                        transitionEvent = transition.getEvent();
+                        parsedEvent = express;
+                        String destId = transition.getDest();
+                        possibleNewState = task.getStateMap().get(destId);
                     }
                 }
 
-                if(possibleNewState==null){
+                if (possibleNewState == null) {
                     blockQueue.add(currentTaskInstance);
                     /** key：任务实例id
                      * value：状态-event-data-timestamp*/
-                    String appendMessage="当前阻塞在状态"+currentState.getName();
-                    List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
+                    String appendMessage = "当前阻塞在状态" + currentState.getName();
+                    List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
                     pathBuffer.add(appendMessage);
-                    statePathBuffer.put(taskInsaneId,pathBuffer);
-                }
-                else if(possibleNewState.getName().trim().toLowerCase().equals("idle")){
+                    statePathBuffer.put(taskInsaneId, pathBuffer);
+                } else if (possibleNewState.getName().trim().toLowerCase().equals("idle")) {
                     waitingTaskInstanceList.remove(taskInsaneId);
-                    String appendMessage="当前任务实例状态迁移到idle，运行结束,时间"+currentTimePiece+
-                    ",迁移事件"+transitionEvent+",解析事件"+parsedEvent;
-                    List<String> pathBuffer=statePathBuffer.get(taskInsaneId);
+                    String appendMessage = "当前任务实例状态迁移到idle，运行结束,时间" + currentTimePiece +
+                            ",迁移事件" + transitionEvent + ",解析事件" + parsedEvent;
+                    List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
                     pathBuffer.add(appendMessage);
-                    statePathBuffer.put(taskInsaneId,pathBuffer);
+                    statePathBuffer.put(taskInsaneId, pathBuffer);
                 }
             }
-            currentTaskInstance.setStateLeftExcuteTime((leftStatePiece-1)*timePiece);
+            currentTaskInstance.setStateLeftExcuteTime((leftStatePiece - 1) * timePiece);
 //            currentState.setLeftExcuteTime(leftStatePiece - 1);
-//            currentTaskInstance.setLeftExcuteTime(leftTaskPiece - 1);
+            currentTaskInstance.setLeftExcuteTime(leftExcuteTime - 1 * timePiece);
         }
     }
 
     @Override
-    public void faultInjection(TaskInstance taskInstance, Component component, State lastState) {
-        Map<String, Fault> faultSet = getFaultInjectMap();
-        Fault fault = faultSet.get(lastState.getId());
+    public void faultInject(TaskInstance taskInstance, Component component, Fault fault) {
         ComponentManage componentManage = new ComponentManage();
         TaskInstanceManage taskInstanceManage = new TaskInstanceManage();
 
@@ -209,8 +213,8 @@ public class TaskExcute implements FaultInject {
 //                String relatedDataName = condition.split(";")[0];
                 //判定当前这个环境数据值是否满足注入条件的范围
 //                boolean isInRange = componentManage.get(component, relatedDataName).isInRange(condition);
-                String parsedStr=ParseStr.parseStr(condition,component);
-                boolean isInRange=LogicCaculator.eventProcess(parsedStr);
+                String parsedStr = ParseStr.parseStr(condition, component);
+                boolean isInRange = LogicCaculator.eventProcess(parsedStr);
                 //满足条件
                 if (isInRange) {
                     List<String> dataList = fault.getDataList();
@@ -226,6 +230,16 @@ public class TaskExcute implements FaultInject {
                 }
             }
         }
+    }
+
+    @Override
+    public void faultInjectMust(TaskInstance taskInstance, Component component, Fault fault) {
+        ComponentManage componentManage = new ComponentManage();
+        TaskInstanceManage taskInstanceManage = new TaskInstanceManage();
+        String operateorMethod = fault.getOperateorMethod();
+        //不检查条件是否满足，直接注入
+        List<String> dataList = fault.getDataList();
+        componentManage.updateData(component, dataList);
     }
 
 }

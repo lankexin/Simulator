@@ -104,7 +104,6 @@ public class StateOperate {
 //                                          Task task, List<TaskInstance> blockQueue, Map<String, TaskInstance> taskInstanceMap) {
         public static State stateTransition(State currentState, Component component, Task task) {
 //        boolean trueTransition = false;
-
         List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
 //        Map<String, Data> dataMap = component.getDataMap();
 //        String taskInsaneId = currentTaskInstance.getTaskId();

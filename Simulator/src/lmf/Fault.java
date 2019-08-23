@@ -4,15 +4,17 @@ import java.util.List;
 
 public class Fault {
     private String lastState;
+    private String injectionMode;
     private String conditionType;
     private String condition;
     private String operateorMethod;
     private String dataSize;
     private List<String> dataList;
 
-    public Fault(String lastState, String conditionType, String condition,
+    public Fault(String lastState, String injectionMode,String conditionType, String condition,
                  String operateorMethod, String dataSize, List<String> dataList) {
         this.lastState = lastState;
+        this.injectionMode=injectionMode;
         this.conditionType = conditionType;
         this.condition = condition;
         this.operateorMethod = operateorMethod;
@@ -46,6 +48,14 @@ public class Fault {
 
     public String getLastState() {
         return lastState;
+    }
+
+    public String getInjectionMode() {
+        return injectionMode;
+    }
+
+    public void setInjectionMode(String injectionMode) {
+        this.injectionMode = injectionMode;
     }
 
     public String getConditionType() {
