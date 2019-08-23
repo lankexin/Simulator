@@ -50,6 +50,8 @@ public class Simulator implements DataStore {
      */
     static Map<String, List<String>> statePathBuffer = new LinkedHashMap<>();
 
+    /**记录故障相关的信息，迁移到故障状态的时间，事件
+     * 以及故障注入的时间，注入点，故障类型，是否注入成功*/
     static Map<String, List<String>> faultBuffer;
 
 
@@ -105,18 +107,18 @@ public class Simulator implements DataStore {
         timePieceMap = new HashMap<>();
         blockQueue = new ArrayList<>();
 
-        Timer taskQueueManagementTimer = new Timer();
-        taskQueueManagementTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                //currentSystemTime++;
-
-                while (currentTimePiece != targetTime) {
-                    timePieceMap = mTaskManageMent.timePieceMapManagement(currentTimePiece, taskMap,
-                            waitingTaskInstanceList, blockQueue, componentMap);
-                }
-            }
-        }, 1000, 10);
+//        Timer taskQueueManagementTimer = new Timer();
+//        taskQueueManagementTimer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                //currentSystemTime++;
+//
+//                while (currentTimePiece != targetTime) {
+//                    timePieceMap = mTaskManageMent.timePieceMapManagement(currentTimePiece, taskMap,
+//                            waitingTaskInstanceList, blockQueue, componentMap);
+//                }
+//            }
+//        }, 1000, 10);
 
         //定时器
         Timer exucuteTimer = new Timer();
@@ -124,6 +126,10 @@ public class Simulator implements DataStore {
             @Override
             public void run() {
                 currentTimePiece++;
+                while (currentTimePiece != targetTime) {
+                    timePieceMap = mTaskManageMent.timePieceMapManagement(currentTimePiece, taskMap,
+                            waitingTaskInstanceList, blockQueue, componentMap);
+                }
                 mTaskExecute.taskExcute();
             }
         }, 1000, 100);

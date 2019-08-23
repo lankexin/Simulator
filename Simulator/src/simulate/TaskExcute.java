@@ -152,8 +152,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 } else {
                     String lastStateName = currentState.getName();
                     currentTaskInstance.setCurrentState(newState);
-                    String appendMessage = lastStateName + "状态迁移到" + currentState.getName() + ",时间" + currentTimePiece + ",迁移事件"
-                            + transitionEvent + ",解析事件" + parsedEvent;
+                    String appendMessage = lastStateName + "状态迁移到" + currentState.getName() + ",时间" +
+                            currentTimePiece + ",迁移事件" + transitionEvent + ",解析事件" + parsedEvent;
                     currentTaskInstance.setStateLeftExcuteTime(currentState.getWcet());
 
                     //记录迁移到故障状态的信息
@@ -192,12 +192,32 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
 
                 /**不管什么条件下都强行注入故障*/
                 if (fault != null && fault.getInjectionMode().equals("must")) {
-                    faultInjectMust(currentTaskInstance, component, fault);
+                    String faultType=faultInjectMust(currentTaskInstance, component, fault);
+                    if(faultType!=null){
+                        String appendFault = "组件"+component.getName()+"注入故障，时间"+ currentTimePiece +
+                                "故障类型为"+faultType;
+                        List<String> faults = faultBuffer.get(taskInsaneId);
+                        faults.add(appendFault);
+                        faultBuffer.put(taskInsaneId, faults);
+                    }
                 }
 
                 /**判断满足配置文件中指定的条件才注入故障*/
                 else if (fault != null && fault.getInjectionMode().equals("not_must")) {
-                    faultInject(currentTaskInstance, component, fault);
+                    String faultType=faultInject(currentTaskInstance, component, fault);
+                    if(faultType!=null){
+                        String appendFault = "组件"+component.getName()+"注入故障，时间"+ currentTimePiece +
+                                "故障类型为"+faultType;
+                        List<String> faults = faultBuffer.get(taskInsaneId);
+                        faults.add(appendFault);
+                        faultBuffer.put(taskInsaneId, faults);
+                    }
+                    if(faultType==null){
+                        String appendFault = "组件"+component.getName()+"注入故障失败，不满足注入条件，时间"+ currentTimePiece;
+                        List<String> faults = faultBuffer.get(taskInsaneId);
+                        faults.add(appendFault);
+                        faultBuffer.put(taskInsaneId, faults);
+                    }
                 }
 
                 List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
@@ -241,7 +261,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
     }
 
     @Override
-    public void faultInject(TaskInstance taskInstance, Component component, Fault fault) {
+    public String faultInject(TaskInstance taskInstance, Component component, Fault fault) {
+        String type=null;
         ComponentManage componentManage = new ComponentManage();
         TaskInstanceManage taskInstanceManage = new TaskInstanceManage();
 
@@ -260,6 +281,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 if (isInRange) {
                     List<String> dataList = fault.getDataList();
                     componentManage.updateData(component, dataList);
+                    type=fault.getFaultType();
                 }
             }
             if (conditionType.equals("transitionPath")) {
@@ -268,19 +290,25 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 if (istransition) {
                     List<String> dataList = fault.getDataList();
                     componentManage.updateData(component, dataList);
+                    type=fault.getFaultType();
+
                 }
             }
         }
+        return type;
     }
 
     @Override
-    public void faultInjectMust(TaskInstance taskInstance, Component component, Fault fault) {
+    public String faultInjectMust(TaskInstance taskInstance, Component component, Fault fault) {
+        String type=null;
         ComponentManage componentManage = new ComponentManage();
         TaskInstanceManage taskInstanceManage = new TaskInstanceManage();
         String operateorMethod = fault.getOperateorMethod();
         //不检查条件是否满足，直接注入
         List<String> dataList = fault.getDataList();
         componentManage.updateData(component, dataList);
+        type=fault.getFaultType();
+        return type;
     }
 
 }

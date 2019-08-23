@@ -6,6 +6,8 @@ public class Fault {
     private String lastState;
     //故障注入的模式--一定注入，以条件注入
     private String injectionMode;
+
+    private String faultType;
     //条件类型，环境数据或者迁移路径
     private String conditionType;
     //环境条件，相关数据的取值范围
@@ -17,10 +19,11 @@ public class Fault {
     //对触发事件相关的数据操作的配置
     private List<String> dataList;
 
-    public Fault(String lastState, String injectionMode,String conditionType, String condition,
+    public Fault(String lastState, String injectionMode,String faultType,String conditionType, String condition,
                  String operateorMethod, String dataSize, List<String> dataList) {
         this.lastState = lastState;
         this.injectionMode=injectionMode;
+        this.faultType=faultType;
         this.conditionType = conditionType;
         this.condition = condition;
         this.operateorMethod = operateorMethod;
@@ -62,6 +65,14 @@ public class Fault {
 
     public void setInjectionMode(String injectionMode) {
         this.injectionMode = injectionMode;
+    }
+
+    public String getFaultType() {
+        return faultType;
+    }
+
+    public void setFaultType(String faultType) {
+        this.faultType = faultType;
     }
 
     public String getConditionType() {

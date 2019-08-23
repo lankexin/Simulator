@@ -30,6 +30,7 @@ public class FaultSet {
                 List<String> stateList = Splitter.on(",").splitToList(context);
 //                System.out.println(stateList);
                 String faultMode=readProperty("faultInjection.mode-"+i);
+                String faultType=readProperty("faultInjection.type-"+i);
                 String conditionType = readProperty("faultInjection.conditionType-" + i);
                 String condition = "";
                 if ("relatedData".equals(conditionType)) {
@@ -51,7 +52,8 @@ public class FaultSet {
                 }
 
                 for (String state : stateList) {
-                    Fault fault = new Fault(state, faultMode,conditionType, condition, operatorMethod, dataSize, dataList);
+                    Fault fault = new Fault(state, faultMode,faultType,conditionType, condition, operatorMethod,
+                            dataSize, dataList);
                     faultInjectMap.put(state, fault);
                     System.out.println(fault.getConditionType() + fault.getDataSize()
                             + fault.getLastState() + fault.getCondition());
