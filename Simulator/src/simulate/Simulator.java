@@ -8,6 +8,8 @@ import realtime.TaskExtraction;
 import util.PropertiyParse;
 import util.XmlParse;
 
+import java.io.EOFException;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -91,6 +93,16 @@ public class Simulator implements DataStore {
     static Map<Integer, String> timePieceMap;
 
     public static void main(String[] args) {
+        try{
+            File file = new File(filePath);
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+        }catch (IOException e){
+            System.out.println("文件访问异常");
+        }
+
         componentMap = new HashMap<>();
         sharedDataMap = new HashMap<>();
         channelList = new ArrayList<>();
