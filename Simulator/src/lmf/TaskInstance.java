@@ -1,5 +1,7 @@
 package lmf;
 
+import static simulate.Simulator.timePiece;
+
 public class TaskInstance {
 
     private String instanceId;
@@ -36,7 +38,7 @@ public class TaskInstance {
         statePath = stateName;
         this.stateLeftExcuteTime = leftExcuteTime;
         this.arriveTimestamp = arriveTimestamp;
-        this.deadline = (float)arriveTimestamp + task.getDeadline();
+        this.deadline = (float)arriveTimestamp + task.getDeadline()/timePiece;
         this.wcet = task.getWcet();
         this.period = task.getPeriod();
         this.leftExcuteTime = task.getWcet();

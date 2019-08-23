@@ -155,6 +155,7 @@ public class Simulator implements DataStore {
                 try {
                     writeFile(filePath, statePathtemp);
                     writeFile(faultPath, faultPathtemp);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

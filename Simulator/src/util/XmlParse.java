@@ -136,6 +136,9 @@ public class XmlParse {
             if (newData.getAttr("shared") != null) {
                 sharedDataMap.put(newData.getAttr("name"), newData);
             }
+            if (newData.getAttr("initvalue")!= null) {
+                newData.setValue(newData.getAttr("initvalue"));
+            }
         }
 
         Iterator itt = component.elementIterator();
