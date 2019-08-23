@@ -52,6 +52,8 @@ public class TaskManagement {
             // todo：遍历task map，看是否有task满足触发条件，满足则生成对应的task instance，并加入等待队列中。
 
             Task currentTask = taskMap.get(taskKey);
+            Component targetComponent = componentMap
+                    .get(currentTask.getComponentId());
 
             //获取当前状态的所有迁移列表
             List<Transition> transitions = currentTask.getTransitionMap().get(currentTask.getFirstStateId());
@@ -64,20 +66,22 @@ public class TaskManagement {
 
             if (currentTask.getPeriod() > 0) {
                 if (currentSystemTime % currentTask.getPeriod() == 0) {
-                    TaskInstance newTaskInstance = new TaskInstance(currentSystemTime,
-                            currentTask.getId() + "_" + currentSystemTime,
-                            currentTask.getFirstState(), "Idle",
-                            currentTask.getFirstState().getWcet(), currentTask);
-                    waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
-                    System.out.println("start schedule");
-                    timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
-                    System.out.println("finish schedule");
+
+                    TaskInstance newTaskInstance = isPeriodTransitted(currentSystemTime, transitions,
+                            targetComponent, currentTask, currentTask.getFirstState());
+//                    TaskInstance newTaskInstance = new TaskInstance(currentSystemTime,
+//                            currentTask.getId() + "_" + currentSystemTime,
+//                            currentTask.getFirstState(), "Idle",
+//                            currentTask.getFirstState().getWcet(), currentTask);
+                    if (newTaskInstance != null) {
+                        waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
+                        System.out.println("start schedule");
+                        timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+                        System.out.println("finish schedule");
+                    }
                 }
             }
             else {
-
-                Component targetComponent = componentMap
-                        .get(currentTask.getComponentId());
                 System.out.println("start is transitted");
                 TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions,
                         targetComponent, currentTask, currentTask.getFirstState());
@@ -137,6 +141,49 @@ public class TaskManagement {
         return timePieceMap;
     }
 
+    private TaskInstance isPeriodTransitted(int currentSystemTime,
+                                      List<Transition> transitions,
+                                      Component targetComponent,
+                                      Task currentTask,
+                                      State currentState) {
+        System.out.println("transition size is " + transitions.size());
+        TaskInstance newTaskInstance = null;
+        for (Transition transition : transitions) {
+            System.out.println(transition.getSource() + " " + transition.getDest());
+            System.out.println("start getResult data " + transition.getEvent());
+
+            String express = ParseStr.parseStr(transition.getEvent(), targetComponent);
+            System.out.println(express);
+            String result = ExpressCalculate.getResultData(express);
+
+            System.out.println("finish getResult data " + result);
+            if (result.equals("1")) {
+                List<String> dataNameList = ParseStr.getDataNameList(transition.getEvent());
+                /**
+                 * key是data的名字，value是data的值
+                 */
+                Map<String, String> dataMap = new HashMap<>();
+
+                for (String dataName : dataNameList) {
+                    if (targetComponent.getDataMap().get(dataName).isChannel()) {
+                        dataMap.put(dataName, targetComponent.getDataMap().get(dataName).getValue());
+                        targetComponent.getDataMap().get(dataName).setValue("null");
+                    }
+                }
+
+                newTaskInstance = new TaskInstance(currentSystemTime,
+                            currentTask.getId() + "_" + currentSystemTime,
+                            currentTask.getFirstState(), "Idle",
+                            currentTask.getFirstState().getWcet(), currentTask, dataMap);
+                break;
+            }
+        }
+
+        System.out.println();
+
+        return newTaskInstance;
+    }
+
     private TaskInstance isTransitted(int currentSystemTime,
                                       List<Transition> transitions,
                                       Component targetComponent,
@@ -154,11 +201,24 @@ public class TaskManagement {
 
             System.out.println("finish getResult data " + result);
             if (result.equals("1")) {
+                List<String> dataNameList = ParseStr.getDataNameList(transition.getEvent());
+                /**
+                 * key是data的名字，value是data的值
+                 */
+                Map<String, String> dataMap = new HashMap<>();
+
+                for (String dataName : dataNameList) {
+                    if (targetComponent.getDataMap().get(dataName).isChannel()) {
+                        dataMap.put(dataName, targetComponent.getDataMap().get(dataName).getValue());
+                        targetComponent.getDataMap().get(dataName).setValue("null");
+                    }
+                }
+
                 newTaskInstance = new TaskInstance(currentSystemTime,
                         currentTask.getId() + "_" + currentSystemTime,
                         currentState, currentState.getAttr("name"),
                         currentState.getWcet(),
-                        currentTask);
+                        currentTask, dataMap);
                 break;
             }
         }

@@ -1,5 +1,9 @@
 package lmf;
 
+import com.oracle.tools.packager.mac.MacAppBundler;
+
+import java.util.Map;
+
 import static simulate.Simulator.timePiece;
 
 public class TaskInstance {
@@ -17,6 +21,8 @@ public class TaskInstance {
     private float wcet;
     private float period;
 
+    private Map<String, String> dataMap;
+
     /**
      * 任务当前的状态：就绪、等待、运行
      */
@@ -30,7 +36,8 @@ public class TaskInstance {
     public TaskInstance(int arriveTimestamp, String instanceId,
                         State state, String stateName,
                         float leftExcuteTime,
-                        Task task) {
+                        Task task,
+                        Map<String, String> dataMap) {
         this.instanceId = instanceId;
         this.taskId = task.getId();
         this.currentState = state;
@@ -43,6 +50,7 @@ public class TaskInstance {
         this.wcet = task.getWcet();
         this.period = task.getPeriod();
         this.leftExcuteTime = task.getWcet();
+        this.dataMap = dataMap;
     }
 
     public String getInstanceId() {
@@ -123,5 +131,9 @@ public class TaskInstance {
 
     public void setStateLeftExcuteTime(float stateLeftExcuteTime) {
         this.stateLeftExcuteTime = stateLeftExcuteTime;
+    }
+
+    public Map<String, String> getDataMap() {
+        return dataMap;
     }
 }

@@ -8,6 +8,7 @@ public class Data {
     private String valueType;
     private String value;
     private boolean isShared;
+    private boolean isChannel;
 
     private Map<String, String> attrs;
 
@@ -52,5 +53,10 @@ public class Data {
 
     public String getAttr(String key) {
         return attrs.get(key);
+    }
+
+    public boolean isChannel() {
+        isChannel = (attrs.get("ischannel") != null);
+        return isChannel;
     }
 }
