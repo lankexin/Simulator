@@ -35,9 +35,11 @@ public class Simulator implements DataStore {
      */
     static List<String> failureTaskList;
 
-    static String filePath = readProperty("logFilePath");
+    //static String filePath = readProperty("logFilePath");
+    static String filePath = "logFile";
 
-    static String faultPath = readProperty("faultFilePath");
+    //static String faultPath = readProperty("faultFilePath");
+    static String faultPath = "faultLogFile";
 
     /**
      * 解析出来的transitionMap

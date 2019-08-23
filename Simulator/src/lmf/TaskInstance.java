@@ -34,7 +34,8 @@ public class TaskInstance {
     public TaskInstance(int arriveTimestamp, String instanceId,
                         State state, String stateName,
                         float leftExcuteTime,
-                        Task task) {
+                        Task task,
+                        Map<String, String> dataMap) {
         this.instanceId = instanceId;
         this.taskId = task.getId();
         this.currentState = state;
@@ -43,9 +44,11 @@ public class TaskInstance {
         this.stateLeftExcuteTime = leftExcuteTime;
         this.arriveTimestamp = arriveTimestamp;
         this.deadline = (float)arriveTimestamp + task.getDeadline()/timePiece;
+        System.err.println(arriveTimestamp + " " + task.getDeadline() + " " + timePiece + " " + deadline);
         this.wcet = task.getWcet();
         this.period = task.getPeriod();
         this.leftExcuteTime = task.getWcet();
+        this.dataMap = dataMap;
     }
 
     public String getInstanceId() {

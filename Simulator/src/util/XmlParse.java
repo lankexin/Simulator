@@ -60,6 +60,7 @@ public class XmlParse {
                 newLinkpoint.setAttr(attr.getName(), attr.getValue());
                 newData.setAttr(attr.getName(), attr.getValue());
             }
+            newData.setAttr("ischannel", "true");
 
             componentList.get(componentId).getLinkpointMap().put(newLinkpoint.getAttr("id"), newLinkpoint);
 
