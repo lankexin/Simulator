@@ -159,10 +159,12 @@ public class StateOperate {
     }
 
     public static void main(String[] args) {
-        List<String> eventList = Splitter.on(";").splitToList("2325555;2223");
-        for(String str:eventList){
-            System.out.println(str);
-            System.out.println("---");
-        }
+       while (true){
+           if(4>3){
+               System.out.println("aaa");
+               break;
+           }
+           System.out.println("sss");
+       }
     }
 }

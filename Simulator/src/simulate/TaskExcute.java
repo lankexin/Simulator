@@ -9,6 +9,7 @@ import safety.FaultInjectMust;
 import util.LogicCaculator;
 import util.ParseStr;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +24,11 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
         /** 在队列里找到当前需要执行的task并使其开始执行
          * 即 更改该g任务的 execute time*/
         if (Simulator.timePieceMap != null && !Simulator.timePieceMap.isEmpty()) {
+
+            System.out.println(timePieceMap);
             //当前执行的任务实例id
             String taskInsaneId = timePieceMap.get(currentTimePiece);
-            System.out.println(taskInsaneId);
+
             System.out.println("taskInstanceId"+taskInsaneId);
 
             TaskInstance currentTaskInstance = waitingTaskInstanceList.get(taskInsaneId);
@@ -55,6 +58,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 String appendMessage = "当前任务实例超出deadline,时间" + currentTimePiece;
                 StringBuilder temproStatePath = new StringBuilder(statePath);
                 List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
+                if(pathBuffer==null)
+                    pathBuffer=new ArrayList<>();
                 pathBuffer.add(appendMessage);
                 statePathBuffer.put(taskInsaneId, pathBuffer);
 
@@ -97,12 +102,15 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 String transitionEvent = null;
                 String parsedEvent = null;
                 for (Transition transition : transitions) {
+                    System.out.println("event"+transition.getEvent());
                     String express = ParseStr.parseStr(transition.getEvent(), component);
+                    System.out.println("express"+express);
                     if (LogicCaculator.eventProcess(express)) {
                         transitionEvent = transition.getEvent();
                         parsedEvent = express;
                         String destId = transition.getDest();
                         newState = task.getStateMap().get(destId);
+                        break;
                     }
                 }
 //                boolean trueTransition=StateOperate.stateTransition(currentState, component, currentTaskInstance,
@@ -170,6 +178,10 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     }
 
                     List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
+                    System.out.println("pathBuffer"+pathBuffer);
+                    if(pathBuffer==null){
+                        pathBuffer=new ArrayList<>();
+                    }
                     pathBuffer.add(appendMessage);
                     statePathBuffer.put(taskInsaneId, pathBuffer);
                 }
