@@ -83,7 +83,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                         statePathBuffer.put(taskInsaneId, pathBuffer);
                     }
                     Schedule schedule = new Schedule();
-                    timePieceMap = schedule.schedule(currentTimePiece, waitingTaskInstanceList,
+                    timePieceMap = schedule.schedule(currentTimePiece-1, waitingTaskInstanceList,
                             taskMap);
 //
 //                    taskInsaneId = newTimePieceMap.get(currentTimePiece);
