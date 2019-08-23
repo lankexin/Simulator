@@ -15,6 +15,7 @@ public class Simulator {
     static int currentSystemTime;
     static int currentTimePiece;
 
+    /**一个时间片的长度*/
     public static float timePiece=Float.valueOf(readProperty("realtime.schedule.timepiece"));
 
     private static TaskManagement mTaskManageMent = new TaskManagement();
@@ -125,6 +126,5 @@ public class Simulator {
         String value=sharedDataMap.get(dataName).getValue();
         return value;
     }
-
 
 }

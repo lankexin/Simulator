@@ -7,7 +7,7 @@ public class TaskInstance {
 
     private State currentState;
     private float stateLeftExcuteTime;
-//    private float leftExcuteTime;
+    private float leftExcuteTime;
 
     private int arriveTimestamp;
     private int executeTimestamp;
@@ -65,13 +65,13 @@ public class TaskInstance {
         this.currentState = currentState;
     }
 
-//    public float getLeftExcuteTime() {
-//        return leftExcuteTime;
-//    }
-//
-//    public void setLeftExcuteTime(float leftExcuteTime) {
-//        this.leftExcuteTime = leftExcuteTime;
-//    }
+    public float getLeftExcuteTime() {
+        return leftExcuteTime;
+    }
+
+    public void setLeftExcuteTime(float leftExcuteTime) {
+        this.leftExcuteTime = leftExcuteTime;
+    }
 
     public int getArriveTimestamp() {
         return arriveTimestamp;
