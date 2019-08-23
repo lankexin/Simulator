@@ -25,7 +25,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
         if (Simulator.timePieceMap != null && !Simulator.timePieceMap.isEmpty()) {
             //当前执行的任务实例id
             String taskInsaneId = timePieceMap.get(currentTimePiece);
-
+            System.out.println(taskInsaneId);
             TaskInstance currentTaskInstance = waitingTaskInstanceList.get(taskInsaneId);
 
             //任务剩余几个时间片

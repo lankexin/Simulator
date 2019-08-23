@@ -39,7 +39,7 @@ public class EDF {
             }
         }
 
-        int timePieceCounter = currentTimePiece+1;
+        int timePieceCounter = currentTimePiece;
         System.out.println("start  " + taskInstanceList.size());
         for (TaskInstance taskInstance : taskInstanceList) {
             System.out.println(taskInstance.getInstanceId() + " " +
