@@ -135,11 +135,24 @@ public class StateOperate {
     public static void updateDataInState(String event, Component component) {
         String parsedStr = ParseStr.parseStr(event, component);
         Map<String, String> dataStr = getAssignedData(parsedStr);
+        ComponentManage componentManage=new ComponentManage();
         String dataName = dataStr.entrySet().iterator().next().getKey();
         String express = dataStr.entrySet().iterator().next().getValue();
-        ComponentManage componentManage = new ComponentManage();
         String value=getResultData(express);
         componentManage.update(component, dataName, value);
+
+        List<String> componentIds=channelDataMap.get(dataName);
+        if(componentIds!=null){
+            for(String componentId:componentIds){
+                if(component.getId().equals(componentId)){
+                    componentManage.update(component,dataName,"null");
+                }
+                else{
+                    componentManage.update(component,dataName,value);
+                }
+            }
+        }
+
     }
 
 }

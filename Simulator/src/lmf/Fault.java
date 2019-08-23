@@ -4,11 +4,17 @@ import java.util.List;
 
 public class Fault {
     private String lastState;
+    //故障注入的模式--一定注入，以条件注入
     private String injectionMode;
+    //条件类型，环境数据或者迁移路径
     private String conditionType;
+    //环境条件，相关数据的取值范围
     private String condition;
+    //操作方式，改变值或者指定值
     private String operateorMethod;
+    //涉及到触发事件的数据有几个
     private String dataSize;
+    //对触发事件相关的数据操作的配置
     private List<String> dataList;
 
     public Fault(String lastState, String injectionMode,String conditionType, String condition,

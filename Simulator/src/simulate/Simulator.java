@@ -50,6 +50,8 @@ public class Simulator implements DataStore {
      */
     static Map<String, Data> sharedDataMap;
 
+
+
     /**解析得到的dataMap
      * key：task id（要求名字不能重复）*/
     static Map<String, Task> taskMap;
