@@ -1,6 +1,7 @@
 package util;
 
 import lmf.Component;
+import lmf.TaskInstance;
 import manager.ComponentManage;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class ParseStr {
         return operators;
     }
 
-    public static String parseStr(String expression, Component component) {
+    public static String parseStr(TaskInstance taskInstance,String expression, Component component) {
         if (expression == null)
             return "";
         expression = expression.replaceAll(" ", "");
@@ -93,7 +94,7 @@ public class ParseStr {
                                 name = new StringBuilder();
                                 newStr.append(nameString);
                             } else {
-                                String value = componentManage.get(component, nameString);
+                                String value = componentManage.get(taskInstance,component, nameString);
                                 if (value == null) {
                                     System.out.println("component name is " + component.getName());
                                     System.out.println("解析式变量名不存在");
@@ -118,7 +119,7 @@ public class ParseStr {
                 name = new StringBuilder();
                 newStr.append(nameString);
             } else {
-                String value = componentManage.get(component, nameString);
+                String value = componentManage.get(taskInstance,component, nameString);
                 if (value == null) {
                     System.out.println("解析式变量名不存在");
                     return null;

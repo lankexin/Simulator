@@ -34,7 +34,7 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
     @Override
     public String get(TaskInstance taskInstance, Component component, String dataName) {
         String value=null;
-        if (channelDataMap.get(dataName) != null) {
+        if (channelDataMap.get(dataName) != null && taskInstance!=null) {
             Map<String, String> dataMap = taskInstance.getDataMap();
             value=dataMap.get(dataName);
         } else {
@@ -61,9 +61,9 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
 //    }
 
     @Override
-    public void updateData(Component component, List<String> dataList) {
+    public void updateData(TaskInstance taskInstance,Component component, List<String> dataList) {
         for (String dataStr : dataList) {
-            StateOperate.updateDataInState(dataStr, component);
+            StateOperate.updateDataInState(taskInstance,dataStr, component);
         }
     }
 

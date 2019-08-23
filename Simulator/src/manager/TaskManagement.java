@@ -152,7 +152,7 @@ public class TaskManagement {
             System.out.println(transition.getSource() + " " + transition.getDest());
             System.out.println("start getResult data " + transition.getEvent());
 
-            String express = ParseStr.parseStr(transition.getEvent(), targetComponent);
+            String express = ParseStr.parseStr(null,transition.getEvent(), targetComponent);
             System.out.println(express);
             String result = ExpressCalculate.getResultData(express);
 
@@ -195,7 +195,7 @@ public class TaskManagement {
             System.out.println(transition.getSource() + " " + transition.getDest());
             System.out.println("start getResult data " + transition.getEvent());
 
-            String express = ParseStr.parseStr(transition.getEvent(), targetComponent);
+            String express = ParseStr.parseStr(null,transition.getEvent(), targetComponent);
             System.out.println(express);
             String result = ExpressCalculate.getResultData(express);
 

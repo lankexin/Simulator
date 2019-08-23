@@ -57,41 +57,41 @@ public class RMS {
     }
 
     public static void main(String[] args) {
-        TaskExtraction mTaskExtraction = new TaskExtraction();
-
-        Map<String, Component> componentMap = new HashMap<>();
-        List<Channel> channelList = new ArrayList<>();
-        Map<String, Data> sharedDataMap = new HashMap<>();
-        Map<String, List<String>> channelDataMap = new HashMap<>();
-        XmlParse.parseXML("simulink0822.xml", componentMap, sharedDataMap, channelDataMap, channelList);
-
-        Map<String, Task> taskMap;
-        taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
-
-        Map<String, TaskInstance> waitingTaskInstanceMap = new HashMap<>();
-        System.out.println(timePiece);
-
-        int counter = 0;
-        for (String key : taskMap.keySet()) {
-            System.out.println(key + " " + taskMap.get(key).getWcet() + " "
-                    + taskMap.get(key).getComponentId());
-
-            TaskInstance newTaskInstance = new TaskInstance(0, String.valueOf(counter),
-                    taskMap.get(key).getFirstState(), "test",
-                    -1, taskMap.get(key));
-            counter++;
-
-            waitingTaskInstanceMap.put(newTaskInstance.getInstanceId(), newTaskInstance);
-        }
-
-        System.out.println("waiting list size is " + waitingTaskInstanceMap.size());
-
-        Map<Integer, String> timePieceMap = RMSSchedule(0, waitingTaskInstanceMap, taskMap);
-
-        System.out.println("result");
-        for (int key : timePieceMap.keySet()) {
-            System.out.println(key + " " + timePieceMap.get(key) + " " +
-                    waitingTaskInstanceMap.get(timePieceMap.get(key)).getPeriod());
-        }
+//        TaskExtraction mTaskExtraction = new TaskExtraction();
+//
+//        Map<String, Component> componentMap = new HashMap<>();
+//        List<Channel> channelList = new ArrayList<>();
+//        Map<String, Data> sharedDataMap = new HashMap<>();
+//        Map<String, List<String>> channelDataMap = new HashMap<>();
+//        XmlParse.parseXML("simulink0822.xml", componentMap, sharedDataMap, channelDataMap, channelList);
+//
+//        Map<String, Task> taskMap;
+//        taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
+//
+//        Map<String, TaskInstance> waitingTaskInstanceMap = new HashMap<>();
+//        System.out.println(timePiece);
+//
+//        int counter = 0;
+//        for (String key : taskMap.keySet()) {
+//            System.out.println(key + " " + taskMap.get(key).getWcet() + " "
+//                    + taskMap.get(key).getComponentId());
+//
+//            TaskInstance newTaskInstance = new TaskInstance(0, String.valueOf(counter),
+//                    taskMap.get(key).getFirstState(), "test",
+//                    -1, taskMap.get(key));
+//            counter++;
+//
+//            waitingTaskInstanceMap.put(newTaskInstance.getInstanceId(), newTaskInstance);
+//        }
+//
+//        System.out.println("waiting list size is " + waitingTaskInstanceMap.size());
+//
+//        Map<Integer, String> timePieceMap = RMSSchedule(0, waitingTaskInstanceMap, taskMap);
+//
+//        System.out.println("result");
+//        for (int key : timePieceMap.keySet()) {
+//            System.out.println(key + " " + timePieceMap.get(key) + " " +
+//                    waitingTaskInstanceMap.get(timePieceMap.get(key)).getPeriod());
+//        }
     }
 }

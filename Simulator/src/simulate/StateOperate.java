@@ -104,14 +104,14 @@ public class StateOperate {
 
     //    public static String stateTransition(State currentState, Component component, TaskInstance currentTaskInstance,
 //                                          Task task, List<TaskInstance> blockQueue, Map<String, TaskInstance> taskInstanceMap) {
-    public static State stateTransition(State currentState, Component component, Task task) {
+    public static State stateTransition(TaskInstance taskInstance,State currentState, Component component, Task task) {
 //        boolean trueTransition = false;
         List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
 //        Map<String, Data> dataMap = component.getDataMap();
 //        String taskInsaneId = currentTaskInstance.getTaskId();
 //        boolean isTransition = false;
         for (Transition transition : transitions) {
-            String express = ParseStr.parseStr(transition.getEvent(), component);
+            String express = ParseStr.parseStr(taskInstance,transition.getEvent(), component);
             if (LogicCaculator.eventProcess(express)) {
                 String destId = transition.getDest();
                 State newState = task.getStateMap().get(destId);
@@ -134,10 +134,10 @@ public class StateOperate {
 //        return trueTransition;
     }
 
-    public static void updateDataInState(String events, Component component) {
+    public static void updateDataInState(TaskInstance taskInstance,String events, Component component) {
         List<String> eventList = Splitter.on(";").splitToList(events);
         for (String event : eventList) {
-            String parsedStr = ParseStr.parseStr(event, component);
+            String parsedStr = ParseStr.parseStr(taskInstance,event, component);
             Map<String, String> dataStr = getAssignedData(parsedStr);
             ComponentManage componentManage = new ComponentManage();
             String dataName = dataStr.entrySet().iterator().next().getKey();

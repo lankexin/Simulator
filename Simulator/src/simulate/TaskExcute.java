@@ -104,7 +104,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 String parsedEvent = null;
                 for (Transition transition : transitions) {
                     System.out.println("event"+transition.getEvent());
-                    String express = ParseStr.parseStr(transition.getEvent(), component);
+                    String express = ParseStr.parseStr(currentTaskInstance,transition.getEvent(), component);
                     System.out.println("express"+express);
                     if (LogicCaculator.eventProcess(express)) {
                         transitionEvent = transition.getEvent();
@@ -195,18 +195,18 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
             } else if (leftStatePiece == currentState.getWcet()) {
                 String entryEvent = currentState.getEntryEvent();
                 if (entryEvent != null) {
-                    StateOperate.updateDataInState(entryEvent, component);
+                    StateOperate.updateDataInState(currentTaskInstance,entryEvent, component);
                 }
             } else if (leftStatePiece == 2) {
                 String doEvent = currentState.getDoEvent();
                 if (doEvent != null) {
-                    StateOperate.updateDataInState(doEvent, component);
+                    StateOperate.updateDataInState(currentTaskInstance,doEvent, component);
                 }
             } else if (leftStatePiece == 1) {
                 String exitEvent = currentState.getExitEvent();
                 if (exitEvent != null) {
                     if (!exitEvent.contains("report"))
-                        StateOperate.updateDataInState(exitEvent, component);
+                        StateOperate.updateDataInState(currentTaskInstance,exitEvent, component);
                 }
                 /**故障注入，通过改变当前触发事件相关的数据值来注入故障*/
                 Map<String, Fault> faultSet = getFaultInjectMap();
@@ -249,7 +249,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 String transitionEvent = null;
                 String parsedEvent = null;
                 for (Transition transition : transitions) {
-                    String express = ParseStr.parseStr(transition.getEvent(), component);
+                    String express = ParseStr.parseStr(currentTaskInstance,transition.getEvent(), component);
                     if (LogicCaculator.eventProcess(express)) {
                         transitionEvent = transition.getEvent();
                         parsedEvent = express;
@@ -299,12 +299,12 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
 //                String relatedDataName = condition.split(";")[0];
                 //判定当前这个环境数据值是否满足注入条件的范围
 //                boolean isInRange = componentManage.get(component, relatedDataName).isInRange(condition);
-                String parsedStr = ParseStr.parseStr(condition, component);
+                String parsedStr = ParseStr.parseStr(taskInstance,condition, component);
                 boolean isInRange = LogicCaculator.eventProcess(parsedStr);
                 //满足条件
                 if (isInRange) {
                     List<String> dataList = fault.getDataList();
-                    componentManage.updateData(component, dataList);
+                    componentManage.updateData(taskInstance,component, dataList);
                     type=fault.getFaultType();
                 }
             }
@@ -313,7 +313,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 boolean istransition = taskInstanceManage.isTransition(taskInstance, condition);
                 if (istransition) {
                     List<String> dataList = fault.getDataList();
-                    componentManage.updateData(component, dataList);
+                    componentManage.updateData(taskInstance,component, dataList);
                     type=fault.getFaultType();
 
                 }
@@ -330,7 +330,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
         String operateorMethod = fault.getOperateorMethod();
         //不检查条件是否满足，直接注入
         List<String> dataList = fault.getDataList();
-        componentManage.updateData(component, dataList);
+        componentManage.updateData(taskInstance,component, dataList);
         type=fault.getFaultType();
         return type;
     }

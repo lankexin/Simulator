@@ -10,8 +10,8 @@ import static util.LogicCaculator.eventProcess;
 
 public class ExpressCalculate {
     public static String getResultData(String express) {
-        if(express==null)
-            return "";
+        if(express==null || express.isEmpty())
+            return "1";
         String value = null;
         if (express.contains("!") || express.contains("&") || express.contains("|") || express.contains(">")
                 || express.contains("<") || express.contains("=")) {
@@ -22,6 +22,7 @@ public class ExpressCalculate {
             }
         } else {
             NumericCaculator calculate = new NumericCaculator();
+            System.out.println("express------"+express);
             value = calculate.getEventuate(express).split("=")[1];
         }
         return value;
