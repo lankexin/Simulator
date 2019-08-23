@@ -45,6 +45,46 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 currentTaskInstance.setTaskState("运行");
             }
 
+            //任务实例超过deadline的判断
+            if (currentTimePiece > currentTaskInstance.getDeadline()) {
+                String statePath = currentTaskInstance.getStatePath();
+                waitingTaskInstanceList.remove(taskInsaneId);
+                System.out.println("任务实例"+taskInsaneId+"超出deadline,时间"+currentTimePiece);
+                String appendMessage = "当前任务实例超出deadline,时间" + currentTimePiece;
+                StringBuilder temproStatePath = new StringBuilder(statePath);
+                List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
+                pathBuffer.add(appendMessage);
+                statePathBuffer.put(taskInsaneId, pathBuffer);
+
+                Schedule schedule = new Schedule();
+                timePieceMap = schedule.schedule(currentTimePiece - 1, waitingTaskInstanceList,
+                        taskMap);
+//
+//                    taskInsaneId = newTimePieceMap.get(currentTimePiece);
+//
+//                    currentTaskInstance = taskInstanceMap.get(taskInsaneId);
+//
+//                    //任务剩余几个时间片
+//                    leftTaskPiece = currentTaskInstance.getLeftExcuteTime();
+//                    //任务的当前状态
+//                    currentState = currentTaskInstance.getCurrentState();
+//
+//                    //状态剩余几个时间片
+//                    leftStatePiece = currentState.getLeftExcuteTime();
+//
+//                    taskId = currentTaskInstance.getTaskId();
+//                    task = taskMap.get(taskId);
+//
+//                    componentId = task.getComponentId();
+//                    component = componentMap.get(componentId);
+//
+//                    if (!currentTaskInstance.getTaskState().equals("运行")) {
+//                        currentTaskInstance.setTaskState("运行");
+//                    }
+                taskExcute();
+                return;
+            }
+
             if (leftStatePiece <= 0) {
                 String statePath = currentTaskInstance.getStatePath();
                 List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
@@ -83,7 +123,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                         statePathBuffer.put(taskInsaneId, pathBuffer);
                     }
                     Schedule schedule = new Schedule();
-                    timePieceMap = schedule.schedule(currentTimePiece-1, waitingTaskInstanceList,
+                    timePieceMap = schedule.schedule(currentTimePiece - 1, waitingTaskInstanceList,
                             taskMap);
 //
 //                    taskInsaneId = newTimePieceMap.get(currentTimePiece);
@@ -143,7 +183,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
             } else if (leftStatePiece == 1) {
                 String exitEvent = currentState.getExitEvent();
                 if (exitEvent != null) {
-                    StateOperate.updateDataInState(exitEvent, component);
+                    if (!exitEvent.contains("report"))
+                        StateOperate.updateDataInState(exitEvent, component);
                 }
                 /**故障注入，通过改变当前触发事件相关的数据值来注入故障*/
                 Map<String, Fault> faultSet = getFaultInjectMap();
@@ -151,12 +192,12 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
 
                 /**不管什么条件下都强行注入故障*/
                 if (fault != null && fault.getInjectionMode().equals("must")) {
-                    faultInjectMust(currentTaskInstance,component,fault);
+                    faultInjectMust(currentTaskInstance, component, fault);
                 }
 
                 /**判断满足配置文件中指定的条件才注入故障*/
-                else if(fault != null && fault.getInjectionMode().equals("not_must")){
-                    faultInject(currentTaskInstance,component,fault);
+                else if (fault != null && fault.getInjectionMode().equals("not_must")) {
+                    faultInject(currentTaskInstance, component, fault);
                 }
 
                 List<Transition> transitions = task.getTransitionMap().get(currentState.getId());

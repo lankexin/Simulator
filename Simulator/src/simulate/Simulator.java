@@ -2,6 +2,7 @@ package simulate;
 
 import common.DataStore;
 import lmf.*;
+import manager.ComponentManage;
 import manager.TaskManagement;
 import realtime.TaskExtraction;
 import util.PropertiyParse;
@@ -18,28 +19,36 @@ public class Simulator implements DataStore {
     //static int currentSystemTime;
     public static int currentTimePiece;
 
-    /**一个时间片的长度*/
-    public static float timePiece=Float.valueOf(readProperty("realtime.schedule.timepiece"));
+    /**
+     * 一个时间片的长度
+     */
+    public static float timePiece = Float.valueOf(readProperty("realtime.schedule.timepiece"));
 
     private static TaskManagement mTaskManageMent = new TaskManagement();
     private static TaskExcute mTaskExecute = new TaskExcute();
     private static TaskExtraction mTaskExtraction = new TaskExtraction();
 
-    /**记录失败任务的列表*/
+    /**
+     * 记录失败任务的列表
+     */
     static List<String> failureTaskList;
 
-    static String filePath=readProperty("logFilePath");
+    static String filePath = readProperty("logFilePath");
 
-    static String faultPath=readProperty("faultFilePath");
+    static String faultPath = readProperty("faultFilePath");
 
-    /**解析出来的transitionMap
-     * key：component id*/
+    /**
+     * 解析出来的transitionMap
+     * key：component id
+     */
     static Map<String, Component> componentMap;
 
-    /**记录状态的迁移过程
+    /**
+     * 记录状态的迁移过程
      * key：任务实例id
-     * value：状态-event-data-timestamp*/
-    static Map<String, List<String>> statePathBuffer=new LinkedHashMap<>();
+     * value：状态-event-data-timestamp
+     */
+    static Map<String, List<String>> statePathBuffer = new LinkedHashMap<>();
 
     static Map<String, List<String>> faultBuffer;
 
@@ -56,8 +65,10 @@ public class Simulator implements DataStore {
      */
     static Map<String, List<String>> channelDataMap = new HashMap<>();
 
-    /**解析得到的dataMap
-     * key：task id（要求名字不能重复）*/
+    /**
+     * 解析得到的dataMap
+     * key：task id（要求名字不能重复）
+     */
     static Map<String, Task> taskMap;
 
     static List<Channel> channelList;
@@ -82,6 +93,9 @@ public class Simulator implements DataStore {
         sharedDataMap = new HashMap<>();
         channelList = new ArrayList<>();
         XmlParse.parseXML("xml-name", componentMap, sharedDataMap, channelDataMap, channelList);
+
+        //将数据初始值放在dataMap
+        setInput();
 
         taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
 
@@ -120,17 +134,17 @@ public class Simulator implements DataStore {
             @Override
             public void run() {
                 Map<String, List<String>> statePathtemp = statePathBuffer;
-                Map<String,List<String>> faultPathtemp=faultBuffer;
+                Map<String, List<String>> faultPathtemp = faultBuffer;
                 statePathBuffer = null;
                 statePathBuffer = new LinkedHashMap<>();
 
-                faultBuffer=null;
-                faultBuffer=new LinkedHashMap<>();
+                faultBuffer = null;
+                faultBuffer = new LinkedHashMap<>();
 
                 //todo：将state path写到文件里去。
                 try {
-                    writeFile(filePath,statePathtemp);
-                    writeFile(filePath,faultPathtemp);
+                    writeFile(filePath, statePathtemp);
+                    writeFile(filePath, faultPathtemp);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -139,17 +153,30 @@ public class Simulator implements DataStore {
         }, 1000, 500);
 
     }
+
     @Override
-    public synchronized void update(Component component, String dataName, String newValue){
-        Data data=sharedDataMap.get(dataName);
+    public synchronized void update(Component component, String dataName, String newValue) {
+        Data data = sharedDataMap.get(dataName);
         data.setValue(newValue);
-        sharedDataMap.put(dataName,data);
+        sharedDataMap.put(dataName, data);
     }
 
     @Override
-    public String get(Component component, String dataName){
-        String value=sharedDataMap.get(dataName).getValue();
+    public String get(Component component, String dataName) {
+        String value = sharedDataMap.get(dataName).getValue();
         return value;
+    }
+
+    public static void setInput() {
+        int size = Integer.valueOf(readProperty("initInput.size"));
+        for (int i = 1; i <= size; i++) {
+            String dateName = readProperty("initInput.dataName-" + i);
+            String value = readProperty("initInput.dataValue-" + i);
+            String componentId = readProperty("initInput.component-" + i);
+            Component component = componentMap.get(componentId);
+            ComponentManage componentManage = new ComponentManage();
+            componentManage.update(component, dateName, value);
+        }
     }
 
 }
