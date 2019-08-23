@@ -279,7 +279,7 @@ public class LogicCaculator {
 
 
 //    public static void main(String[] args) {
-//        System.out.println(eventProcess("1~=null"));
+//        System.out.println(eventProcess("!(0)"));
 //    }
 
 }
