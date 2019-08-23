@@ -32,6 +32,7 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
 
     @Override
     public String get(Component component, String dataName) {
+        System.out.println(component.getName() + " " + dataName);
         Map<String, Data> dataMap = component.getDataMap();
         Data data = dataMap.get(dataName);
         boolean isShared = data.isShared();
