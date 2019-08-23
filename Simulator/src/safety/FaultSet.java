@@ -14,11 +14,7 @@ import static java.lang.Integer.parseInt;
 import static util.PropertiyParse.readProperty;
 
 public class FaultSet {
-    /**
-     * 获取故障注入的列表--
-     * key-lastState的name
-     * value Fault实体
-     */
+    /** 获取故障注入的列表--* key-lastState的name * value Fault实体 */
     public static Map<String, Fault> getFaultInjectMap() {
         Integer faultSize = parseInt(readProperty("faultInjection.size"));
 //        System.out.println(faultSize);
@@ -67,9 +63,7 @@ public class FaultSet {
         return faultInjectMap;
     }
 
-    /**
-     * 根据概率产生随机事件，是否注入故障
-     */
+    /**根据概率产生随机事件，是否注入故障*/
     public static boolean getRandom(String randomProbability) {
         Double random = parseDouble(randomProbability);
         return Math.random() < random;

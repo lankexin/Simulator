@@ -7,5 +7,5 @@ public interface DataStore {
 
     String get(Component component, String dataName);
 
-    boolean isShared(Component component, String dataName);
+//    boolean isShared(Component component, String dataName);
 }

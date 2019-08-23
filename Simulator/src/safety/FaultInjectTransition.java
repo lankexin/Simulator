@@ -9,8 +9,6 @@ import java.util.Map;
 
 /**故障注入*/
 public interface FaultInjectTransition {
-
-//
 //    /** 得到当前任务的迁移路径*/
 //    String getTransitionPath(TaskInstance taskInstance);
 
