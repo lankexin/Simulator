@@ -125,11 +125,14 @@ public class Simulator implements DataStore {
         exucuteTimer.schedule(new TimerTask() {
             @Override
             public void run() {
+                System.out.println("currentTimePiece:"+currentTimePiece+" excute");
                 currentTimePiece++;
-                while (currentTimePiece != targetTime) {
-                    timePieceMap = mTaskManageMent.timePieceMapManagement(currentTimePiece, taskMap,
-                            waitingTaskInstanceList, blockQueue, componentMap);
+                if (currentTimePiece == targetTime) {
+                    System.exit(0);
                 }
+                timePieceMap = mTaskManageMent.timePieceMapManagement(currentTimePiece, taskMap,
+                        waitingTaskInstanceList, blockQueue, componentMap);
+                System.out.println("taskmanage end");
                 mTaskExecute.taskExcute();
             }
         }, 1000, 100);
@@ -139,6 +142,7 @@ public class Simulator implements DataStore {
         logTimer.schedule(new TimerTask() {
             @Override
             public void run() {
+                System.out.println("log start----");
                 Map<String, List<String>> statePathtemp = statePathBuffer;
                 Map<String, List<String>> faultPathtemp = faultBuffer;
                 statePathBuffer = null;

@@ -77,7 +77,7 @@ public class LogicCaculator {
         //int pos = 0;
 
         for (int i = 0; i < event.length(); i++) {
-            System.out.println(event.charAt(i));
+//            System.out.println(event.charAt(i));
             if (event.charAt(i) == '(') operators.push("(");
             else if (event.charAt(i) == '!' && event.charAt(i+1) == '=') {
                 i++;
