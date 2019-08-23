@@ -137,30 +137,30 @@ public class Simulator implements DataStore {
             }
         }, 1000, 100);
 
-//        //日志：从当前的缓存区拿信息到文件中
-//        Timer logTimer = new Timer();
-//        logTimer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                System.out.println("log start----");
-//                Map<String, List<String>> statePathtemp = statePathBuffer;
-//                Map<String, List<String>> faultPathtemp = faultBuffer;
-//                statePathBuffer = null;
-//                statePathBuffer = new LinkedHashMap<>();
-//
-//                faultBuffer = null;
-//                faultBuffer = new LinkedHashMap<>();
-//
-//                //todo：将state path写到文件里去。
-//                try {
-//                    writeFile(filePath, statePathtemp);
-//                    writeFile(filePath, faultPathtemp);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        }, 1000, 500);
+        //日志：从当前的缓存区拿信息到文件中
+        Timer logTimer = new Timer();
+        logTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("log start----");
+                Map<String, List<String>> statePathtemp = statePathBuffer;
+                Map<String, List<String>> faultPathtemp = faultBuffer;
+                statePathBuffer = null;
+                statePathBuffer = new LinkedHashMap<>();
+
+                faultBuffer = null;
+                faultBuffer = new LinkedHashMap<>();
+
+                //todo：将state path写到文件里去。
+                try {
+                    writeFile(filePath, statePathtemp);
+                    writeFile(filePath, faultPathtemp);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, 1000, 500);
 
     }
 
