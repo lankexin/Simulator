@@ -10,11 +10,13 @@ import java.util.Map;
 
 /**新的表达式--把变量值改为对应的数据*/
 public class ParseStr {
-    public static String parseStr(String s, Component component) {
-        s = s.replaceAll(" ", "");
+    public static String parseStr(String expression, Component component) {
+        if(expression==null)
+            return "";
+        expression = expression.replaceAll(" ", "");
 
         List<String> operators = new ArrayList<>();
-        int length = s.length();
+        int length = expression.length();
         operators.add("+");
         operators.add("-");
         operators.add("*");
@@ -46,34 +48,34 @@ public class ParseStr {
         int i = 0;
 
         for (; i < length; i++) {
-            String i_1Str = String.valueOf(s.charAt(i - 1));
-            String iStr = String.valueOf(s.charAt(i));
-            boolean isDigit=s.charAt(i) >= '0' && s.charAt(i) <= '9';
+            String i_1Str = String.valueOf(expression.charAt(i - 1));
+            String iStr = String.valueOf(expression.charAt(i));
+            boolean isDigit=expression.charAt(i) >= '0' && expression.charAt(i) <= '9';
             if (i == 0) {
                 if (!operators.contains(iStr) && !isDigit) {
-                    name.append(s.charAt(i));
+                    name.append(expression.charAt(i));
                 } else {
-                    newStr.append(s.charAt(i));
+                    newStr.append(expression.charAt(i));
                 }
             } else {
                 if (operators.contains(i_1Str) && !operators.contains(iStr) && !isDigit) {
-                    name.append(s.charAt(i));
+                    name.append(expression.charAt(i));
                 }
 
                 if (operators.contains(i_1Str) && isDigit) {
-                    newStr.append(s.charAt(i));
+                    newStr.append(expression.charAt(i));
                 }
 //                if(operators.contains(i_1Str) && operators.contains(iStr)){
 //                    newStr.append(s.charAt(i));
 //                }
 
                 if (!operators.contains(i_1Str) && !operators.contains(iStr)) {
-                    name.append(s.charAt(i));
+                    name.append(expression.charAt(i));
                 }
 
                 if (operators.contains(iStr)) {
                     if (name.length() != 0) {
-                        if (s.charAt(i) == '=' && s.charAt(i + 1) != '=') {
+                        if (expression.charAt(i) == '=' && expression.charAt(i + 1) != '=') {
                             newStr.append(name);
                             name = new StringBuilder();
                         } else {
@@ -88,7 +90,7 @@ public class ParseStr {
                             newStr.append(value);
                         }
                     }
-                    newStr.append(s.charAt(i));
+                    newStr.append(expression.charAt(i));
                 }
             }
 

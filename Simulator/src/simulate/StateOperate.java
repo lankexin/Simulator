@@ -1,5 +1,6 @@
 package simulate;
 
+import com.google.common.base.Splitter;
 import lmf.*;
 
 import util.LogicCaculator;
@@ -101,19 +102,19 @@ public class StateOperate {
 //        return faultInjectLog;
 //    }
 
-//    public static String stateTransition(State currentState, Component component, TaskInstance currentTaskInstance,
+    //    public static String stateTransition(State currentState, Component component, TaskInstance currentTaskInstance,
 //                                          Task task, List<TaskInstance> blockQueue, Map<String, TaskInstance> taskInstanceMap) {
-        public static State stateTransition(State currentState, Component component, Task task) {
+    public static State stateTransition(State currentState, Component component, Task task) {
 //        boolean trueTransition = false;
         List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
 //        Map<String, Data> dataMap = component.getDataMap();
 //        String taskInsaneId = currentTaskInstance.getTaskId();
 //        boolean isTransition = false;
         for (Transition transition : transitions) {
-            String express=ParseStr.parseStr(transition.getEvent(),component);
+            String express = ParseStr.parseStr(transition.getEvent(), component);
             if (LogicCaculator.eventProcess(express)) {
-                String destId=transition.getDest();
-                State newState=task.getStateMap().get(destId);
+                String destId = transition.getDest();
+                State newState = task.getStateMap().get(destId);
 //                String stateName=newState.getName();
                 return newState;
 //                currentTaskInstance.setCurrentState(newState);
@@ -133,25 +134,35 @@ public class StateOperate {
 //        return trueTransition;
     }
 
-    public static void updateDataInState(String event, Component component) {
-        String parsedStr = ParseStr.parseStr(event, component);
-        Map<String, String> dataStr = getAssignedData(parsedStr);
-        ComponentManage componentManage=new ComponentManage();
-        String dataName = dataStr.entrySet().iterator().next().getKey();
-        String express = dataStr.entrySet().iterator().next().getValue();
-        String value=getResultData(express);
-        componentManage.update(component, dataName, value);
+    public static void updateDataInState(String events, Component component) {
+        List<String> eventList = Splitter.on(";").splitToList(events);
+        for (String event : eventList) {
+            String parsedStr = ParseStr.parseStr(event, component);
+            Map<String, String> dataStr = getAssignedData(parsedStr);
+            ComponentManage componentManage = new ComponentManage();
+            String dataName = dataStr.entrySet().iterator().next().getKey();
+            String express = dataStr.entrySet().iterator().next().getValue();
+            String value = getResultData(express);
+            componentManage.update(component, dataName, value);
 
-        List<String> componentIds=channelDataMap.get(dataName);
-        if(componentIds!=null){
-            for(String componentId:componentIds){
-                if(component.getId().equals(componentId)){
-                    componentManage.update(component,dataName,"null");
-                }
-                else{
-                    componentManage.update(component,dataName,value);
+            List<String> componentIds = channelDataMap.get(dataName);
+            if (componentIds != null) {
+                for (String componentId : componentIds) {
+                    if (component.getId().equals(componentId)) {
+                        componentManage.update(component, dataName, "null");
+                    } else {
+                        componentManage.update(component, dataName, value);
+                    }
                 }
             }
+        }
+    }
+
+    public static void main(String[] args) {
+        List<String> eventList = Splitter.on(";").splitToList("2325555;2223");
+        for(String str:eventList){
+            System.out.println(str);
+            System.out.println("---");
         }
     }
 }

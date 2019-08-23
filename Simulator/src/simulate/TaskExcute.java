@@ -149,6 +149,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
 //                    }
                     taskExcute();
                     return;
+
                 } else {
                     String lastStateName = currentState.getName();
                     currentTaskInstance.setCurrentState(newState);
