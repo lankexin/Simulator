@@ -16,7 +16,7 @@ public class Schedule {
     private String scheduleAlgorithm = null;
 
     public Schedule() {
-        scheduleAlgorithm = PropertiyParse.readProperty("schedule algorithm");
+        scheduleAlgorithm = PropertiyParse.readProperty("realtime.schedule.algorithm");
     }
 
     /**
