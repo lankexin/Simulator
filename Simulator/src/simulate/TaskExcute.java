@@ -20,10 +20,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
     //timePieceMap  时间片--任务Id
     public void taskExcute() {
 
-        /**
-         * 在队列里找到当前需要执行的task并使其开始执行
-         * 即 更改该g任务的 execute time
-         */
+        /** 在队列里找到当前需要执行的task并使其开始执行
+         * 即 更改该g任务的 execute time*/
         if (Simulator.timePieceMap != null && !Simulator.timePieceMap.isEmpty()) {
             //当前执行的任务实例id
             String taskInsaneId = timePieceMap.get(currentTimePiece);
@@ -85,7 +83,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                         statePathBuffer.put(taskInsaneId, pathBuffer);
                     }
                     Schedule schedule = new Schedule();
-                    timePieceMap = schedule.schedule(currentTimePiece, waitingTaskInstanceList,
+                    timePieceMap = schedule.schedule(currentTimePiece-1, waitingTaskInstanceList,
                             taskMap);
 //
 //                    taskInsaneId = newTimePieceMap.get(currentTimePiece);

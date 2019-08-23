@@ -26,7 +26,7 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
         else {
             data.setValue(newValue);
             Simulator simulator = new Simulator();
-            simulator.update(dataName, newValue);
+            simulator.update(component,dataName, newValue);
         }
     }
 
@@ -40,19 +40,19 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
             value = data.getValue();
         else {
             Simulator simulator = new Simulator();
-            value = simulator.get(dataName);
+            value = simulator.get(component,dataName);
             data.setValue(value);
             dataMap.put(dataName, data);
         }
         return value;
     }
 
-    @Override
-    public boolean isShared(Component component, String dataName) {
-        Map<String, Data> dataMap = component.getDataMap();
-        boolean isShared = dataMap.get(dataName).isShared();
-        return isShared;
-    }
+//    @Override
+//    public boolean isShared(Component component, String dataName) {
+//        Map<String, Data> dataMap = component.getDataMap();
+//        boolean isShared = dataMap.get(dataName).isShared();
+//        return isShared;
+//    }
 
     @Override
     public void updateData(Component component, List<String> dataList) {

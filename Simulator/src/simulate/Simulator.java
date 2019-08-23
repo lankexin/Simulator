@@ -1,16 +1,19 @@
 package simulate;
 
+import common.DataStore;
 import lmf.*;
 import manager.TaskManagement;
 import realtime.TaskExtraction;
 import util.PropertiyParse;
 import util.XmlParse;
 
+import java.io.IOException;
 import java.util.*;
 
+import static util.FileUtil.writeFile;
 import static util.PropertiyParse.readProperty;
 
-public class Simulator {
+public class Simulator implements DataStore {
 
     //static int currentSystemTime;
     public static int currentTimePiece;
@@ -25,6 +28,10 @@ public class Simulator {
     /**记录失败任务的列表*/
     static List<String> failureTaskList;
 
+    static String filePath=readProperty("logFilePath");
+
+    static String faultPath=readProperty("faultFilePath");
+
     /**解析出来的transitionMap
      * key：component id*/
     static Map<String, Component> componentMap;
@@ -32,7 +39,7 @@ public class Simulator {
     /**记录状态的迁移过程
      * key：任务实例id
      * value：状态-event-data-timestamp*/
-    static Map<String, List<String>> statePathBuffer;
+    static Map<String, List<String>> statePathBuffer=new LinkedHashMap<>();
 
     static Map<String, List<String>> faultBuffer;
 
@@ -113,22 +120,34 @@ public class Simulator {
             @Override
             public void run() {
                 Map<String, List<String>> statePathtemp = statePathBuffer;
+                Map<String,List<String>> faultPathtemp=faultBuffer;
                 statePathBuffer = null;
-                statePathBuffer = new HashMap<>();
+                statePathBuffer = new LinkedHashMap<>();
+
+                faultBuffer=null;
+                faultBuffer=new LinkedHashMap<>();
 
                 //todo：将state path写到文件里去。
+                try {
+                    writeFile(filePath,statePathtemp);
+                    writeFile(filePath,faultPathtemp);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         }, 1000, 500);
 
     }
-
-    public synchronized void update(String dataName , String newValue){
+    @Override
+    public synchronized void update(Component component, String dataName, String newValue){
         Data data=sharedDataMap.get(dataName);
         data.setValue(newValue);
         sharedDataMap.put(dataName,data);
     }
 
-    public String get(String dataName){
+    @Override
+    public String get(Component component, String dataName){
         String value=sharedDataMap.get(dataName).getValue();
         return value;
     }
