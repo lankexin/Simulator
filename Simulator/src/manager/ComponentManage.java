@@ -27,28 +27,28 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
         else {
             data.setValue(newValue);
             Simulator simulator = new Simulator();
-            simulator.update(component,dataName, newValue);
+            simulator.update(component, dataName, newValue);
         }
     }
 
     @Override
     public String get(TaskInstance taskInstance, Component component, String dataName) {
-        if(channelDataMap.get(dataName)!=null){
-
-        }
-        else{
-        Map<String, Data> dataMap = component.getDataMap();
-        Data data = dataMap.get(dataName);
-        boolean isShared = data.isShared();
-        String value = null;
-        if (!isShared)
-            value = data.getValue();
-        else {
-            Simulator simulator = new Simulator();
-            value = simulator.get(component,dataName);
-            data.setValue(value);
-            dataMap.put(dataName, data);
-        }
+        String value=null;
+        if (channelDataMap.get(dataName) != null) {
+            Map<String, String> dataMap = taskInstance.getDataMap();
+            value=dataMap.get(dataName);
+        } else {
+            Map<String, Data> dataMap = component.getDataMap();
+            Data data = dataMap.get(dataName);
+            boolean isShared = data.isShared();
+            if (!isShared)
+                value = data.getValue();
+            else {
+                Simulator simulator = new Simulator();
+                value = simulator.get(taskInstance,component, dataName);
+                data.setValue(value);
+                dataMap.put(dataName, data);
+            }
         }
         return value;
     }

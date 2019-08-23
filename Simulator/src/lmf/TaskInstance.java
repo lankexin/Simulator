@@ -1,5 +1,7 @@
 package lmf;
 
+import java.util.Map;
+
 import static simulate.Simulator.timePiece;
 
 public class TaskInstance {
@@ -16,6 +18,8 @@ public class TaskInstance {
     private float deadline;
     private float wcet;
     private float period;
+
+    private Map<String,String> dataMap;
 
     /**
      * 任务当前的状态：就绪、等待、运行
@@ -122,5 +126,13 @@ public class TaskInstance {
 
     public void setStateLeftExcuteTime(float stateLeftExcuteTime) {
         this.stateLeftExcuteTime = stateLeftExcuteTime;
+    }
+
+    public Map<String, String> getDataMap() {
+        return dataMap;
+    }
+
+    public void setDataMap(Map<String, String> dataMap) {
+        this.dataMap = dataMap;
     }
 }

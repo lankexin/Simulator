@@ -46,7 +46,7 @@ public class ParseStr {
             return "";
         expression = expression.replaceAll(" ", "");
         expression = expression.replaceAll("&amp;", "&");
-        List<String> operators=operators();
+        List<String> operators = operators();
         int length = expression.length();
 
         StringBuilder newStr = new StringBuilder();
@@ -131,20 +131,19 @@ public class ParseStr {
         return newStr.toString();
     }
 
-    public static List<String> getDataNameList(String expression, Component component) {
+    public static List<String> getDataNameList(String expression) {
         if (expression == null)
             return null;
-        List<String> dataNameList=new ArrayList<>();
+        List<String> dataNameList = new ArrayList<>();
         expression = expression.replaceAll(" ", "");
         expression = expression.replaceAll("&amp;", "&");
 
-        List<String> operators=operators();
+        List<String> operators = operators();
 
         int length = expression.length();
 
         StringBuilder newStr = new StringBuilder();
         StringBuilder name = new StringBuilder();
-        System.out.println("component:" + component.getName());
         int i = 0;
 
         for (; i < length; i++) {
@@ -182,7 +181,8 @@ public class ParseStr {
                             if (nameString.equals("null")) {
                                 name = new StringBuilder();
                             } else {
-                                dataNameList.add(nameString);
+                                if (!dataNameList.contains(nameString))
+                                    dataNameList.add(nameString);
                                 name = new StringBuilder();
                             }
 
@@ -194,12 +194,12 @@ public class ParseStr {
         }
 
         if (name.length() != 0) {
-            ComponentManage componentManage = new ComponentManage();
             String nameString = name.toString();
             if (nameString.equals("null")) {
                 name = new StringBuilder();
             } else {
-                dataNameList.add(nameString);
+                if (!dataNameList.contains(nameString))
+                    dataNameList.add(nameString);
                 name = new StringBuilder();
             }
         }

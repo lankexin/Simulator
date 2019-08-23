@@ -67,7 +67,7 @@ public class Simulator implements DataStore {
      * 传输部分的dataMap
      * key：data name（要求名字不能重复）
      */
-    static Map<String, List<String>> channelDataMap = new HashMap<>();
+    public static Map<String, List<String>> channelDataMap = new HashMap<>();
 
     /**
      * 解析得到的dataMap
@@ -185,7 +185,7 @@ public class Simulator implements DataStore {
     }
 
     @Override
-    public String get(Component component, String dataName) {
+    public String get(TaskInstance taskInstance,Component component, String dataName) {
         String value = sharedDataMap.get(dataName).getValue();
         return value;
     }
