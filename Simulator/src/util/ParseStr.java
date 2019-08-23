@@ -21,6 +21,7 @@ public class ParseStr {
         operators.add("/");
 
         operators.add("!");
+        operators.add("~");
         operators.add("|");
         operators.add("&");
 
@@ -28,7 +29,7 @@ public class ParseStr {
         operators.add(")");
 
         operators.add("==");
-        operators.add("!=");
+        operators.add("~=");
 
         operators.add(">");
         operators.add(">=");

@@ -194,6 +194,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
             currentTaskInstance.setStateLeftExcuteTime((leftStatePiece - 1) * timePiece);
 //            currentState.setLeftExcuteTime(leftStatePiece - 1);
             currentTaskInstance.setLeftExcuteTime(leftExcuteTime - 1 * timePiece);
+
+
         }
     }
 
