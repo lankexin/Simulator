@@ -55,13 +55,15 @@ public class TaskManagement {
              FaultInjection.inject();
              } */
 
-            if (currentTask.getPeriod() != -1 && currentSystemTime % currentTask.getPeriod() == 0) {
-                TaskInstance newTaskInstance = new TaskInstance(currentSystemTime,
-                        currentTask.getId()+"_"+currentSystemTime,
-                        currentTask.getFirstState(), "Idle",
-                        currentTask.getFirstState().getWcet(), currentTask);
-                waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
-                timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+            if (currentTask.getPeriod() > 0) {
+                if (currentSystemTime % currentTask.getPeriod() == 0) {
+                    TaskInstance newTaskInstance = new TaskInstance(currentSystemTime,
+                            currentTask.getId() + "_" + currentSystemTime,
+                            currentTask.getFirstState(), "Idle",
+                            currentTask.getFirstState().getWcet(), currentTask);
+                    waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
+                    timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+                }
             }
             else {
 

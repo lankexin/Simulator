@@ -9,6 +9,8 @@ public class LogicCaculator {
     public static boolean eventProcess(String event){
         event = event.replaceAll(" ", "");
 
+        if (event.equals("")) return true;
+
         if (event.contains("null")) {
             if (event.equalsIgnoreCase("null==null")) {
                 return true;
@@ -278,8 +280,8 @@ public class LogicCaculator {
     }
 
 
-//    public static void main(String[] args) {
-//        System.out.println(eventProcess("!(0)"));
-//    }
+    public static void main(String[] args) {
+        System.out.println(eventProcess("1"));
+    }
 
 }

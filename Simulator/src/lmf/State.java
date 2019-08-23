@@ -54,14 +54,29 @@ public class State {
 //    }
 
     public String getEntryEvent() {
+        if(attrs.get("entry") != null) {
+            entryEvent = attrs.get("entry");
+        } else {
+            entryEvent = "";
+        }
         return entryEvent;
     }
 
     public String getDoEvent() {
+        if(attrs.get("do") != null) {
+            doEvent = attrs.get("do");
+        } else {
+            doEvent = "";
+        }
         return doEvent;
     }
 
     public String getExitEvent() {
+        if(attrs.get("exit") != null) {
+            exitEvent = attrs.get("exit");
+        } else {
+            exitEvent = "";
+        }
         return exitEvent;
     }
 
