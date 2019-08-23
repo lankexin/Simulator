@@ -9,6 +9,7 @@ public class TaskInstanceManage implements FaultInjectTransition {
 
     @Override
     public boolean isTransition(TaskInstance taskInstance,String condition){
+        //任务实例维护一份当前任务的状态迁移路径
         String path=taskInstance.getStatePath();
         int lengthPath=path.length();
         int lengthCondition=condition.length();
