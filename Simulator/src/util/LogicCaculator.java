@@ -9,12 +9,48 @@ public class LogicCaculator {
     public static boolean eventProcess(String event){
         event = event.replaceAll(" ", "");
 
+        if (event.contains("null")) {
+            if (event.equalsIgnoreCase("null==null")) {
+                return true;
+            }
+
+            if (event.equalsIgnoreCase("null~=null")) {
+                return false;
+            }
+
+            if (event.equalsIgnoreCase("!(null==null)")) {
+                return false;
+            }
+
+            if (event.equalsIgnoreCase("!(null~=null)")) {
+                return true;
+            }
+
+            if (event.contains("==null") && event.contains("!")) {
+                return true;
+            }
+
+            if (event.contains("==null")) {
+                return false;
+            }
+
+            if (event.contains("~=null") && event.contains("!")) {
+                return false;
+            }
+
+            if (event.contains("~=null")) {
+                return true;
+            }
+
+            return false;
+        }
+
         Map<String, Integer> operatorMap = new HashMap<>();
         operatorMap.put("|", 1);
 
         operatorMap.put("&", 2);
 
-        operatorMap.put("!=", 3);
+        operatorMap.put("~=", 3);
         operatorMap.put("==", 3);
 
         operatorMap.put(">=", 4);
@@ -44,21 +80,21 @@ public class LogicCaculator {
             else if (event.charAt(i) == '!' && event.charAt(i+1) == '=') {
                 i++;
                 if (operators.empty() || operators.peek().equals("(")
-                        || operatorMap.get("!=") >= operatorMap.get(operators.peek())) {
-                    operators.push("!=");
+                        || operatorMap.get("~=") >= operatorMap.get(operators.peek())) {
+                    operators.push("~=");
                 } else {
                     while (!operators.empty() && !operators.peek().equals("(")
-                            && operatorMap.get("!=") < operatorMap.get(operators.peek())) {
+                            && operatorMap.get("~=") < operatorMap.get(operators.peek())) {
                         String sign = operators.pop();
                         Calculate(sign, numbers);
                     }
-                    operators.push("!=");
+                    operators.push("~=");
                 }
             }
             else if (event.charAt(i) == '=' && event.charAt(i+1) == '=') {
                 i++;
                 if (operators.empty() || operators.peek().equals("(")
-                        || operatorMap.get("!=") >= operatorMap.get(operators.peek())) {
+                        || operatorMap.get("~=") >= operatorMap.get(operators.peek())) {
                     operators.push("==");
                 } else {
                     while (!operators.empty() && !operators.peek().equals("(")
@@ -86,7 +122,7 @@ public class LogicCaculator {
             else if (event.charAt(i) == '<' && event.charAt(i+1) == '=') {
                 i++;
                 if (operators.empty() || operators.peek().equals("(")
-                        || operatorMap.get("!=") >= operatorMap.get(operators.peek())) {
+                        || operatorMap.get("~=") >= operatorMap.get(operators.peek())) {
                     operators.push("<=");
                 } else {
                     while (!operators.empty() && !operators.peek().equals("(")
@@ -219,7 +255,7 @@ public class LogicCaculator {
                 return l <= r;
             case "==":
                 return l == r;
-            case "!=":
+            case "~=":
                 return l != r;
             default:
                 return false;
@@ -240,5 +276,10 @@ public class LogicCaculator {
     private static boolean notOperator(boolean r) {
         return !r;
     }
+
+
+//    public static void main(String[] args) {
+//        System.out.println(eventProcess("!(0)"));
+//    }
 
 }

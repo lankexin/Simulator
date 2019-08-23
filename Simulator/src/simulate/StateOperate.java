@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import static simulate.ExpressCalculate.getResultData;
+import static simulate.Simulator.channelDataMap;
 import static util.ParseStr.getAssignedData;
 
 public class StateOperate {

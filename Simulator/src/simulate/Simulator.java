@@ -50,7 +50,11 @@ public class Simulator implements DataStore {
      */
     static Map<String, Data> sharedDataMap;
 
-
+    /**
+     * 传输部分的dataMap
+     * key：data name（要求名字不能重复）
+     */
+    static Map<String, List<String>> channelDataMap = new HashMap<>();
 
     /**解析得到的dataMap
      * key：task id（要求名字不能重复）*/
@@ -77,7 +81,7 @@ public class Simulator implements DataStore {
         componentMap = new HashMap<>();
         sharedDataMap = new HashMap<>();
         channelList = new ArrayList<>();
-        XmlParse.parseXML("xml-name", componentMap, sharedDataMap, channelList);
+        XmlParse.parseXML("xml-name", componentMap, sharedDataMap, channelDataMap, channelList);
 
         taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
 

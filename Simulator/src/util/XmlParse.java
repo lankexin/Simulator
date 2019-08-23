@@ -6,6 +6,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import sun.applet.resources.MsgAppletViewer;
 
 import java.util.*;
 
@@ -14,12 +15,13 @@ public class XmlParse {
     public static void parseXML(String inputPath,
                                 Map<String, Component> componentList,
                                 Map<String, Data> sharedDataMap,
+                                Map<String, List<String>>  channelDataMap,
                                 List<Channel> channelList) {
         SAXReader reader = new SAXReader();
         try {
             Document document = reader.read(inputPath);
             Element root = document.getRootElement();
-            getXML(root, componentList, sharedDataMap, channelList);
+            getXML(root, componentList, sharedDataMap, channelDataMap, channelList);
         } catch (DocumentException e) {
             e.printStackTrace();
         }
@@ -29,6 +31,7 @@ public class XmlParse {
     private static void getXML(Element root,
                                Map<String, Component> componentList,
                                Map<String, Data> sharedDataMap,
+                               Map<String, List<String>> channelDataMap,
                                List<Channel> channelList) {
         Iterator it = root.elementIterator();
         Element component = root;
@@ -53,14 +56,26 @@ public class XmlParse {
             String componentId = root.getParent().attribute("id").getValue();
             Linkpoint newLinkpoint = new Linkpoint();
             Data newData = new Data();
-            newData.setAttr("shared", "true");
             for (Attribute attr : componentAttrs) {
                 newLinkpoint.setAttr(attr.getName(), attr.getValue());
                 newData.setAttr(attr.getName(), attr.getValue());
             }
 
             componentList.get(componentId).getLinkpointMap().put(newLinkpoint.getAttr("id"), newLinkpoint);
-            sharedDataMap.put(newData.getAttr("name"), newData);
+
+            /**
+             * linkpoint发送或接收的数据，放入channelDataMap中，对于一个数据，存储所有它连接到的component id
+             */
+            if (channelDataMap.get(newData.getAttr("name")) == null) {
+                List<String> componentIdList = new ArrayList<>();
+                componentIdList.add(componentId);
+                channelDataMap.put(newData.getAttr("name"), componentIdList);
+            } else {
+                List<String> componentIdList = channelDataMap.get(newData.getAttr("name"));
+                componentIdList.add(componentId);
+                channelDataMap.put(newData.getAttr("name"), componentIdList);
+            }
+            componentList.get(componentId).getDataMap().put(newData.getAttr("name"), newData);
         } else if (component.getName().equals("transition")) {
             String componentId = null;
             Element rootParent = root;
@@ -124,7 +139,7 @@ public class XmlParse {
 
         while (itt.hasNext()) {
             Element componentChild = (Element) itt.next();
-            getXML(componentChild, componentList, sharedDataMap, channelList);
+            getXML(componentChild, componentList, sharedDataMap, channelDataMap, channelList);
         }
     }
 
@@ -132,7 +147,8 @@ public class XmlParse {
         Map<String, Component> componentList = new HashMap<>();
         Map<String, Data> sharedDataMap = new HashMap<>();
         List<Channel> channelList = new ArrayList<>();
-        XmlParse.parseXML("simulink0822.xml", componentList, sharedDataMap, channelList);
+        Map<String, List<String>> channelDataMap = new HashMap<>();
+        XmlParse.parseXML("simulink0822.xml", componentList, sharedDataMap, channelDataMap, channelList);
 
         for (Channel channel : channelList) {
             System.out.println(channel.getAttr("id") + " " + channel.getAttr("source"));

@@ -62,7 +62,8 @@ public class RMS {
         Map<String, Component> componentMap = new HashMap<>();
         List<Channel> channelList = new ArrayList<>();
         Map<String, Data> sharedDataMap = new HashMap<>();
-        XmlParse.parseXML("simulink0822.xml", componentMap, sharedDataMap, channelList);
+        Map<String, List<String>> channelDataMap = new HashMap<>();
+        XmlParse.parseXML("simulink0822.xml", componentMap, sharedDataMap, channelDataMap, channelList);
 
         Map<String, Task> taskMap;
         taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
