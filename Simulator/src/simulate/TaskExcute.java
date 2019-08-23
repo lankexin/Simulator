@@ -210,7 +210,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 }
                 /**故障注入，通过改变当前触发事件相关的数据值来注入故障*/
                 Map<String, Fault> faultSet = getFaultInjectMap();
-                Fault fault = faultSet.get(currentState.getId());
+                //故障集中是否存在当前的fault
+                Fault fault = faultSet.get(component.getName()+"-"+currentState.getName());
 
                 /**不管什么条件下都强行注入故障*/
                 if (fault != null && fault.getInjectionMode().equals("must")) {

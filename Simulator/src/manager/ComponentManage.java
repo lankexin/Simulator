@@ -3,15 +3,16 @@ package manager;
 import common.DataStore;
 import lmf.Component;
 import lmf.Data;
+import lmf.TaskInstance;
 import safety.FaultInjectUpdate;
 import simulate.Simulator;
 import simulate.StateOperate;
-import util.NumericCaculator;
 
 import java.util.List;
 import java.util.Map;
 
 import static simulate.ExpressCalculate.getResultData;
+import static simulate.Simulator.channelDataMap;
 import static util.ParseStr.getAssignedData;
 
 public class ComponentManage implements DataStore, FaultInjectUpdate {
@@ -31,8 +32,11 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
     }
 
     @Override
-    public String get(Component component, String dataName) {
-        System.out.println(component.getName() + " " + dataName);
+    public String get(TaskInstance taskInstance, Component component, String dataName) {
+        if(channelDataMap.get(dataName)!=null){
+
+        }
+        else{
         Map<String, Data> dataMap = component.getDataMap();
         Data data = dataMap.get(dataName);
         boolean isShared = data.isShared();
@@ -44,6 +48,7 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
             value = simulator.get(component,dataName);
             data.setValue(value);
             dataMap.put(dataName, data);
+        }
         }
         return value;
     }
