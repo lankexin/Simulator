@@ -14,6 +14,7 @@ public class ParseStr {
         if(expression==null)
             return "";
         expression = expression.replaceAll(" ", "");
+        expression = expression.replaceAll("&amp;", "&");
 
         List<String> operators = new ArrayList<>();
         int length = expression.length();

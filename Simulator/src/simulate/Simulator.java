@@ -94,14 +94,14 @@ public class Simulator implements DataStore {
         componentMap = new HashMap<>();
         sharedDataMap = new HashMap<>();
         channelList = new ArrayList<>();
-        XmlParse.parseXML("xml-name", componentMap, sharedDataMap, channelDataMap, channelList);
+        XmlParse.parseXML("simulink.xml", componentMap, sharedDataMap, channelDataMap, channelList);
 
         //将数据初始值放在dataMap
         setInput();
 
         taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
 
-        int targetTime = Integer.valueOf(PropertiyParse.readProperty("target execute time"));
+        int targetTime = Integer.valueOf(PropertiyParse.readProperty("simulator.targetTimePiece"));
 
         waitingTaskInstanceList = new HashMap<>();
         timePieceMap = new HashMap<>();
@@ -125,11 +125,14 @@ public class Simulator implements DataStore {
         exucuteTimer.schedule(new TimerTask() {
             @Override
             public void run() {
+                System.out.println("currentTimePiece:"+currentTimePiece+" excute");
                 currentTimePiece++;
-                while (currentTimePiece != targetTime) {
-                    timePieceMap = mTaskManageMent.timePieceMapManagement(currentTimePiece, taskMap,
-                            waitingTaskInstanceList, blockQueue, componentMap);
+                if (currentTimePiece == targetTime) {
+                    System.exit(0);
                 }
+                timePieceMap = mTaskManageMent.timePieceMapManagement(currentTimePiece, taskMap,
+                        waitingTaskInstanceList, blockQueue, componentMap);
+                System.out.println("taskmanage end");
                 mTaskExecute.taskExcute();
             }
         }, 1000, 100);
@@ -139,6 +142,7 @@ public class Simulator implements DataStore {
         logTimer.schedule(new TimerTask() {
             @Override
             public void run() {
+                System.out.println("log start----");
                 Map<String, List<String>> statePathtemp = statePathBuffer;
                 Map<String, List<String>> faultPathtemp = faultBuffer;
                 statePathBuffer = null;

@@ -129,7 +129,7 @@ public class TaskManagement {
                                       State currentState) {
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
-            if (ExpressCalculate.getLogicResult(transition.getEvent(), targetComponent).equals("1")) {
+            if (ExpressCalculate.getResultData(transition.getEvent()).equals("1")) {
                 newTaskInstance = new TaskInstance(currentSystemTime,
                         currentTask.getId() + "_" + currentSystemTime,
                         currentState, currentState.getAttr("name"),
