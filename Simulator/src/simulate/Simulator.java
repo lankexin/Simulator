@@ -15,8 +15,8 @@ import static util.PropertiyParse.readProperty;
 
 public class Simulator implements DataStore {
 
-    static int currentSystemTime;
-    static int currentTimePiece;
+    //static int currentSystemTime;
+    public static int currentTimePiece;
 
     /**一个时间片的长度*/
     public static float timePiece=Float.valueOf(readProperty("realtime.schedule.timepiece"));
@@ -89,10 +89,10 @@ public class Simulator implements DataStore {
         taskQueueManagementTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                currentSystemTime++;
+                //currentSystemTime++;
 
-                while (currentSystemTime != targetTime) {
-                    timePieceMap = mTaskManageMent.timePieceMapManagement(currentSystemTime, taskMap,
+                while (currentTimePiece != targetTime) {
+                    timePieceMap = mTaskManageMent.timePieceMapManagement(currentTimePiece, taskMap,
                             waitingTaskInstanceList, blockQueue, componentMap);
                 }
             }

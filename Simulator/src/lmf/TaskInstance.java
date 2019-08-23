@@ -39,6 +39,7 @@ public class TaskInstance {
         this.deadline = (float)arriveTimestamp + task.getDeadline();
         this.wcet = task.getWcet();
         this.period = task.getPeriod();
+        this.leftExcuteTime = task.getWcet();
     }
 
     public String getInstanceId() {

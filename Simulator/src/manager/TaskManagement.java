@@ -4,9 +4,7 @@ import lmf.*;
 import realtime.Schedule;
 import simulate.ExpressCalculate;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TaskManagement {
 
@@ -95,7 +93,9 @@ public class TaskManagement {
 
         Map<Integer, String> timePieceMap = new HashMap<>();
 
-        for (TaskInstance taskInstance : blockTaskList) {
+        Iterator<TaskInstance> iterator = blockTaskList.iterator();
+        while (iterator.hasNext()) {
+            TaskInstance taskInstance = iterator.next();
             List<Transition> transitions = taskMap.get(taskInstance
                     .getTaskId())
                     .getTransitionMap()
@@ -104,15 +104,16 @@ public class TaskManagement {
                             .getId());
 
             Component targetComponent = componentMap.get(taskMap
-                            .get(taskInstance
-                                    .getTaskId())
-                            .getComponentId());
+                    .get(taskInstance
+                            .getTaskId())
+                    .getComponentId());
             TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions,
                     targetComponent, taskMap.get(taskInstance.getTaskId()),
                     taskInstance.getCurrentState());
             if (newTaskInstance != null) {
-                waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
+                waitingTaskList.put(taskInstance.getInstanceId(), taskInstance);
                 timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+                iterator.remove();
             }
         }
 

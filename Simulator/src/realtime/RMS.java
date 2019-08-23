@@ -40,13 +40,13 @@ public class RMS {
             }
         }
 
-        int timePieceCounter = currentTimePiece;
+        int timePieceCounter = currentTimePiece+1;
         System.out.println("start  " + taskInstanceList.size());
         for (TaskInstance taskInstance : taskInstanceList) {
             System.out.println(taskInstance.getInstanceId() + " " +
-                    taskInstance.getWcet() + timePieceCounter);
-            if (taskInstance.getWcet() > 0) {
-                for (int i = timePieceCounter; i < timePieceCounter + taskInstance.getWcet() / timePiece; i++) {
+                    taskInstance.getLeftExcuteTime() + " " + timePieceCounter);
+            if (taskInstance.getLeftExcuteTime() > 0) {
+                for (int i = timePieceCounter; i < timePieceCounter + taskInstance.getLeftExcuteTime() / timePiece; i++) {
                     timePieceMap.put(i, taskInstance.getInstanceId());
                 }
                 timePieceCounter += taskInstance.getWcet()/timePiece;

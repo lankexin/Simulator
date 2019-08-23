@@ -34,6 +34,7 @@ public class Data {
     }
 
     public boolean isShared() {
+        isShared = (attrs.get("shared")!=null);
         return isShared;
     }
 
