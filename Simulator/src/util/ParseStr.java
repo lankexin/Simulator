@@ -84,6 +84,7 @@ public class ParseStr {
                             String nameString = name.toString();
                             System.out.println("name String " + nameString);
                             String value = componentManage.get(component, nameString);
+                            System.out.println("component name is " + component.getName());
                             if(value==null){
                                 System.out.println("解析式变量名不存在");
                                 return null;

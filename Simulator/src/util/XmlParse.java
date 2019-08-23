@@ -66,6 +66,7 @@ public class XmlParse {
             /**
              * linkpoint发送或接收的数据，放入channelDataMap中，对于一个数据，存储所有它连接到的component id
              */
+            newData.setValue("null");
             if (channelDataMap.get(newData.getAttr("name")) == null) {
                 List<String> componentIdList = new ArrayList<>();
                 componentIdList.add(componentId);
@@ -76,6 +77,8 @@ public class XmlParse {
                 channelDataMap.put(newData.getAttr("name"), componentIdList);
             }
             componentList.get(componentId).getDataMap().put(newData.getAttr("name"), newData);
+            System.out.println(newData.getAttr("name") + " " + componentList.get(componentId).getName() + " " + newData.getAttr("shared") +
+                    " " + componentList.get(componentId).getDataMap().get(newData.getAttr("name")));
         } else if (component.getName().equals("transition")) {
             String componentId = null;
             Element rootParent = root;
