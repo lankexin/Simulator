@@ -49,7 +49,6 @@ public class ParseStr {
         int i = 0;
 
         for (; i < length; i++) {
-            String i_1Str = String.valueOf(expression.charAt(i - 1));
             String iStr = String.valueOf(expression.charAt(i));
             boolean isDigit=expression.charAt(i) >= '0' && expression.charAt(i) <= '9';
             if (i == 0) {
@@ -59,6 +58,7 @@ public class ParseStr {
                     newStr.append(expression.charAt(i));
                 }
             } else {
+                String i_1Str = String.valueOf(expression.charAt(i - 1));
                 if (operators.contains(i_1Str) && !operators.contains(iStr) && !isDigit) {
                     name.append(expression.charAt(i));
                 }
@@ -66,11 +66,11 @@ public class ParseStr {
                 if (operators.contains(i_1Str) && isDigit) {
                     newStr.append(expression.charAt(i));
                 }
-//                if(operators.contains(i_1Str) && operators.contains(iStr)){
-//                    newStr.append(s.charAt(i));
-//                }
+                if (((expression.charAt(i-1) >= '0') && (expression.charAt(i-1) <= '9')) && isDigit) {
+                    newStr.append(expression.charAt(i));
+                }
 
-                if (!operators.contains(i_1Str) && !operators.contains(iStr)) {
+                if (!operators.contains(i_1Str) && !operators.contains(iStr) && !isDigit) {
                     name.append(expression.charAt(i));
                 }
 
