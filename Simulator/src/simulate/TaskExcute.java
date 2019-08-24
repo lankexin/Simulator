@@ -275,8 +275,10 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     }
                 }
 
-                List<Transition> transitions = task.getTransitionMap().get(currentTaskInstance.getCurrentState().getId());
-
+                List<Transition> transitions = task.getTransitionMap()
+                        .get(currentTaskInstance.getCurrentState().getId());
+                System.out.println("transitionMap"+task.getTransitionMap());
+                System.out.println("transitions"+transitions);
                 State possibleNewState = null;
                 String transitionEvent = null;
                 String parsedEvent = null;
