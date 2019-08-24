@@ -23,24 +23,18 @@ public class TaskManagement {
         System.out.println("start management");
         Map<Integer, String> timePieceMap = new HashMap<>();
 
-        Map<Integer, String> tempTimePieceMap;
-        tempTimePieceMap = waitingQueueManagement(currentSystemTime, taskMap, waitingTaskList, componentMap);
+        waitingQueueManagement(currentSystemTime, taskMap, waitingTaskList, componentMap);
         System.out.println("finish waiting queue management");
 
-        if (tempTimePieceMap.size() > 0) {
-            timePieceMap = tempTimePieceMap;
-        }
-        tempTimePieceMap = blockQueueManageMent(currentSystemTime, blockTaskList, taskMap, componentMap, waitingTaskList);
+        blockQueueManageMent(currentSystemTime, blockTaskList, taskMap, componentMap, waitingTaskList);
         System.out.println("finish block queue management");
-        if (tempTimePieceMap.size() > 0) {
-            timePieceMap = tempTimePieceMap;
-        }
 
+        timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
         return timePieceMap;
     }
 
 
-    private Map<Integer, String> waitingQueueManagement(int currentSystemTime,
+    private void waitingQueueManagement(int currentSystemTime,
                                                               Map<String, Task> taskMap,
                                                               Map<String, TaskInstance> waitingTaskList,
                                                               Map<String, Component> componentMap) {
@@ -89,16 +83,11 @@ public class TaskManagement {
 
                 if (newTaskInstance != null) {
                     waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
-                    System.out.println("start schedule");
-                    timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
-                    System.out.println("finish schedule");
                 }
             }
         }
 
         System.out.println("finish waiting queue management");
-
-        return timePieceMap;
 
     }
 
@@ -106,7 +95,7 @@ public class TaskManagement {
     /**
      * 遍历阻塞队列，看是否满足触发条件
      */
-    private Map<Integer, String> blockQueueManageMent(int currentSystemTime,
+    private void blockQueueManageMent(int currentSystemTime,
                                                            List<TaskInstance> blockTaskList,
                                                            Map<String, Task> taskMap,
                                                            Map<String, Component> componentMap,
@@ -138,7 +127,6 @@ public class TaskManagement {
             }
         }
 
-        return timePieceMap;
     }
 
     private TaskInstance isPeriodTransitted(int currentSystemTime,
