@@ -141,7 +141,7 @@ public class StateOperate {
         System.err.println(eventList);
         for (String event : eventList) {
             String parsedStr = ParseStr.parseStr(taskInstance, event, component);
-            System.err.println(event);
+            System.err.println("event"+event);
             System.err.println("do entry exit赋值"+parsedStr);
             Map<String, String> dataStr = getAssignedData(parsedStr);
             ComponentManage componentManage = new ComponentManage();

@@ -121,6 +121,7 @@ public class ParseStr {
                 newStr.append(nameString);
             } else {
                 System.out.println("nameString--"+nameString);
+                System.out.println(component.getName());
                 String value = componentManage.get(taskInstance,component, nameString);
                 if (value == null) {
                     System.out.println("解析式变量名不存在");
