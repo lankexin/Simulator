@@ -93,6 +93,9 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 return;
             }
 
+            System.err.println("left state piece " + leftStatePiece);
+            System.err.println("state name " + currentState.getName());
+
             if (leftStatePiece <= 0) {
                 String statePath = currentTaskInstance.getStatePath();
                 List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
@@ -172,7 +175,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     currentTaskInstance.setCurrentState(newState);
                     String appendMessage = lastStateName + "状态迁移到" + currentState.getName() + ",时间" +
                             currentTimePiece + ",迁移事件" + transitionEvent + ",解析事件" + parsedEvent;
-                    currentTaskInstance.setStateLeftExcuteTime(currentState.getWcet());
+                    System.err.println(currentState.getName() + " " + currentState.getWcet());
+                    currentTaskInstance.setStateLeftExcuteTime(newState.getWcet());
 
                     //记录迁移到故障状态的信息
                     if (newState.isFaultState()) {
@@ -276,7 +280,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     statePathBuffer.put(taskInsaneId, pathBuffer);
                 }
             }
-            currentTaskInstance.setStateLeftExcuteTime((leftStatePiece - 1) * timePiece);
+            currentTaskInstance.setStateLeftExcuteTime(currentTaskInstance.getStateLeftExcuteTime() - timePiece);
 //            currentState.setLeftExcuteTime(leftStatePiece - 1);
             currentTaskInstance.setLeftExcuteTime(leftExcuteTime - 1 * timePiece);
 

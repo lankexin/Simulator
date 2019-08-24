@@ -40,10 +40,10 @@ public class EDF {
         }
 
         int timePieceCounter = currentTimePiece;
-        System.out.println("start  " + taskInstanceList.size());
+//        System.out.println("start  " + taskInstanceList.size());
         for (TaskInstance taskInstance : taskInstanceList) {
-            System.out.println(taskInstance.getInstanceId() + " " +
-                    taskInstance.getLeftExcuteTime() + " " + timePieceCounter);
+//            System.out.println(taskInstance.getInstanceId() + " " +
+//                    taskInstance.getLeftExcuteTime() + " " + timePieceCounter);
             if (taskInstance.getLeftExcuteTime() > 0) {
                 for (int i = timePieceCounter; i < timePieceCounter + taskInstance.getLeftExcuteTime() / timePiece; i++) {
                     timePieceMap.put(i, taskInstance.getInstanceId());

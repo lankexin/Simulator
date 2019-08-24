@@ -6,6 +6,17 @@ import java.util.Stack;
 
 public class LogicCaculator {
 
+    public static String stateUpdateCaculate(String event) {
+        event = event.replaceAll(" ", "");
+
+        Stack<Double> numbers = new Stack<>();
+        Stack<String> operators = new Stack<>();
+
+        initAndProcess(event, numbers, operators);
+
+        return String.valueOf(numbers.peek());
+    }
+
     public static boolean eventProcess(String event){
         event = event.replaceAll(" ", "");
 
@@ -47,6 +58,18 @@ public class LogicCaculator {
             return false;
         }
 
+
+        Stack<Double> numbers = new Stack<>();
+        Stack<String> operators = new Stack<>();
+
+        initAndProcess(event, numbers, operators);
+
+        return (numbers.peek() == 1);
+    }
+
+    private static void initAndProcess(String event,
+                                       Stack<Double> numbers,
+                                       Stack<String> operators) {
         Map<String, Integer> operatorMap = new HashMap<>();
         operatorMap.put("|", 1);
 
@@ -65,14 +88,12 @@ public class LogicCaculator {
 
         operatorMap.put("*", 6);
         operatorMap.put("/", 6);
+        operatorMap.put("%", 6);
 
         operatorMap.put("!", 7);
 
         operatorMap.put("(", 8);
         operatorMap.put(")", 8);
-
-        Stack<Double> numbers = new Stack<>();
-        Stack<String> operators = new Stack<>();
 
         //int pos = 0;
 
@@ -188,8 +209,6 @@ public class LogicCaculator {
             String sign = operators.pop();
             Calculate(sign, numbers);
         }
-
-        return (numbers.peek() == 1);
     }
 
     private static void Calculate(String sign, Stack<Double> numbers) {
@@ -202,7 +221,8 @@ public class LogicCaculator {
             rBool = notOperator(rBool);
             numbers.push(rBool ? 1.0 : 0.0);
         } else if (sign.equals("+") || sign.equals("-") ||
-                sign.equals("*") || sign.equals("/")) {
+                sign.equals("*") || sign.equals("/") ||
+                sign.equals("%")) {
             double r = numbers.pop();
             double l = numbers.pop();
             double ans = calculate(l, r, sign);
@@ -240,6 +260,8 @@ public class LogicCaculator {
             case "/":
                 // todo: 如果r是0, 抛出异常
                 return l / r;
+            case "%":
+                return l % r;
             default:
                 return 0;
         }
@@ -281,7 +303,8 @@ public class LogicCaculator {
 
 
     public static void main(String[] args) {
-        System.out.println(eventProcess("1"));
+        System.out.println(eventProcess("(null~=null)"));
+        System.out.println(stateUpdateCaculate("12%10"));
     }
 
 }
