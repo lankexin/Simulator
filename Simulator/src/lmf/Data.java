@@ -36,11 +36,7 @@ public class Data {
     }
 
     public String getValue() {
-        if (attrs.get("initvalue") != null) {
-            value = attrs.get("initvalue");
-        } else {
-            value = "null";
-        }
+        if (value == null) value = "null";
         return value;
     }
 
