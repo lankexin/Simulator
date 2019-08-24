@@ -44,7 +44,7 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
             boolean isShared = data.isShared();
             if (!isShared) {
                 value = data.getValue();
-                System.out.println("yyyyyy"+dataMap.entrySet().iterator().next().getValue());
+                System.out.println("yyyyyy"+dataMap.entrySet().iterator().next().getValue().getValue());
             }
             else {
                 Simulator simulator = new Simulator();
