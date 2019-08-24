@@ -244,8 +244,10 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
 
                 /**不管什么条件下都强行注入故障*/
                 if (fault != null && fault.getInjectionMode().equals("must")) {
+                    System.out.println("00000000");
                     String faultType=faultInjectMust(currentTaskInstance, component, fault);
                     if(faultType!=null){
+                        System.out.println("11111");
                         String appendFault = "组件"+component.getName()+"注入故障，时间"+ currentTimePiece +
                                 "故障类型为"+faultType;
                         List<String> faults = faultBuffer.get(taskInsaneId);
@@ -254,6 +256,16 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                         }
                         faults.add(appendFault);
                         faultBuffer.put(taskInsaneId, faults);
+//
+//                        String appendFault = "组件"+component.getName()+" "+lastStateName + "状态迁移到故障状态" +
+//                                currentTaskInstance.getCurrentState().getName() + ",时间"
+//                                + currentTimePiece + ",迁移事件" + transitionEvent + ",解析事件" + parsedEvent;
+//                        List<String> faults = faultBuffer.get(taskInsaneId);
+//                        if(faults!=null)
+//                            faults=new ArrayList<>();
+//                        faults.add(appendFault);
+//                        faultBuffer.put(taskInsaneId, faults);
+                        System.out.println("6666"+faultBuffer);
                     }
                 }
 
@@ -261,6 +273,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 else if (fault != null && fault.getInjectionMode().equals("not_must")) {
                     String faultType=faultInject(currentTaskInstance, component, fault);
                     if(faultType!=null){
+                        System.out.println("00000000");
                         String appendFault = "组件"+component.getName()+"注入故障，时间"+ currentTimePiece +
                                 "故障类型为"+faultType;
                         List<String> faults = faultBuffer.get(taskInsaneId);
@@ -268,6 +281,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                         faultBuffer.put(taskInsaneId, faults);
                     }
                     if(faultType==null){
+                        System.out.println("00000000");
                         String appendFault = "组件"+component.getName()+"注入故障失败，不满足注入条件，时间"+ currentTimePiece;
                         List<String> faults = faultBuffer.get(taskInsaneId);
                         faults.add(appendFault);
