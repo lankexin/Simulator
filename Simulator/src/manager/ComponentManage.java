@@ -7,6 +7,7 @@ import lmf.TaskInstance;
 import safety.FaultInjectUpdate;
 import simulate.Simulator;
 import simulate.StateOperate;
+import util.ParseStr;
 
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,14 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
     @Override
     public void updateData(TaskInstance taskInstance,Component component, List<String> dataList) {
         for (String dataStr : dataList) {
-            StateOperate.updateDataInState(taskInstance,dataStr, component);
+            String parsedStr = ParseStr.parseStr(taskInstance, dataStr, component);
+            Map<String, String> dataStrs = getAssignedData(parsedStr);
+            ComponentManage componentManage = new ComponentManage();
+            String dataName = dataStrs.entrySet().iterator().next().getKey();
+            String express = dataStrs.entrySet().iterator().next().getValue();
+            String value = getResultData(express);
+            System.out.println(dataName+" "+"value:"+value);
+            componentManage.update(component, dataName, value);
         }
     }
 

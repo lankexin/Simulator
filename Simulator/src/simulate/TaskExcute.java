@@ -201,6 +201,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                                 currentTaskInstance.getCurrentState().getName() + ",时间"
                                 + currentTimePiece + ",迁移事件" + transitionEvent + ",解析事件" + parsedEvent;
                         List<String> faults = faultBuffer.get(taskInsaneId);
+                        if(faults!=null)
+                            faults=new ArrayList<>();
                         faults.add(appendFault);
                         faultBuffer.put(taskInsaneId, faults);
                     }
