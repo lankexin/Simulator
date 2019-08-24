@@ -8,7 +8,6 @@ import realtime.TaskExtraction;
 import util.PropertiyParse;
 import util.XmlParse;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;

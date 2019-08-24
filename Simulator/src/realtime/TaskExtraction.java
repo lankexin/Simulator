@@ -1,9 +1,12 @@
 package realtime;
 
-import lmf.*;
-import util.XmlParse;
+import lmf.Channel;
+import lmf.Component;
+import lmf.Task;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TaskExtraction {
 
@@ -30,45 +33,15 @@ public class TaskExtraction {
             }
         }
 
+        System.out.println("task map *********************");
+        for(String key : taskMap.keySet()) {
+            System.out.println("task id is " + taskMap.get(key).getId() + " "  +
+                    taskMap.get(key).getComponentId());
+        }
+        System.out.println("******************************");
+
         return taskMap;
     }
-
-//    private static void getSystemPathNode(List<Channel> channelList,
-//                                          Map<String, Component> componentMap,
-//                                          Map<String, PathNode> pathNodeList) {
-//        //System.out.println(channelList.size());
-//        for (Channel channel : channelList) {
-//            String sourceId = channel.getAttr("source");
-//            for (String componentKey : componentMap.keySet()) {
-//                if (componentMap.get(componentKey).getLinkpointMap().get(sourceId) != null) {
-//                    sourceId = componentMap.get(componentKey).getAttr("id");
-//                }
-//            }
-//            String destId = channel.getAttr("dest");
-//            for (String componentKey : componentMap.keySet()) {
-//                if (componentMap.get(componentKey).getLinkpointMap().get(destId) != null) {
-//                    destId = componentMap.get(componentKey).getAttr("id");
-//                }
-//            }
-//            //System.out.println("source id is " + sourceId + " dest id is " + destId);
-//            if (componentMap.get(destId) == null || componentMap.get(sourceId) == null) continue;
-//            if (pathNodeList.get(destId) != null) pathNodeList.get(destId).setIsFirst(false);
-//            else {
-//                PathNode newDestNode = new PathNode(destId, componentMap.get(destId).getAttr("wcet"),
-//                        componentMap.get(destId).getAttr("name"), false);
-//                pathNodeList.put(destId, newDestNode);
-//            }
-//            if (pathNodeList.get(sourceId) != null) {
-//                pathNodeList.get(sourceId).getNextComponents().add(pathNodeList.get(destId));
-//            } else {
-//                PathNode newSourceNode = new PathNode(sourceId, componentMap.get(sourceId).getAttr("wcet"),
-//                        componentMap.get(sourceId).getAttr("name"), true);
-//                newSourceNode.getNextComponents().add(pathNodeList.get(destId));
-//                pathNodeList.put(sourceId, newSourceNode);
-//            }
-//
-//        }
-//    }
 
 
     /**

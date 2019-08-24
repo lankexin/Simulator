@@ -20,6 +20,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
 
     //timePieceMap  时间片--任务Id
     public void taskExcute() {
+        System.err.println("@@@@"+currentTimePiece+":"+waitingTaskInstanceList.keySet());
 
         /** 在队列里找到当前需要执行的task并使其开始执行
          * 即 更改该g任务的 execute time*/
@@ -96,6 +97,9 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 taskExcute();
                 return;
             }
+
+            System.err.println("left state piece " + leftStatePiece);
+            System.err.println("state name " + currentState.getName());
 
             if (leftStatePiece <= 0) {
                 String statePath = currentTaskInstance.getStatePath();
@@ -188,6 +192,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     if (entryEvent != null && !entryEvent.isEmpty()) {
                         StateOperate.updateDataInState(currentTaskInstance,entryEvent, component);
                     }
+
 
                     //记录迁移到故障状态的信息
                     if (newState.isFaultState()) {
@@ -293,7 +298,10 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     statePathBuffer.put(taskInsaneId, pathBuffer);
                 }
             }
-            currentTaskInstance.setStateLeftExcuteTime((leftStatePiece - 1) * timePiece);
+
+            System.err.println("!!!!!"+currentTimePiece+"-"+component.getName()+":"+taskInsaneId+":"+
+                    currentTaskInstance.getCurrentState().getName());
+            currentTaskInstance.setStateLeftExcuteTime(currentTaskInstance.getStateLeftExcuteTime() - timePiece);
 //            currentState.setLeftExcuteTime(leftStatePiece - 1);
             currentTaskInstance.setLeftExcuteTime(leftExcuteTime - 1 * timePiece);
 

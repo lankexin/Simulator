@@ -78,8 +78,8 @@ public class XmlParse {
                 channelDataMap.put(newData.getAttr("name"), componentIdList);
             }
             componentList.get(componentId).getDataMap().put(newData.getAttr("name"), newData);
-            System.out.println(newData.getAttr("name") + " " + componentList.get(componentId).getName() + " " + newData.getAttr("shared") +
-                    " " + componentList.get(componentId).getDataMap().get(newData.getAttr("name")));
+//            System.out.println(newData.getAttr("name") + " " + componentList.get(componentId).getName() + " " + newData.getAttr("shared") +
+//                    " " + componentList.get(componentId).getDataMap().get(newData.getAttr("name")));
         } else if (component.getName().equals("transition")) {
             String componentId = null;
             Element rootParent = root;
@@ -150,31 +150,31 @@ public class XmlParse {
         }
     }
 
-    public static void main(String[] args) {
-        Map<String, Component> componentList = new HashMap<>();
-        Map<String, Data> sharedDataMap = new HashMap<>();
-        List<Channel> channelList = new ArrayList<>();
-        Map<String, List<String>> channelDataMap = new HashMap<>();
-        XmlParse.parseXML("simulink0822.xml", componentList, sharedDataMap, channelDataMap, channelList);
-
-        for (Channel channel : channelList) {
-            System.out.println(channel.getAttr("id") + " " + channel.getAttr("source"));
-        }
-
-        for (String key : sharedDataMap.keySet()) {
-            System.out.println(sharedDataMap.get(key).getAttr("name") + " " +
-                    sharedDataMap.get(key).getAttr("datatype"));
-        }
-
-        for (String key : componentList.keySet()) {
-            for (String trasitionKey : componentList.get(key).getTransitionMap().keySet()) {
-                if (componentList.get(key).getTransitionMap().get(trasitionKey) != null) {
-                    System.out.println(trasitionKey);
-                    for (Transition transition : componentList.get(key).getTransitionMap().get(trasitionKey)) {
-                        System.out.println(transition.getAttr("source") + " " + transition.getAttr("dest"));
-                    }
-                }
-            }
-        }
-    }
+//    public static void main(String[] args) {
+//        Map<String, Component> componentList = new HashMap<>();
+//        Map<String, Data> sharedDataMap = new HashMap<>();
+//        List<Channel> channelList = new ArrayList<>();
+//        Map<String, List<String>> channelDataMap = new HashMap<>();
+//        XmlParse.parseXML("simulink0822.xml", componentList, sharedDataMap, channelDataMap, channelList);
+//
+//        for (Channel channel : channelList) {
+//            System.out.println(channel.getAttr("id") + " " + channel.getAttr("source"));
+//        }
+//
+//        for (String key : sharedDataMap.keySet()) {
+//            System.out.println(sharedDataMap.get(key).getAttr("name") + " " +
+//                    sharedDataMap.get(key).getAttr("datatype"));
+//        }
+//
+//        for (String key : componentList.keySet()) {
+//            for (String trasitionKey : componentList.get(key).getTransitionMap().keySet()) {
+//                if (componentList.get(key).getTransitionMap().get(trasitionKey) != null) {
+//                    System.out.println(trasitionKey);
+//                    for (Transition transition : componentList.get(key).getTransitionMap().get(trasitionKey)) {
+//                        System.out.println(transition.getAttr("source") + " " + transition.getAttr("dest"));
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
