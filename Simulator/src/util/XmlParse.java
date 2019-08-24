@@ -27,12 +27,12 @@ public class XmlParse {
         }
 
 
-        for (String key : componentList.keySet()) {
-            System.out.println(componentList.get(key).getName());
-            for (String dataKey : componentList.get(key).getDataMap().keySet()) {
-                System.out.println(dataKey + " " + componentList.get(key).getDataMap().get(dataKey).getValue());
-            }
-        }
+//        for (String key : componentList.keySet()) {
+//            System.out.println(componentList.get(key).getName());
+//            for (String dataKey : componentList.get(key).getDataMap().keySet()) {
+//                System.out.println(dataKey + " " + componentList.get(key).getDataMap().get(dataKey).getValue());
+//            }
+//        }
     }
 
 

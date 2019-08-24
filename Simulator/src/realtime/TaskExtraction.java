@@ -14,6 +14,7 @@ public class TaskExtraction {
         Map<String, Task> taskMap = new LinkedHashMap<>();
         int newTaskId = 0;
 
+        System.out.println("task map *********************");
         for (String key : componentMap.keySet()) {
             Component currentComponent = componentMap.get(key);
             if (currentComponent.getStateMap().isEmpty()) continue;
@@ -23,22 +24,25 @@ public class TaskExtraction {
                             currentComponent.getStateMap().get(stateKey),
                             String.valueOf(newTaskId));
                     taskMap.put(newTask.getId(), newTask);
+                    System.out.println("task id is " + newTask.getId() + " "  +
+                                            newTask.getComponentId() + " " + currentComponent.getStateMap().get(stateKey).getName());
                     newTaskId++;
                 } else {
                     Task newTask = new Task(currentComponent, String.valueOf(newTaskId));
                     taskMap.put(newTask.getId(), newTask);
+                    System.out.println("task id is " + newTask.getId() + " "  +
+                            newTask.getComponentId() + " " + currentComponent.getName());
                     newTaskId++;
                     break;
                 }
             }
         }
-
-        System.out.println("task map *********************");
-        for(String key : taskMap.keySet()) {
-            System.out.println("task id is " + taskMap.get(key).getId() + " "  +
-                    taskMap.get(key).getComponentId());
-        }
         System.out.println("******************************");
+
+//        for(String key : taskMap.keySet()) {
+//            System.out.println("task id is " + taskMap.get(key).getId() + " "  +
+//                    taskMap.get(key).getComponentId());
+//        }
 
         return taskMap;
     }
