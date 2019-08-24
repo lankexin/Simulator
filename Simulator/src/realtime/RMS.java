@@ -17,8 +17,7 @@ import static simulate.Simulator.timePiece;
 public class RMS {
 
     public static Map<Integer, String> RMSSchedule(int currentTimePiece,
-                                                         Map<String, TaskInstance> waitingTaskList,
-                                                         Map<String, Task> taskMap) {
+                                                         Map<String, TaskInstance> waitingTaskList) {
 
         Map<Integer, String> timePieceMap = new HashMap<>();
 

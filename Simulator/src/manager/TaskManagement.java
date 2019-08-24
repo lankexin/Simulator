@@ -7,6 +7,8 @@ import util.ParseStr;
 
 import java.util.*;
 
+import static simulate.Simulator.timePiece;
+
 public class TaskManagement {
 
     private Schedule mSchedule;
@@ -29,8 +31,8 @@ public class TaskManagement {
         blockQueueManageMent(currentSystemTime, blockTaskList, taskMap, componentMap, waitingTaskList);
         System.out.println("finish block queue management");
 
-        System.err.println("task management " + currentSystemTime);
-        timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+        System.err.println("task management " + currentSystemTime + " " + waitingTaskList);
+        timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList);
         System.err.println("task management " + timePieceMap);
         return timePieceMap;
     }
@@ -60,7 +62,7 @@ public class TaskManagement {
              } */
 
             if (currentTask.getPeriod() > 0) {
-                if (currentSystemTime % currentTask.getPeriod() == 0) {
+                if (currentSystemTime % (currentTask.getPeriod()/timePiece) == 0) {
 
                     TaskInstance newTaskInstance = isPeriodTransitted(currentSystemTime, transitions,
                             targetComponent, currentTask, currentTask.getFirstState());
@@ -172,13 +174,13 @@ public class TaskManagement {
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
             //System.out.println(transition.getSource() + " " + transition.getDest());
-//            System.out.println("start getResult data " + transition.getEvent());
+            System.out.println("start getResult data " + transition.getEvent() + " " + targetComponent.getName());
 
             String express = ParseStr.parseStr(null,transition.getEvent(), targetComponent);
-            //System.out.println(express);
+            System.out.println(express);
             String result = ExpressCalculate.getResultData(express);
 
-//            System.out.println("finish getResult data " + result);
+            System.out.println("finish getResult data " + result);
             if (result.equals("1")) {
                 List<String> dataNameList = ParseStr.getDataNameList(transition.getEvent());
                 /**
