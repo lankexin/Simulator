@@ -62,7 +62,9 @@ public class TaskManagement {
              } */
 
             if (currentTask.getPeriod() > 0) {
-                if (currentSystemTime % (currentTask.getPeriod()/timePiece) == 0) {
+                System.err.println("period task " + targetComponent.getName() + " " + currentSystemTime + " " + currentTask.getPeriod() +
+                        " ");
+                if ((int)(currentSystemTime % (currentTask.getPeriod()/timePiece)) == 0) {
 
                     TaskInstance newTaskInstance = isPeriodTransitted(currentSystemTime, transitions,
                             targetComponent, currentTask, currentTask.getFirstState());
@@ -130,7 +132,7 @@ public class TaskManagement {
         System.out.println("transition size is " + transitions.size());
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
-            System.out.println(transition.getSource() + " " + transition.getDest());
+            //System.out.println(transition.getSource() + " " + transition.getDest());
 //            System.out.println("start getResult data " + transition.getEvent());
 
             String express = ParseStr.parseStr(null,transition.getEvent(), targetComponent);

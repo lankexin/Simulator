@@ -100,7 +100,34 @@ public class LogicCaculator {
 
         for (int i = 0; i < event.length(); i++) {
 //            System.out.println(event.charAt(i));
-            if (event.charAt(i) == '(') operators.push("(");
+            if (event.charAt(i) == '-' && (i > 0 &&
+                    (event.charAt(i-1) < '0' || event.charAt(i-1) > '9')) ||
+                i == 0) {
+                i++;
+                double num = 0;
+                while (i < event.length() &&
+                        (event.charAt(i) <= '9' && event.charAt(i) >= '0')) {
+                    //System.out.println(event.charAt(i) + " " + i);
+                    num = (num * 10 + event.charAt(i) - '0');
+                    i++;
+                }
+                //System.out.println(pos-1 +" " +  event.charAt(pos-1));
+                if (i < event.length() && event.charAt(i) == '.') {
+                    int divider = 10;
+                    i++;
+                    while(i < event.length() &&
+                            (event.charAt(i) <= '9' && event.charAt(i) >= '0')) {
+                        num = (num + (double)(event.charAt(i)-'0') / divider);
+                        i++;
+                        divider *= 10;
+                    }
+                }
+                if (i != event.length())
+                    i--;
+                numbers.push(num*(-1));
+                System.out.println(num*(-1));
+            }
+            else if (event.charAt(i) == '(') operators.push("(");
             else if (event.charAt(i) == '~' && event.charAt(i+1) == '=') {
                 i++;
                 if (operators.empty() || operators.peek().equals("(")
@@ -305,7 +332,7 @@ public class LogicCaculator {
 
     public static void main(String[] args) {
         System.out.println(eventProcess("30.0<=10000&30.0>=0"));
-        System.out.println(stateUpdateCaculate("12%10"));
+        System.out.println(stateUpdateCaculate("-12%10"));
     }
 
 }
