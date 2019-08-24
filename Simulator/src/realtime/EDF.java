@@ -17,12 +17,12 @@ import static simulate.Simulator.timePiece;
 public class EDF {
 
     public static Map<Integer, String> EDFSchedule(int currentTimePiece,
-                                                         Map<String, TaskInstance> waitingTaskList,
-                                                         Map<String, Task> taskMap) {
+                                                         Map<String, TaskInstance> waitingTaskList) {
         Map<Integer, String> timePieceMap = new HashMap<>();
 
         List<TaskInstance> taskInstanceList = new ArrayList<>();
 
+        System.out.println("waiting list size " + waitingTaskList.size());
         for (String key : waitingTaskList.keySet()) {
 
             TaskInstance curTaskInstance = waitingTaskList.get(key);

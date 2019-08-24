@@ -23,19 +23,17 @@ public class Schedule {
      *
      * @param currentTimePiece 当前的系统时间，用于记录task的到达时间等
      * @param waitingTaskList 等待队列，即就绪的任务队列
-     * @param taskMap 用于提取任务的状态列表等不变的信息
      * @return
      */
     public Map<Integer, String> schedule(int currentTimePiece,
-                                                Map<String, TaskInstance> waitingTaskList,
-                                                Map<String, Task> taskMap) {
+                                                Map<String, TaskInstance> waitingTaskList) {
         switch (scheduleAlgorithm) {
             case "EDF":
-                return EDF.EDFSchedule(currentTimePiece, waitingTaskList, taskMap);
+                return EDF.EDFSchedule(currentTimePiece, waitingTaskList);
             case "RMS":
-                return RMS.RMSSchedule(currentTimePiece, waitingTaskList, taskMap);
+                return RMS.RMSSchedule(currentTimePiece, waitingTaskList);
             case "LLF":
-                return LLF.LLFSchedule(currentTimePiece, waitingTaskList, taskMap);
+                return LLF.LLFSchedule(currentTimePiece, waitingTaskList);
             default:
                 return null;
         }

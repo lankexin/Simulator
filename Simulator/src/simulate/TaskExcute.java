@@ -70,8 +70,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 statePathBuffer.put(taskInsaneId, pathBuffer);
 
                 Schedule schedule = new Schedule();
-                timePieceMap = schedule.schedule(currentTimePiece - 1, waitingTaskInstanceList,
-                        taskMap);
+                timePieceMap = schedule.schedule(currentTimePiece - 1, waitingTaskInstanceList);
 //
 //                    taskInsaneId = newTimePieceMap.get(currentTimePiece);
 //
@@ -150,8 +149,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                         statePathBuffer.put(taskInsaneId, pathBuffer);
                     }
                     Schedule schedule = new Schedule();
-                    timePieceMap = schedule.schedule(currentTimePiece, waitingTaskInstanceList,
-                            taskMap);
+                    timePieceMap = schedule.schedule(currentTimePiece, waitingTaskInstanceList);
 //
 //                    taskInsaneId = newTimePieceMap.get(currentTimePiece);
 //

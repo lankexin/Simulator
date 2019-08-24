@@ -31,8 +31,8 @@ public class TaskManagement {
         blockQueueManageMent(currentSystemTime, blockTaskList, taskMap, componentMap, waitingTaskList);
         System.out.println("finish block queue management");
 
-        System.err.println("task management " + currentSystemTime);
-        timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+        System.err.println("task management " + currentSystemTime + " " + waitingTaskList);
+        timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList);
         System.err.println("task management " + timePieceMap);
         return timePieceMap;
     }
