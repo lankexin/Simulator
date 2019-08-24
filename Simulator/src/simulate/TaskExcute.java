@@ -247,6 +247,9 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                         String appendFault = "组件"+component.getName()+"注入故障，时间"+ currentTimePiece +
                                 "故障类型为"+faultType;
                         List<String> faults = faultBuffer.get(taskInsaneId);
+                        if (faults == null) {
+                            faults = new ArrayList<>();
+                        }
                         faults.add(appendFault);
                         faultBuffer.put(taskInsaneId, faults);
                     }
@@ -292,6 +295,9 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                      * value：状态-event-data-timestamp*/
                     String appendMessage = "当前阻塞在状态" + currentTaskInstance.getCurrentState().getName();
                     List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
+                    if (pathBuffer == null) {
+                        pathBuffer = new ArrayList<>();
+                    }
                     pathBuffer.add(appendMessage);
                     statePathBuffer.put(taskInsaneId, pathBuffer);
                 } else if (possibleNewState.getName().trim().toLowerCase().equals("idle")) {

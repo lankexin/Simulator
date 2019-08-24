@@ -100,9 +100,9 @@ public class LogicCaculator {
 
         for (int i = 0; i < event.length(); i++) {
 //            System.out.println(event.charAt(i));
-            if (event.charAt(i) == '-' && (i > 0 &&
+            if (event.charAt(i) == '-' && ((i > 0 &&
                     (event.charAt(i-1) < '0' || event.charAt(i-1) > '9')) ||
-                i == 0) {
+                i == 0)) {
                 i++;
                 double num = 0;
                 while (i < event.length() &&
@@ -331,7 +331,7 @@ public class LogicCaculator {
 
 
     public static void main(String[] args) {
-        System.out.println(eventProcess("30.0<=10000&30.0>=0"));
+        System.out.println(eventProcess("3040>999&3040<10000"));
         System.out.println(stateUpdateCaculate("-12%10"));
     }
 
