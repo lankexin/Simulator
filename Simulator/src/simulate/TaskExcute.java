@@ -214,19 +214,20 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     statePathBuffer.put(taskInsaneId, pathBuffer);
                 }
             }
-            else if ((int)(currentTaskInstance.getStateLeftExcuteTime() / timePiece) == currentTaskInstance.getCurrentState().getWcet()/timePiece) {
+            if ((int)(currentTaskInstance.getStateLeftExcuteTime() / timePiece) == currentTaskInstance.getCurrentState().getWcet()/timePiece) {
                 System.err.println("start entry");
                 String entryEvent = currentTaskInstance.getCurrentState().getEntryEvent();
                 if (entryEvent != null && !entryEvent.isEmpty()) {
                     StateOperate.updateDataInState(currentTaskInstance,entryEvent, component);
                 }
-            } else if ((int)(currentTaskInstance.getStateLeftExcuteTime() / timePiece) == 2) {
+            }
+            if ((int)(currentTaskInstance.getStateLeftExcuteTime() / timePiece) == 2) {
                 String doEvent = currentTaskInstance.getCurrentState().getDoEvent();
                 if (doEvent != null && !doEvent.isEmpty()) {
                     StateOperate.updateDataInState(currentTaskInstance,doEvent, component);
                 }
             }
-            else if ((int)(currentTaskInstance.getStateLeftExcuteTime() / timePiece) == 1) {
+            if ((int)(currentTaskInstance.getStateLeftExcuteTime() / timePiece) == 1) {
                 String exitEvent = currentTaskInstance.getCurrentState().getExitEvent();
                 if (exitEvent != null && !exitEvent.isEmpty()) {
                     if (!exitEvent.contains("report")) {
