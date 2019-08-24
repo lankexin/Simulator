@@ -34,10 +34,10 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
 
     @Override
     public String get(TaskInstance taskInstance, Component component, String dataName) {
-        String value=null;
-        if (channelDataMap.get(dataName) != null && taskInstance!=null) {
+        String value = null;
+        if (channelDataMap.get(dataName) != null && taskInstance != null) {
             Map<String, String> dataMap = taskInstance.getDataMap();
-            value=dataMap.get(dataName);
+            value = dataMap.get(dataName);
         } else {
             Map<String, Data> dataMap = component.getDataMap();
             System.out.println(dataMap.keySet());
@@ -45,11 +45,10 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
             boolean isShared = data.isShared();
             if (!isShared) {
                 value = data.getValue();
-                System.out.println("yyyyyy"+dataMap.entrySet().iterator().next().getValue().getValue());
-            }
-            else {
+                System.out.println("yyyyyy" + dataMap.entrySet().iterator().next().getValue().getValue());
+            } else {
                 Simulator simulator = new Simulator();
-                value = simulator.get(taskInstance,component, dataName);
+                value = simulator.get(taskInstance, component, dataName);
                 data.setValue(value);
                 dataMap.put(dataName, data);
             }
@@ -65,7 +64,7 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
 //    }
 
     @Override
-    public void updateData(TaskInstance taskInstance,Component component, List<String> dataList) {
+    public void updateData(TaskInstance taskInstance, Component component, List<String> dataList) {
         for (String dataStr : dataList) {
             String parsedStr = ParseStr.parseStr(taskInstance, dataStr, component);
             Map<String, String> dataStrs = getAssignedData(parsedStr);
@@ -73,8 +72,11 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
             String dataName = dataStrs.entrySet().iterator().next().getKey();
             String express = dataStrs.entrySet().iterator().next().getValue();
             String value = getResultData(express);
-            System.out.println(dataName+" "+"value:"+value);
-            componentManage.update(component, dataName, value);
+            System.out.println(dataName + " " + "value:" + value);
+            if (channelDataMap.get(dataName) != null)
+                taskInstance.getDataMap().put(dataName, value);
+            else
+                componentManage.update(component, dataName, value);
         }
     }
 

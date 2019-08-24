@@ -51,11 +51,11 @@ public class Simulator implements DataStore {
      * key：任务实例id
      * value：状态-event-data-timestamp
      */
-    static Map<String, List<String>> statePathBuffer = new LinkedHashMap<>();
+    public static Map<String, List<String>> statePathBuffer = new LinkedHashMap<>();
 
     /**记录故障相关的信息，迁移到故障状态的时间，事件
      * 以及故障注入的时间，注入点，故障类型，是否注入成功*/
-    static Map<String, List<String>> faultBuffer=new LinkedHashMap<>();
+    public static Map<String, List<String>> faultBuffer=new LinkedHashMap<>();
 
 
     /**
@@ -96,10 +96,15 @@ public class Simulator implements DataStore {
     public static void main(String[] args) {
         try{
             File file = new File(filePath);
+            File faultFile=new File(faultPath);
             if (file.exists()) {
                 file.delete();
             }
+            if(faultFile.exists()){
+                faultFile.delete();
+            }
             file.createNewFile();
+            faultFile.createNewFile();
         }catch (IOException e){
             System.out.println("文件访问异常");
         }
@@ -157,7 +162,10 @@ public class Simulator implements DataStore {
             public void run() {
                 System.out.println("log start----");
                 Map<String, List<String>> statePathtemp = statePathBuffer;
+                System.out.println("wwwww"+faultBuffer);
                 Map<String, List<String>> faultPathtemp = faultBuffer;
+                System.out.println("bbbb"+faultPathtemp);
+
                 statePathBuffer = null;
                 statePathBuffer = new LinkedHashMap<>();
 
@@ -167,6 +175,7 @@ public class Simulator implements DataStore {
                 //todo：将state path写到文件里去。
                 try {
                     writeFile(filePath, statePathtemp);
+                    System.out.println("hahahahah"+faultPathtemp);
                     writeFile(faultPath, faultPathtemp);
 
                 } catch (IOException e) {
