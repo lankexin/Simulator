@@ -41,7 +41,6 @@ public class TaskManagement {
                                                               Map<String, TaskInstance> waitingTaskList,
                                                               Map<String, Component> componentMap) {
         //System.out.println("start waiting queue management");
-        Map<Integer, String> timePieceMap = new HashMap<>();
 
         System.out.println(taskMap.size());
         for (String taskKey : taskMap.keySet()) {
@@ -65,15 +64,8 @@ public class TaskManagement {
 
                     TaskInstance newTaskInstance = isPeriodTransitted(currentSystemTime, transitions,
                             targetComponent, currentTask, currentTask.getFirstState());
-//                    TaskInstance newTaskInstance = new TaskInstance(currentSystemTime,
-//                            currentTask.getId() + "_" + currentSystemTime,
-//                            currentTask.getFirstState(), "Idle",
-//                            currentTask.getFirstState().getWcet(), currentTask);
                     if (newTaskInstance != null) {
                         waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
-//                        System.out.println("start schedule");
-                        timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
-//                        System.out.println("finish schedule");
                     }
                 }
             }
@@ -102,8 +94,6 @@ public class TaskManagement {
                                                            Map<String, Task> taskMap,
                                                            Map<String, Component> componentMap,
                                                            Map<String, TaskInstance> waitingTaskList) {
-
-        Map<Integer, String> timePieceMap = new HashMap<>();
 
         Iterator<TaskInstance> iterator = blockTaskList.iterator();
         while (iterator.hasNext()) {
