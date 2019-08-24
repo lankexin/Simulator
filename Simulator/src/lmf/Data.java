@@ -23,6 +23,11 @@ public class Data {
     }
 
     public String getName() {
+        if (attrs.get("name") != null) {
+            name = attrs.get("name");
+        } else {
+            name = "";
+        }
         return name;
     }
 
@@ -31,6 +36,11 @@ public class Data {
     }
 
     public String getValue() {
+        if (attrs.get("initvalue") != null) {
+            value = attrs.get("initvalue");
+        } else {
+            value = "null";
+        }
         return value;
     }
 

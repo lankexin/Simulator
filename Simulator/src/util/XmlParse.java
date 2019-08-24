@@ -25,6 +25,14 @@ public class XmlParse {
         } catch (DocumentException e) {
             e.printStackTrace();
         }
+
+
+        for (String key : componentList.keySet()) {
+            System.out.println(componentList.get(key).getName());
+            for (String dataKey : componentList.get(key).getDataMap().keySet()) {
+                System.out.println(dataKey + " " + componentList.get(key).getDataMap().get(dataKey).getValue());
+            }
+        }
     }
 
 
@@ -134,12 +142,13 @@ public class XmlParse {
             }
             componentId = root.getParent().attribute("id").getValue();
             componentList.get(componentId).getDataMap().put(newData.getAttr("name"), newData);
-            if (newData.getAttr("shared") != null) {
-                sharedDataMap.put(newData.getAttr("name"), newData);
-            }
             if (newData.getAttr("initvalue")!= null) {
                 newData.setValue(newData.getAttr("initvalue"));
             }
+            if (newData.getAttr("shared") != null) {
+                sharedDataMap.put(newData.getAttr("name"), newData);
+            }
+
         }
 
         Iterator itt = component.elementIterator();
