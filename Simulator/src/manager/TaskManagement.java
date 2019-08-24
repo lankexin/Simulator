@@ -23,28 +23,24 @@ public class TaskManagement {
         System.out.println("start management");
         Map<Integer, String> timePieceMap = new HashMap<>();
 
-        Map<Integer, String> tempTimePieceMap;
-        tempTimePieceMap = waitingQueueManagement(currentSystemTime, taskMap, waitingTaskList, componentMap);
+        waitingQueueManagement(currentSystemTime, taskMap, waitingTaskList, componentMap);
         System.out.println("finish waiting queue management");
 
-        if (tempTimePieceMap.size() > 0) {
-            timePieceMap = tempTimePieceMap;
-        }
-        tempTimePieceMap = blockQueueManageMent(currentSystemTime, blockTaskList, taskMap, componentMap, waitingTaskList);
+        blockQueueManageMent(currentSystemTime, blockTaskList, taskMap, componentMap, waitingTaskList);
         System.out.println("finish block queue management");
-        if (tempTimePieceMap.size() > 0) {
-            timePieceMap = tempTimePieceMap;
-        }
 
+        System.err.println("task management " + currentSystemTime);
+        timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
+        System.err.println("task management " + timePieceMap);
         return timePieceMap;
     }
 
 
-    private Map<Integer, String> waitingQueueManagement(int currentSystemTime,
+    private void waitingQueueManagement(int currentSystemTime,
                                                               Map<String, Task> taskMap,
                                                               Map<String, TaskInstance> waitingTaskList,
                                                               Map<String, Component> componentMap) {
-        System.out.println("start waiting queue management");
+        //System.out.println("start waiting queue management");
         Map<Integer, String> timePieceMap = new HashMap<>();
 
         System.out.println(taskMap.size());
@@ -89,16 +85,11 @@ public class TaskManagement {
 
                 if (newTaskInstance != null) {
                     waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
-                    System.out.println("start schedule");
-                    timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
-                    System.out.println("finish schedule");
                 }
             }
         }
 
         System.out.println("finish waiting queue management");
-
-        return timePieceMap;
 
     }
 
@@ -106,7 +97,7 @@ public class TaskManagement {
     /**
      * 遍历阻塞队列，看是否满足触发条件
      */
-    private Map<Integer, String> blockQueueManageMent(int currentSystemTime,
+    private void blockQueueManageMent(int currentSystemTime,
                                                            List<TaskInstance> blockTaskList,
                                                            Map<String, Task> taskMap,
                                                            Map<String, Component> componentMap,
@@ -133,12 +124,10 @@ public class TaskManagement {
                     taskInstance.getCurrentState());
             if (newTaskInstance != null) {
                 waitingTaskList.put(taskInstance.getInstanceId(), taskInstance);
-                timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
                 iterator.remove();
             }
         }
 
-        return timePieceMap;
     }
 
     private TaskInstance isPeriodTransitted(int currentSystemTime,
@@ -189,14 +178,14 @@ public class TaskManagement {
                                       Component targetComponent,
                                       Task currentTask,
                                       State currentState) {
-        System.out.println("transition size is " + transitions.size());
+        //System.out.println("transition size is " + transitions.size());
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
-            System.out.println(transition.getSource() + " " + transition.getDest());
+            //System.out.println(transition.getSource() + " " + transition.getDest());
 //            System.out.println("start getResult data " + transition.getEvent());
 
             String express = ParseStr.parseStr(null,transition.getEvent(), targetComponent);
-            System.out.println(express);
+            //System.out.println(express);
             String result = ExpressCalculate.getResultData(express);
 
 //            System.out.println("finish getResult data " + result);

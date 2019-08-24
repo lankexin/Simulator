@@ -18,6 +18,7 @@ public class LogicCaculator {
     }
 
     public static boolean eventProcess(String event){
+        if (event == null) return true;
         event = event.replaceAll(" ", "");
 
         if (event.equals("")) return true;
@@ -100,7 +101,7 @@ public class LogicCaculator {
         for (int i = 0; i < event.length(); i++) {
 //            System.out.println(event.charAt(i));
             if (event.charAt(i) == '(') operators.push("(");
-            else if (event.charAt(i) == '!' && event.charAt(i+1) == '=') {
+            else if (event.charAt(i) == '~' && event.charAt(i+1) == '=') {
                 i++;
                 if (operators.empty() || operators.peek().equals("(")
                         || operatorMap.get("~=") >= operatorMap.get(operators.peek())) {
@@ -117,7 +118,7 @@ public class LogicCaculator {
             else if (event.charAt(i) == '=' && event.charAt(i+1) == '=') {
                 i++;
                 if (operators.empty() || operators.peek().equals("(")
-                        || operatorMap.get("~=") >= operatorMap.get(operators.peek())) {
+                        || operatorMap.get("==") >= operatorMap.get(operators.peek())) {
                     operators.push("==");
                 } else {
                     while (!operators.empty() && !operators.peek().equals("(")
@@ -131,7 +132,7 @@ public class LogicCaculator {
             else if (event.charAt(i) == '>' && event.charAt(i+1) == '=') {
                 i++;
                 if (operators.empty() || operators.peek().equals("(")
-                        || operatorMap.get("!=") >= operatorMap.get(operators.peek())) {
+                        || operatorMap.get(">=") >= operatorMap.get(operators.peek())) {
                     operators.push(">=");
                 } else {
                     while (!operators.empty() && !operators.peek().equals("(")
@@ -145,7 +146,7 @@ public class LogicCaculator {
             else if (event.charAt(i) == '<' && event.charAt(i+1) == '=') {
                 i++;
                 if (operators.empty() || operators.peek().equals("(")
-                        || operatorMap.get("~=") >= operatorMap.get(operators.peek())) {
+                        || operatorMap.get("<=") >= operatorMap.get(operators.peek())) {
                     operators.push("<=");
                 } else {
                     while (!operators.empty() && !operators.peek().equals("(")
@@ -303,7 +304,7 @@ public class LogicCaculator {
 
 
     public static void main(String[] args) {
-        System.out.println(eventProcess("(null~=null)"));
+        System.out.println(eventProcess("30.0<=10000&30.0>=0"));
         System.out.println(stateUpdateCaculate("12%10"));
     }
 

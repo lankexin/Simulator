@@ -48,7 +48,7 @@ public class EDF {
                 for (int i = timePieceCounter; i < timePieceCounter + taskInstance.getLeftExcuteTime() / timePiece; i++) {
                     timePieceMap.put(i, taskInstance.getInstanceId());
                 }
-                timePieceCounter += taskInstance.getWcet()/timePiece;
+                timePieceCounter += taskInstance.getLeftExcuteTime()/timePiece;
             }
         }
 
