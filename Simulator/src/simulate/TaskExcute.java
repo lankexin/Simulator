@@ -35,11 +35,11 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
             TaskInstance currentTaskInstance = waitingTaskInstanceList.get(taskInsaneId);
 
             //任务剩余几个时间片
-            float leftExcuteTime = currentTaskInstance.getLeftExcuteTime();
+//            float leftExcuteTime = currentTaskInstance.getLeftExcuteTime();
             //任务的当前状态
-            State currentState = currentTaskInstance.getCurrentState();
+//            State currentState = currentTaskInstance.getCurrentState();
             //状态剩余几个时间片
-            float leftStatePiece = currentTaskInstance.getStateLeftExcuteTime() / timePiece;
+//            float leftStatePiece = currentTaskInstance.getStateLeftExcuteTime() / timePiece;
 
             String taskId = currentTaskInstance.getTaskId();
             Task task = taskMap.get(taskId);
@@ -50,9 +50,9 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
             if (!currentTaskInstance.getTaskState().equals("运行")) {
                 currentTaskInstance.setTaskState("运行");
             }
-            System.err.println(component.getName()+":"+currentState.getName());
+            System.err.println(component.getName()+":"+currentTaskInstance.getCurrentState().getName());
             System.err.println(currentTaskInstance.getStateLeftExcuteTime());
-            System.err.println(currentState.getWcet()/timePiece);
+            System.err.println(currentTaskInstance.getCurrentState().getWcet()/timePiece);
             System.err.println(timePiece);
 
             //任务实例超过deadline的判断
@@ -98,12 +98,12 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 return;
             }
 
-            System.err.println("left state piece " + leftStatePiece);
-            System.err.println("state name " + currentState.getName());
+            System.err.println("left state piece " + currentTaskInstance.getStateLeftExcuteTime() / timePiece);
+            System.err.println("state name " + currentTaskInstance.getCurrentState().getName());
 
-            if (leftStatePiece <= 0) {
+            if (currentTaskInstance.getStateLeftExcuteTime() / timePiece <= 0) {
                 String statePath = currentTaskInstance.getStatePath();
-                List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
+                List<Transition> transitions = task.getTransitionMap().get(currentTaskInstance.getCurrentState().getId());
                 System.out.println("transitions"+transitions);
 //        Map<String, Data> dataMap = component.getDataMap();
 //        String taskInsaneId = currentTaskInstance.getTaskId();
@@ -130,7 +130,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     if (newState == null) {
                         blockQueue.add(currentTaskInstance);
                         waitingTaskInstanceList.remove(taskInsaneId);
-                        String appendMessage = "组件"+component.getName()+" "+"当前阻塞在状态" + currentState.getName();
+                        String appendMessage = "组件"+component.getName()+" "+"当前阻塞在状态" + currentTaskInstance.getCurrentState().getName();
                         System.out.println("statePathBuffer"+statePathBuffer);
                         List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
                         if(pathBuffer==null)
@@ -139,7 +139,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                         statePathBuffer.put(taskInsaneId, pathBuffer);
                     } else {
                         waitingTaskInstanceList.remove(taskInsaneId);
-                        String appendMessage = "组件"+component.getName()+" "+"当前任务实例状态从"+currentState.getName()+"迁移到idle,运行结束,时间" + currentTimePiece +
+                        String appendMessage = "组件"+component.getName()+" "+"当前任务实例状态从"+currentTaskInstance.getCurrentState().getName()+"迁移到idle,运行结束,时间" + currentTimePiece +
                                 ",迁移事件" + transitionEvent + ",解析事件" + parsedEvent;
                         StringBuilder temproStatePath = new StringBuilder(statePath);
                         temproStatePath.append("->" + newState.getName());
@@ -180,13 +180,12 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 } else {
                     System.err.println("++++++++");
 
-                    String lastStateName = currentState.getName();
+                    String lastStateName = currentTaskInstance.getCurrentState().getName();
                     currentTaskInstance.setCurrentState(newState);
                     currentTaskInstance.setStateLeftExcuteTime(newState.getWcet());
                     String appendMessage = "组件"+component.getName()+" "+lastStateName + "状态迁移到" + newState.getName() + ",时间" +
                             currentTimePiece + ",迁移事件" + transitionEvent + ",解析事件" + parsedEvent;
                     currentTaskInstance.setStateLeftExcuteTime(newState.getWcet());
-                    leftStatePiece=currentTaskInstance.getStateLeftExcuteTime()/timePiece;
 
                     String entryEvent = currentTaskInstance.getCurrentState().getEntryEvent();
                     if (entryEvent != null && !entryEvent.isEmpty()) {
@@ -196,7 +195,8 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
 
                     //记录迁移到故障状态的信息
                     if (newState.isFaultState()) {
-                        String appendFault = "组件"+component.getName()+" "+lastStateName + "状态迁移到故障状态" + currentState.getName() + ",时间"
+                        String appendFault = "组件"+component.getName()+" "+lastStateName + "状态迁移到故障状态" +
+                                currentTaskInstance.getCurrentState().getName() + ",时间"
                                 + currentTimePiece + ",迁移事件" + transitionEvent + ",解析事件" + parsedEvent;
                         List<String> faults = faultBuffer.get(taskInsaneId);
                         faults.add(appendFault);
@@ -211,19 +211,19 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     pathBuffer.add(appendMessage);
                     statePathBuffer.put(taskInsaneId, pathBuffer);
                 }
-            } else if (leftStatePiece == currentState.getWcet()/timePiece) {
+            } else if (currentTaskInstance.getStateLeftExcuteTime() / timePiece == currentTaskInstance.getCurrentState().getWcet()/timePiece) {
                 System.err.println("start entry");
-                String entryEvent = currentState.getEntryEvent();
+                String entryEvent = currentTaskInstance.getCurrentState().getEntryEvent();
                 if (entryEvent != null && !entryEvent.isEmpty()) {
                     StateOperate.updateDataInState(currentTaskInstance,entryEvent, component);
                 }
-            } else if (leftStatePiece == 2) {
-                String doEvent = currentState.getDoEvent();
+            } else if (currentTaskInstance.getStateLeftExcuteTime() / timePiece == 2) {
+                String doEvent = currentTaskInstance.getCurrentState().getDoEvent();
                 if (doEvent != null && !doEvent.isEmpty()) {
                     StateOperate.updateDataInState(currentTaskInstance,doEvent, component);
                 }
-            } else if (leftStatePiece == 1) {
-                String exitEvent = currentState.getExitEvent();
+            } else if (currentTaskInstance.getStateLeftExcuteTime() / timePiece == 1) {
+                String exitEvent = currentTaskInstance.getCurrentState().getExitEvent();
                 if (exitEvent != null && !exitEvent.isEmpty()) {
                     if (!exitEvent.contains("report"))
                         StateOperate.updateDataInState(currentTaskInstance,exitEvent, component);
@@ -231,7 +231,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 /**故障注入，通过改变当前触发事件相关的数据值来注入故障*/
                 Map<String, Fault> faultSet = getFaultInjectMap();
                 //故障集中是否存在当前的fault
-                Fault fault = faultSet.get(component.getName()+"-"+currentState.getName());
+                Fault fault = faultSet.get(component.getName()+"-"+currentTaskInstance.getCurrentState().getName());
 
                 /**不管什么条件下都强行注入故障*/
                 if (fault != null && fault.getInjectionMode().equals("must")) {
@@ -263,7 +263,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     }
                 }
 
-                List<Transition> transitions = task.getTransitionMap().get(currentState.getId());
+                List<Transition> transitions = task.getTransitionMap().get(currentTaskInstance.getCurrentState().getId());
 
                 State possibleNewState = null;
                 String transitionEvent = null;
@@ -283,7 +283,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     waitingTaskInstanceList.remove(taskInsaneId);
                     /** key：任务实例id
                      * value：状态-event-data-timestamp*/
-                    String appendMessage = "当前阻塞在状态" + currentState.getName();
+                    String appendMessage = "当前阻塞在状态" + currentTaskInstance.getCurrentState().getName();
                     List<String> pathBuffer = statePathBuffer.get(taskInsaneId);
                     pathBuffer.add(appendMessage);
                     statePathBuffer.put(taskInsaneId, pathBuffer);
@@ -303,7 +303,7 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                     currentTaskInstance.getCurrentState().getName());
             currentTaskInstance.setStateLeftExcuteTime(currentTaskInstance.getStateLeftExcuteTime() - timePiece);
 //            currentState.setLeftExcuteTime(leftStatePiece - 1);
-            currentTaskInstance.setLeftExcuteTime(leftExcuteTime - 1 * timePiece);
+            currentTaskInstance.setLeftExcuteTime(currentTaskInstance.getLeftExcuteTime() - 1 * timePiece);
 
 
         }
