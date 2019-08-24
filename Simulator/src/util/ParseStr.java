@@ -19,6 +19,7 @@ public class ParseStr {
         operators.add("-");
         operators.add("*");
         operators.add("/");
+        operators.add("%");
 
         operators.add("!");
         operators.add("~");
@@ -119,6 +120,7 @@ public class ParseStr {
                 name = new StringBuilder();
                 newStr.append(nameString);
             } else {
+                System.out.println("nameString--"+nameString);
                 String value = componentManage.get(taskInstance,component, nameString);
                 if (value == null) {
                     System.out.println("解析式变量名不存在");

@@ -69,17 +69,17 @@ public class TaskManagement {
 //                            currentTask.getFirstState().getWcet(), currentTask);
                     if (newTaskInstance != null) {
                         waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
-                        System.out.println("start schedule");
+//                        System.out.println("start schedule");
                         timePieceMap = mSchedule.schedule(currentSystemTime, waitingTaskList, taskMap);
-                        System.out.println("finish schedule");
+//                        System.out.println("finish schedule");
                     }
                 }
             }
             else {
-                System.out.println("start is transitted");
+//                System.out.println("start is transitted");
                 TaskInstance newTaskInstance = isTransitted(currentSystemTime, transitions,
                         targetComponent, currentTask, currentTask.getFirstState());
-                System.out.println("finish is transitted");
+//                System.out.println("finish is transitted");
 
                 if (newTaskInstance != null) {
                     waitingTaskList.put(newTaskInstance.getInstanceId(), newTaskInstance);
@@ -138,13 +138,13 @@ public class TaskManagement {
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
             System.out.println(transition.getSource() + " " + transition.getDest());
-            System.out.println("start getResult data " + transition.getEvent());
+//            System.out.println("start getResult data " + transition.getEvent());
 
             String express = ParseStr.parseStr(null,transition.getEvent(), targetComponent);
             System.out.println(express);
             String result = ExpressCalculate.getResultData(express);
 
-            System.out.println("finish getResult data " + result);
+//            System.out.println("finish getResult data " + result);
             if (result.equals("1")) {
                 List<String> dataNameList = ParseStr.getDataNameList(transition.getEvent());
                 /**
@@ -181,13 +181,13 @@ public class TaskManagement {
         TaskInstance newTaskInstance = null;
         for (Transition transition : transitions) {
             System.out.println(transition.getSource() + " " + transition.getDest());
-            System.out.println("start getResult data " + transition.getEvent());
+//            System.out.println("start getResult data " + transition.getEvent());
 
             String express = ParseStr.parseStr(null,transition.getEvent(), targetComponent);
             System.out.println(express);
             String result = ExpressCalculate.getResultData(express);
 
-            System.out.println("finish getResult data " + result);
+//            System.out.println("finish getResult data " + result);
             if (result.equals("1")) {
                 List<String> dataNameList = ParseStr.getDataNameList(transition.getEvent());
                 /**

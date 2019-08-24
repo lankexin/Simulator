@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static simulate.ExpressCalculate.getResultData;
 import static simulate.Simulator.channelDataMap;
+import static simulate.Simulator.componentMap;
 import static util.ParseStr.getAssignedData;
 
 public class StateOperate {
@@ -136,22 +137,29 @@ public class StateOperate {
 
     public static void updateDataInState(TaskInstance taskInstance,String events, Component component) {
         List<String> eventList = Splitter.on(";").splitToList(events);
+        System.err.println(events);
+        System.err.println(eventList);
         for (String event : eventList) {
-            String parsedStr = ParseStr.parseStr(taskInstance,event, component);
+            String parsedStr = ParseStr.parseStr(taskInstance, event, component);
+            System.err.println(event);
+            System.err.println("do entry exit赋值"+parsedStr);
             Map<String, String> dataStr = getAssignedData(parsedStr);
             ComponentManage componentManage = new ComponentManage();
             String dataName = dataStr.entrySet().iterator().next().getKey();
             String express = dataStr.entrySet().iterator().next().getValue();
             String value = getResultData(express);
+            System.out.println(dataName+" "+"value:"+value);
             componentManage.update(component, dataName, value);
 
             List<String> componentIds = channelDataMap.get(dataName);
             if (componentIds != null) {
+                System.err.println("进入发送");
+                System.err.println(componentIds);
                 for (String componentId : componentIds) {
                     if (component.getId().equals(componentId)) {
                         componentManage.update(component, dataName, "null");
                     } else {
-                        componentManage.update(component, dataName, value);
+                        componentManage.update(componentMap.get(componentId), dataName, value);
                     }
                 }
             }
