@@ -44,7 +44,7 @@ public class TaskInstance {
         this.stateLeftExcuteTime = leftExcuteTime;
         this.arriveTimestamp = arriveTimestamp;
         this.deadline = (float)arriveTimestamp + task.getDeadline()/timePiece;
-        System.err.println(arriveTimestamp + " " + task.getDeadline() + " " + timePiece + " " + deadline);
+//        System.err.println(arriveTimestamp + " " + task.getDeadline() + " " + timePiece + " " + deadline);
         this.wcet = task.getWcet();
         this.period = task.getPeriod();
         this.leftExcuteTime = task.getWcet();
