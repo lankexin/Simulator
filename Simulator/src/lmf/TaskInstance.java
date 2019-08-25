@@ -31,6 +31,10 @@ public class TaskInstance {
      */
     private String statePath;
 
+    public void setDeadline(float deadline) {
+        this.deadline = deadline;
+    }
+
     public TaskInstance(int arriveTimestamp, String instanceId,
                         State state, String stateName,
                         float leftExcuteTime,

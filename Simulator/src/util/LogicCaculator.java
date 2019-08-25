@@ -8,7 +8,8 @@ public class LogicCaculator {
 
     public static String stateUpdateCaculate(String event) {
         event = event.replaceAll(" ", "");
-
+        if(event.equals("null"))
+            return "null";
         Stack<Double> numbers = new Stack<>();
         Stack<String> operators = new Stack<>();
 

@@ -51,6 +51,7 @@ public class FileUtil {
                         fos.write(str.getBytes());
                         fos.write("\r\n".getBytes());
                     }
+                    fos.write("\r\n".getBytes());
                 }
             }
 
