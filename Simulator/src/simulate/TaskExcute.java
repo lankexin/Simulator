@@ -152,7 +152,10 @@ public class TaskExcute implements FaultInject, FaultInjectMust {
                 if (entryEvent != null && !entryEvent.isEmpty()) {
                     StateOperate.updateDataInState(currentTaskInstance, entryEvent, component);
                 }
-                String appendMessage = "组件" + component.getName() + "当前仍在运行,时间" + currentTimePiece;
+
+                String appendMessage = "组件" + component.getName() + "的状态" + currentTaskInstance.getCurrentState().getName() +
+                        "当前仍在运行,时间" + currentTimePiece;
+
                 setStateBuffer(component, taskInsaneId, appendMessage);
 
             }
