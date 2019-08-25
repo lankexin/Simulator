@@ -44,14 +44,14 @@ public class FileUtil {
             fos = new FileOutputStream(filePath, true);
             if(stateBuffer!=null) {
                 for (String key : stateBuffer.keySet()) {
-                    String id="任务实例编号----"+key;
-                    fos.write(id.getBytes());
+                    fos.write(key.getBytes());
                     fos.write("\r\n".getBytes());
                     List<String> list = stateBuffer.get(key);
                     for (String str : list) {
                         fos.write(str.getBytes());
                         fos.write("\r\n".getBytes());
                     }
+                    fos.write("\r\n".getBytes());
                 }
             }
 

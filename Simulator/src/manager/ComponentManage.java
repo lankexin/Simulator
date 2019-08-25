@@ -6,7 +6,6 @@ import lmf.Data;
 import lmf.TaskInstance;
 import safety.FaultInjectUpdate;
 import simulate.Simulator;
-import simulate.StateOperate;
 import util.ParseStr;
 
 import java.util.List;
@@ -55,13 +54,6 @@ public class ComponentManage implements DataStore, FaultInjectUpdate {
         }
         return value;
     }
-
-//    @Override
-//    public boolean isShared(Component component, String dataName) {
-//        Map<String, Data> dataMap = component.getDataMap();
-//        boolean isShared = dataMap.get(dataName).isShared();
-//        return isShared;
-//    }
 
     @Override
     public void updateData(TaskInstance taskInstance, Component component, List<String> dataList) {

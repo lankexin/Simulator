@@ -5,6 +5,7 @@ import lmf.*;
 import manager.ComponentManage;
 import manager.TaskManagement;
 import realtime.TaskExtraction;
+import safety.InputFaultInject;
 import util.PropertiyParse;
 import util.XmlParse;
 
@@ -12,10 +13,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static safety.FaultSet.getFaultInjectMap;
 import static util.FileUtil.writeFile;
 import static util.PropertiyParse.readProperty;
 
-public class Simulator implements DataStore {
+public class Simulator implements DataStore, InputFaultInject {
 
     //static int currentSystemTime;
     public static int currentTimePiece;
@@ -53,9 +55,11 @@ public class Simulator implements DataStore {
      */
     public static Map<String, List<String>> statePathBuffer = new LinkedHashMap<>();
 
-    /**记录故障相关的信息，迁移到故障状态的时间，事件
-     * 以及故障注入的时间，注入点，故障类型，是否注入成功*/
-    public static Map<String, List<String>> faultBuffer=new LinkedHashMap<>();
+    /**
+     * 记录故障相关的信息，迁移到故障状态的时间，事件
+     * 以及故障注入的时间，注入点，故障类型，是否注入成功
+     */
+    public static Map<String, List<String>> faultBuffer = new LinkedHashMap<>();
 
 
     /**
@@ -94,18 +98,18 @@ public class Simulator implements DataStore {
     static Map<Integer, String> timePieceMap;
 
     public static void main(String[] args) {
-        try{
+        try {
             File file = new File(filePath);
-            File faultFile=new File(faultPath);
+            File faultFile = new File(faultPath);
             if (file.exists()) {
                 file.delete();
             }
-            if(faultFile.exists()){
+            if (faultFile.exists()) {
                 faultFile.delete();
             }
             file.createNewFile();
             faultFile.createNewFile();
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println("文件访问异常");
         }
 
@@ -115,7 +119,13 @@ public class Simulator implements DataStore {
         XmlParse.parseXML("simulink.xml", componentMap, sharedDataMap, channelDataMap, channelList);
 
         //将数据初始值放在dataMap
-        setInput();
+        Map<String,String> inputMap=setInput();
+
+        if(inputMap!=null && !inputMap.isEmpty()){
+            Simulator simulator=new Simulator();
+            simulator.inputFaultInject( inputMap);
+        }
+
 
         taskMap = mTaskExtraction.taskExtraction(componentMap, channelList);
 
@@ -143,7 +153,7 @@ public class Simulator implements DataStore {
         exucuteTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("currentTimePiece:"+currentTimePiece+" excute");
+                System.out.println("currentTimePiece:" + currentTimePiece + " excute");
                 currentTimePiece++;
                 if (currentTimePiece == targetTime) {
                     System.exit(0);
@@ -162,9 +172,9 @@ public class Simulator implements DataStore {
             public void run() {
                 System.out.println("log start----");
                 Map<String, List<String>> statePathtemp = statePathBuffer;
-                System.out.println("wwwww"+faultBuffer);
+                System.out.println("wwwww" + faultBuffer);
                 Map<String, List<String>> faultPathtemp = faultBuffer;
-                System.out.println("bbbb"+faultPathtemp);
+                System.out.println("bbbb" + faultPathtemp);
 
                 statePathBuffer = null;
                 statePathBuffer = new LinkedHashMap<>();
@@ -175,7 +185,7 @@ public class Simulator implements DataStore {
                 //todo：将state path写到文件里去。
                 try {
                     writeFile(filePath, statePathtemp);
-                    System.out.println("hahahahah"+faultPathtemp);
+                    System.out.println("hahahahah" + faultPathtemp);
                     writeFile(faultPath, faultPathtemp);
 
                 } catch (IOException e) {
@@ -195,20 +205,50 @@ public class Simulator implements DataStore {
     }
 
     @Override
-    public String get(TaskInstance taskInstance,Component component, String dataName) {
+    public String get(TaskInstance taskInstance, Component component, String dataName) {
         String value = sharedDataMap.get(dataName).getValue();
         return value;
     }
 
-    public static void setInput() {
+    public static Map<String,String> setInput() {
+        Map<String,String> inputMap=new LinkedHashMap<>();
         int size = Integer.valueOf(readProperty("initInput.size"));
         for (int i = 1; i <= size; i++) {
             String dateName = readProperty("initInput.dataName-" + i);
             String value = readProperty("initInput.dataValue-" + i);
             String componentId = readProperty("initInput.component-" + i);
+            inputMap.put(componentId,dateName);
             Component component = componentMap.get(componentId);
             ComponentManage componentManage = new ComponentManage();
             componentManage.update(component, dateName, value);
+        }
+        return inputMap;
+    }
+
+    @Override
+    public void inputFaultInject(Map<String,String> inputMap) {
+        Map<String, Fault> faultSet = getFaultInjectMap();
+        for(String componentId:inputMap.keySet()){
+            Component component=componentMap.get(componentId);
+            if(component!=null){
+                String componentName=component.getName();
+                Fault fault = faultSet.get(componentName+"-all");
+                if(fault!=null){
+                    ComponentManage componentManage = new ComponentManage();
+                    List<String> dataList=fault.getDataList();
+                    for(String dataName:dataList){
+                        System.out.println(dataName);
+
+                        componentManage.update(component, dataName, "null");
+
+                        String appendFault = "组件" + component.getName() + "注入故障，时间" + currentTimePiece +
+                                "故障类型为inputFault";
+                        List<String> list=new ArrayList<>();
+                        list.add(appendFault);
+                        faultBuffer.put("组件名"+componentId, list);
+                    }
+                }
+            }
         }
     }
 

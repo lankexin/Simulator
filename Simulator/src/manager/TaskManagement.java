@@ -55,12 +55,6 @@ public class TaskManagement {
             //获取当前状态的所有迁移列表
             List<Transition> transitions = currentTask.getTransitionMap().get(currentTask.getFirstStateId());
 
-            /** 故障注入
-             if (faultMap.get(currentStateId) != null) {
-             //更改数据
-             FaultInjection.inject();
-             } */
-
             if (currentTask.getPeriod() > 0) {
                 System.err.println("period task " + targetComponent.getName() + " " + currentSystemTime + " " + currentTask.getPeriod() +
                         " ");
