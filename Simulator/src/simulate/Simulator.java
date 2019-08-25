@@ -173,9 +173,7 @@ public class Simulator implements DataStore, InputFaultInject {
             public void run() {
                 System.out.println("log start----");
                 Map<String, List<String>> statePathtemp = statePathBuffer;
-                System.out.println("wwwww" + faultBuffer);
                 Map<String, List<String>> faultPathtemp = faultBuffer;
-                System.out.println("bbbb" + faultPathtemp);
 
                 statePathBuffer = null;
                 statePathBuffer = new LinkedHashMap<>();
