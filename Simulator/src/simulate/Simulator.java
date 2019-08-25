@@ -158,6 +158,7 @@ public class Simulator implements DataStore, InputFaultInject {
                 if (currentTimePiece == targetTime) {
                     System.exit(0);
                 }
+
                 timePieceMap = mTaskManageMent.timePieceMapManagement(currentTimePiece, taskMap,
                         waitingTaskInstanceList, blockQueue, componentMap);
                 System.out.println("taskmanage end");
@@ -232,7 +233,7 @@ public class Simulator implements DataStore, InputFaultInject {
             Component component=componentMap.get(componentId);
             if(component!=null){
                 String componentName=component.getName();
-                Fault fault = faultSet.get(componentName+"-all");
+                Fault fault = faultSet.get(componentName+".all");
                 if(fault!=null){
                     ComponentManage componentManage = new ComponentManage();
                     List<String> dataList=fault.getDataList();

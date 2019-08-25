@@ -33,10 +33,10 @@ public class FaultSet {
                 String faultType=readProperty("faultInjection.type-"+i);
                 String conditionType = readProperty("faultInjection.conditionType-" + i);
                 String condition = "";
-                if ("relatedData".equals(conditionType)) {
+                if ("_relatedData".equals(conditionType)) {
                     condition = readProperty("faultInjection.relatedDataRange-" + i);
                     System.out.println(condition);
-                } else if ("transitionPath".equals(conditionType)) {
+                } else if ("_transitionPath".equals(conditionType)) {
                     condition = readProperty("faultInjection.transitionPath-" + i);
                 }
                 String operatorMethod = readProperty("faultInjection.operateorMethod-" + i);
